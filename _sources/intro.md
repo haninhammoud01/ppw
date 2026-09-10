@@ -20,7 +20,7 @@ Dokumentasi ini disusun untuk tugas mata kuliah **Pencarian dan Penambangan Web 
 
 ## Pengantar Web Mining
 
-**Web Mining** adalah proses penerapan teknik penambangan data (*data mining*) untuk menemukan pola, informasi, dan pengetahuan yang berguna dari data yang tersedia di web — baik berupa teks, struktur tautan, maupun catatan perilaku pengguna.
+**Web Mining** adalah proses penerapan teknik penambangan data (*data mining*) untuk menemukan pola, informasi, dan pengetahuan yang berguna dari data yang tersedia di web, baik berupa teks, struktur tautan, maupun catatan perilaku pengguna.
 
 Secara umum, web mining terbagi menjadi tiga kategori:
 
