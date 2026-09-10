@@ -343,6 +343,16 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#collect-data">1. Collect Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#describe-data">2. Describe Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#explore-data">3. Explore Data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#word-cloud-per-kategori">Word Cloud per Kategori</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-data-quality">4. Verify Data Quality</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-outlier-panjang-teks">Analisis Outlier (Panjang Teks)</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribusi-sub-kategori">Distribusi Sub-Kategori</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contoh-artikel">Contoh Artikel</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ringkasan-data-understanding">Ringkasan Data Understanding</a></li>
@@ -359,7 +369,17 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="data-understanding">
 <h1>Data Understanding<a class="headerlink" href="#data-understanding" title="Permalink to this heading">#</a></h1>
-<p>Tahap ini melakukan eksplorasi awal (EDA) terhadap dataset 200 artikel berita yang telah dikumpulkan pada tahap Business Understanding, untuk memastikan data siap digunakan pada tahap selanjutnya (Data Preparation &amp; Modeling).</p>
+<p>Pada tahap ini dilakukan eksplorasi terhadap <strong>200 artikel berita Indonesia</strong> yang telah dikumpulkan dari <a class="reference external" href="http://detik.com">detik.com</a> (100 <code class="docutils literal notranslate"><span class="pre">sport</span></code>, id 1-100; 100 <code class="docutils literal notranslate"><span class="pre">finance</span></code>, id 101-200), untuk memahami karakteristik data sebelum masuk ke tahap Data Preparation dan Modeling.</p>
+<p><strong>Aktivitas utama:</strong></p>
+<ul class="simple">
+<li><p><strong>Collect Data</strong> — memuat dataset hasil crawling</p></li>
+<li><p><strong>Describe Data</strong> — ringkasan struktur, tipe data, dan statistik dasar</p></li>
+<li><p><strong>Explore Data</strong> — analisis pola, distribusi, dan visualisasi</p></li>
+<li><p><strong>Verify Data Quality</strong> — pengecekan outlier dan kualitas data secara keseluruhan</p></li>
+</ul>
+<section id="collect-data">
+<h2>1. Collect Data<a class="headerlink" href="#collect-data" title="Permalink to this heading">#</a></h2>
+<p>Dataset dimuat dari hasil crawling yang telah disimpan (lihat proses lengkapnya di halaman <strong>Data Preparation</strong>).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
@@ -438,6 +458,9 @@ document.write(`
 </table>
 </div></div></div>
 </div>
+</section>
+<section id="describe-data">
+<h2>2. Describe Data<a class="headerlink" href="#describe-data" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Info dataset:"</span><span class="p">)</span>
@@ -487,6 +510,9 @@ Cek duplikat isi_berita:
 </div>
 </div>
 </div>
+</section>
+<section id="explore-data">
+<h2>3. Explore Data<a class="headerlink" href="#explore-data" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s2">"panjang_teks"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"isi_berita"</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">len</span><span class="p">)</span>
@@ -506,6 +532,58 @@ sport    100.0  2274.33   812.942343  996.0  1704.0  2131.5  2630.50  5554.0
 </div>
 </div>
 </div>
+<section id="word-cloud-per-kategori">
+<h3>Word Cloud per Kategori<a class="headerlink" href="#word-cloud-per-kategori" title="Permalink to this heading">#</a></h3>
+<p>Visualisasi kata-kata yang paling sering muncul di tiap kategori. Stopword (kata sambung seperti “yang”, “dan”, “dari”) dihilangkan <strong>khusus untuk visualisasi ini</strong> agar kata bermakna lebih terlihat jelas - ini bukan bagian dari pipeline preprocessing/klasifikasi yang akan dikerjakan pada tahap Modeling.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">wordcloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordCloud</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">Sastrawi.StopWordRemover.StopWordRemoverFactory</span><span class="w"> </span><span class="kn">import</span> <span class="n">StopWordRemoverFactory</span>
+
+<span class="n">stopword_remover</span> <span class="o">=</span> <span class="n">StopWordRemoverFactory</span><span class="p">()</span><span class="o">.</span><span class="n">create_stop_word_remover</span><span class="p">()</span>
+
+<span class="n">text_sport</span> <span class="o">=</span> <span class="n">stopword_remover</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"sport"</span><span class="p">][</span><span class="s2">"isi_berita"</span><span class="p">]))</span>
+<span class="n">wc_sport</span> <span class="o">=</span> <span class="n">WordCloud</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">background_color</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span>
+                      <span class="n">colormap</span><span class="o">=</span><span class="s2">"Blues"</span><span class="p">,</span> <span class="n">collocations</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">text_sport</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">wc_sport</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">"bilinear"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">"off"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Kata Paling Sering Muncul - Sport"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/da50402fc44ae03402ad328fbad2cc8cb2a307ce82a06a6775514e1cbe500fdd.png" src="../_images/da50402fc44ae03402ad328fbad2cc8cb2a307ce82a06a6775514e1cbe500fdd.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">text_finance</span> <span class="o">=</span> <span class="n">stopword_remover</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"finance"</span><span class="p">][</span><span class="s2">"isi_berita"</span><span class="p">]))</span>
+<span class="n">wc_finance</span> <span class="o">=</span> <span class="n">WordCloud</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">background_color</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span>
+                        <span class="n">colormap</span><span class="o">=</span><span class="s2">"Oranges"</span><span class="p">,</span> <span class="n">collocations</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">text_finance</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">wc_finance</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s2">"bilinear"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s2">"off"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Kata Paling Sering Muncul - Finance"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/aa086f8b23ba7a425d2c52126f3f3a2262ff99a9eb4b5c4d3bf19676fc793e78.png" src="../_images/aa086f8b23ba7a425d2c52126f3f3a2262ff99a9eb4b5c4d3bf19676fc793e78.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="verify-data-quality">
+<h2>4. Verify Data Quality<a class="headerlink" href="#verify-data-quality" title="Permalink to this heading">#</a></h2>
+<section id="analisis-outlier-panjang-teks">
+<h3>Analisis Outlier (Panjang Teks)<a class="headerlink" href="#analisis-outlier-panjang-teks" title="Permalink to this heading">#</a></h3>
+<p>Menggunakan metode IQR (Interquartile Range) untuk mengidentifikasi artikel dengan panjang teks yang jauh berbeda dari mayoritas data — bisa jadi indikasi artikel yang terlalu pendek (ekstraksi gagal sebagian) atau terlalu panjang (artikel liputan khusus/mendalam).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
 <div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
@@ -525,6 +603,54 @@ sport    100.0  2274.33   812.942343  996.0  1704.0  2131.5  2630.50  5554.0
 <img alt="../_images/32983aec7c2ba420a74f6d571dfed17e6b045ed2bfd4ed2a53cbf102322e401f.png" src="../_images/32983aec7c2ba420a74f6d571dfed17e6b045ed2bfd4ed2a53cbf102322e401f.png" />
 </div>
 </div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">cek_outlier</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+    <span class="n">q1</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"panjang_teks"</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
+    <span class="n">q3</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"panjang_teks"</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span>
+    <span class="n">iqr</span> <span class="o">=</span> <span class="n">q3</span> <span class="o">-</span> <span class="n">q1</span>
+    <span class="n">batas_bawah</span> <span class="o">=</span> <span class="n">q1</span> <span class="o">-</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">iqr</span>
+    <span class="n">batas_atas</span> <span class="o">=</span> <span class="n">q3</span> <span class="o">+</span> <span class="mf">1.5</span> <span class="o">*</span> <span class="n">iqr</span>
+
+    <span class="n">outlier</span> <span class="o">=</span> <span class="n">data</span><span class="p">[(</span><span class="n">data</span><span class="p">[</span><span class="s2">"panjang_teks"</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">batas_bawah</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">"panjang_teks"</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">batas_atas</span><span class="p">)]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">] Batas normal: </span><span class="si">{</span><span class="n">batas_bawah</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> - </span><span class="si">{</span><span class="n">batas_atas</span><span class="si">:</span><span class="s2">.0f</span><span class="si">}</span><span class="s2"> karakter"</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[</span><span class="si">{</span><span class="n">label</span><span class="si">}</span><span class="s2">] Jumlah outlier: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">outlier</span><span class="p">)</span><span class="si">}</span><span class="s2"> dari </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="si">}</span><span class="s2"> artikel</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">outlier</span>
+
+<span class="n">outlier_sport</span> <span class="o">=</span> <span class="n">cek_outlier</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"sport"</span><span class="p">],</span> <span class="s2">"sport"</span><span class="p">)</span>
+<span class="n">outlier_finance</span> <span class="o">=</span> <span class="n">cek_outlier</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"finance"</span><span class="p">],</span> <span class="s2">"finance"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[sport] Batas normal: 314 - 4020 karakter
+[sport] Jumlah outlier: 4 dari 100 artikel
+
+[finance] Batas normal: 391 - 4348 karakter
+[finance] Jumlah outlier: 12 dari 100 artikel
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">semua_outlier</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">outlier_sport</span><span class="p">,</span> <span class="n">outlier_finance</span><span class="p">])</span>
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">semua_outlier</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Detail artikel outlier:"</span><span class="p">)</span>
+    <span class="n">semua_outlier</span><span class="p">[[</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">,</span> <span class="s2">"panjang_teks"</span><span class="p">]]</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"Tidak ditemukan outlier ekstrem pada dataset."</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Detail artikel outlier:
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
 <section id="distribusi-sub-kategori">
 <h2>Distribusi Sub-Kategori<a class="headerlink" href="#distribusi-sub-kategori" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
@@ -679,6 +805,16 @@ Informasi tersebut disampaikan melalui pembaruan operasional penerbangan per Sel
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#collect-data">1. Collect Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#describe-data">2. Describe Data</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#explore-data">3. Explore Data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#word-cloud-per-kategori">Word Cloud per Kategori</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-data-quality">4. Verify Data Quality</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-outlier-panjang-teks">Analisis Outlier (Panjang Teks)</a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribusi-sub-kategori">Distribusi Sub-Kategori</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contoh-artikel">Contoh Artikel</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ringkasan-data-understanding">Ringkasan Data Understanding</a></li>
