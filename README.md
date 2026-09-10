@@ -4,7 +4,7 @@
 
 **Klasifikasi Berita Indonesia: Sport vs Finance**
 
-Tugas mata kuliah Pencarian dan Penambangan Web — disusun dengan metodologi CRISP-DM
+Tugas mata kuliah Pencarian dan Penambangan Web - disusun dengan metodologi CRISP-DM
 
 [![GitHub Pages](https://img.shields.io/badge/docs-GitHub%20Pages-blue?logo=github)](https://haninhammoud01.github.io/ppw/)
 [![Python](https://img.shields.io/badge/python-3.12-blue?logo=python&logoColor=white)](https://www.python.org/)
