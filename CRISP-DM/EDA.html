@@ -346,15 +346,18 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#collect-data">1. Collect Data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#describe-data">2. Describe Data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#explore-data">3. Explore Data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statistik-panjang-teks">Statistik Panjang Teks</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#distribusi-panjang-teks">Distribusi Panjang Teks</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sebaran-panjang-teks-per-label">Sebaran Panjang Teks per Label</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#distribusi-sub-kategori">Distribusi Sub-Kategori</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#word-cloud-per-kategori">Word Cloud per Kategori</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#contoh-artikel">Contoh Artikel</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-data-quality">4. Verify Data Quality</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-outlier-panjang-teks">Analisis Outlier (Panjang Teks)</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribusi-sub-kategori">Distribusi Sub-Kategori</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contoh-artikel">Contoh Artikel</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ringkasan-data-understanding">Ringkasan Data Understanding</a></li>
 </ul>
             </nav>
@@ -382,7 +385,11 @@ document.write(`
 <p>Dataset dimuat dari hasil crawling yang telah disimpan (lihat proses lengkapnya di halaman <strong>Data Preparation</strong>).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">display</span>
 
 <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s2">"../data/dataset_berita_200.xlsx"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Ukuran dataset:"</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
@@ -463,7 +470,7 @@ document.write(`
 <h2>2. Describe Data<a class="headerlink" href="#describe-data" title="Permalink to this heading">#</a></h2>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Info dataset:"</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">"Info dataset:"</span><span class="p">)</span>
 <span class="n">df</span><span class="o">.</span><span class="n">info</span><span class="p">()</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Distribusi label:"</span><span class="p">)</span>
@@ -513,9 +520,11 @@ Cek duplikat isi_berita:
 </section>
 <section id="explore-data">
 <h2>3. Explore Data<a class="headerlink" href="#explore-data" title="Permalink to this heading">#</a></h2>
+<section id="statistik-panjang-teks">
+<h3>Statistik Panjang Teks<a class="headerlink" href="#statistik-panjang-teks" title="Permalink to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s2">"panjang_teks"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"isi_berita"</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">len</span><span class="p">)</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s2">"panjang_teks"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"isi_berita"</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="nb">len</span><span class="p">)</span>
 
 <span class="nb">print</span><span class="p">(</span><span class="s2">"Statistik panjang teks (karakter):"</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"label"</span><span class="p">)[</span><span class="s2">"panjang_teks"</span><span class="p">]</span><span class="o">.</span><span class="n">describe</span><span class="p">())</span>
@@ -532,13 +541,98 @@ sport    100.0  2274.33   812.942343  996.0  1704.0  2131.5  2630.50  5554.0
 </div>
 </div>
 </div>
-<section id="word-cloud-per-kategori">
-<h3>Word Cloud per Kategori<a class="headerlink" href="#word-cloud-per-kategori" title="Permalink to this heading">#</a></h3>
-<p>Visualisasi kata-kata yang paling sering muncul di tiap kategori. Stopword (kata sambung seperti “yang”, “dan”, “dari”) dihilangkan <strong>khusus untuk visualisasi ini</strong> agar kata bermakna lebih terlihat jelas - ini bukan bagian dari pipeline preprocessing/klasifikasi yang akan dikerjakan pada tahap Modeling.</p>
+</section>
+<section id="distribusi-panjang-teks">
+<h3>Distribusi Panjang Teks<a class="headerlink" href="#distribusi-panjang-teks" title="Permalink to this heading">#</a></h3>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">wordcloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordCloud</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">sns</span><span class="o">.</span><span class="n">set_theme</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">"whitegrid"</span><span class="p">,</span> <span class="n">font_scale</span><span class="o">=</span><span class="mf">1.05</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">"panjang_teks"</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">"label"</span><span class="p">,</span>
+             <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="s2">"sport"</span><span class="p">:</span> <span class="s2">"#4C72B0"</span><span class="p">,</span> <span class="s2">"finance"</span><span class="p">:</span> <span class="s2">"#DD8452"</span><span class="p">},</span>
+             <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Distribusi Panjang Teks Artikel per Label"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Panjang teks (karakter)"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Jumlah artikel"</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/e4a5e2381e40742b5634245a5f7ce91b3aa5d21badb83f078c690c1e3072d7d1.png" src="../_images/e4a5e2381e40742b5634245a5f7ce91b3aa5d21badb83f078c690c1e3072d7d1.png" />
+</div>
+</div>
+</section>
+<section id="sebaran-panjang-teks-per-label">
+<h3>Sebaran Panjang Teks per Label<a class="headerlink" href="#sebaran-panjang-teks-per-label" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">"label"</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">"panjang_teks"</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">"label"</span><span class="p">,</span>
+            <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="s2">"sport"</span><span class="p">:</span> <span class="s2">"#4C72B0"</span><span class="p">,</span> <span class="s2">"finance"</span><span class="p">:</span> <span class="s2">"#DD8452"</span><span class="p">},</span>
+            <span class="n">legend</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Sebaran Panjang Teks Artikel per Label"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Panjang teks (karakter)"</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/de924f1e1104d86f6c484ff1e055616ed5959056a4a804cb5f53e72ec2ebbd74.png" src="../_images/de924f1e1104d86f6c484ff1e055616ed5959056a4a804cb5f53e72ec2ebbd74.png" />
+</div>
+</div>
+</section>
+<section id="distribusi-sub-kategori">
+<h3>Distribusi Sub-Kategori<a class="headerlink" href="#distribusi-sub-kategori" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">ambil_subkanal</span><span class="p">(</span><span class="n">url</span><span class="p">):</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">"detik\.com/([a-z0-9-]+)/d-"</span><span class="p">,</span> <span class="n">url</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">match</span> <span class="k">else</span> <span class="s2">"lainnya"</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s2">"sub_kategori"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"url"</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">ambil_subkanal</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">kategori</span><span class="p">,</span> <span class="n">warna</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="p">[</span><span class="s2">"sport"</span><span class="p">,</span> <span class="s2">"finance"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"#4C72B0"</span><span class="p">,</span> <span class="s2">"#DD8452"</span><span class="p">]):</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span> <span class="o">==</span> <span class="n">kategori</span><span class="p">][</span><span class="s2">"sub_kategori"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">warna</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Sub-kategori </span><span class="si">{</span><span class="n">kategori</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Jumlah artikel"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">):</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">v</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">va</span><span class="o">=</span><span class="s2">"center"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/e20e51c3c34ce9ad8e9d2482ef2840774516a51546e736513a5b1158c1ed76a2.png" src="../_images/e20e51c3c34ce9ad8e9d2482ef2840774516a51546e736513a5b1158c1ed76a2.png" />
+</div>
+</div>
+</section>
+<section id="word-cloud-per-kategori">
+<h3>Word Cloud per Kategori<a class="headerlink" href="#word-cloud-per-kategori" title="Permalink to this heading">#</a></h3>
+<p>Visualisasi kata-kata yang paling sering muncul di tiap kategori. Stopword (kata sambung seperti “yang”, “dan”, “dari”) dihilangkan <strong>khusus untuk visualisasi ini</strong> agar kata bermakna lebih terlihat jelas — ini bukan bagian dari pipeline preprocessing/klasifikasi yang akan dikerjakan pada tahap Modeling.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">wordcloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordCloud</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">Sastrawi.StopWordRemover.StopWordRemoverFactory</span><span class="w"> </span><span class="kn">import</span> <span class="n">StopWordRemoverFactory</span>
 
 <span class="n">stopword_remover</span> <span class="o">=</span> <span class="n">StopWordRemoverFactory</span><span class="p">()</span><span class="o">.</span><span class="n">create_stop_word_remover</span><span class="p">()</span>
@@ -556,12 +650,12 @@ sport    100.0  2274.33   812.942343  996.0  1704.0  2131.5  2630.50  5554.0
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/da50402fc44ae03402ad328fbad2cc8cb2a307ce82a06a6775514e1cbe500fdd.png" src="../_images/da50402fc44ae03402ad328fbad2cc8cb2a307ce82a06a6775514e1cbe500fdd.png" />
+<img alt="../_images/d12ddb05d77c3846d3bf70d0c1dc579a58f31af0b8f82558d9cd1d0ece53760d.png" src="../_images/d12ddb05d77c3846d3bf70d0c1dc579a58f31af0b8f82558d9cd1d0ece53760d.png" />
 </div>
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">text_finance</span> <span class="o">=</span> <span class="n">stopword_remover</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"finance"</span><span class="p">][</span><span class="s2">"isi_berita"</span><span class="p">]))</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">text_finance</span> <span class="o">=</span> <span class="n">stopword_remover</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"finance"</span><span class="p">][</span><span class="s2">"isi_berita"</span><span class="p">]))</span>
 <span class="n">wc_finance</span> <span class="o">=</span> <span class="n">WordCloud</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">800</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">background_color</span><span class="o">=</span><span class="s2">"white"</span><span class="p">,</span>
                         <span class="n">colormap</span><span class="o">=</span><span class="s2">"Oranges"</span><span class="p">,</span> <span class="n">collocations</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">text_finance</span><span class="p">)</span>
 
@@ -574,7 +668,36 @@ sport    100.0  2274.33   812.942343  996.0  1704.0  2131.5  2630.50  5554.0
 </div>
 </div>
 <div class="cell_output docutils container">
-<img alt="../_images/aa086f8b23ba7a425d2c52126f3f3a2262ff99a9eb4b5c4d3bf19676fc793e78.png" src="../_images/aa086f8b23ba7a425d2c52126f3f3a2262ff99a9eb4b5c4d3bf19676fc793e78.png" />
+<img alt="../_images/ab0026098df140e15be54e526a430b4d5f5def28b346b23239ddd5ef50bd3517.png" src="../_images/ab0026098df140e15be54e526a430b4d5f5def28b346b23239ddd5ef50bd3517.png" />
+</div>
+</div>
+</section>
+<section id="contoh-artikel">
+<h3>Contoh Artikel<a class="headerlink" href="#contoh-artikel" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">contoh_sport</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span><span class="o">==</span><span class="s2">"sport"</span><span class="p">]</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">contoh_finance</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span><span class="o">==</span><span class="s2">"finance"</span><span class="p">]</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== CONTOH ARTIKEL SPORT ==="</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">contoh_sport</span><span class="p">[</span><span class="s2">"isi_berita"</span><span class="p">][:</span><span class="mi">400</span><span class="p">],</span> <span class="s2">"...</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== CONTOH ARTIKEL FINANCE ==="</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">contoh_finance</span><span class="p">[</span><span class="s2">"isi_berita"</span><span class="p">][:</span><span class="mi">400</span><span class="p">],</span> <span class="s2">"..."</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=== CONTOH ARTIKEL SPORT ===
+Bilal Hasan memulai debut di UFC dengan meyakinkan, menang KO. Legenda UFC, Henry Cejudo dibikin kagum olehnya.
+UFC Fight Night: Nurmagomedov vs Song dalam UFC Shanghai digelar di Oriental Sports Center, Sabtu (29/8). Bilal Hasan yang jalani laga debut, hadapi petarung asal Peru, Nilson Rojas di kelas flyweight.
+Kedua petarung punya rekor sama 9-0. Bilal menang di ronde kedua setelah pukulan lurus ...
+
+=== CONTOH ARTIKEL FINANCE ===
+Seluruh bandara yang sebelumnya terdampak erupsi Gunung Anak Krakatau kembali dibuka untuk operasional penerbangan. Berdasarkan pembaruan Kantor Otoritas Bandar Udara Wilayah I Kelas Utama, terdapat delapan bandara yang telah kembali beroperasi.
+Informasi tersebut disampaikan melalui pembaruan operasional penerbangan per Selasa (8/9/2026) pukul 10.00 WIB. Pembukaan dilakukan setelah sebelumnya ope ...
+</pre></div>
+</div>
 </div>
 </div>
 </section>
@@ -586,26 +709,7 @@ sport    100.0  2274.33   812.942343  996.0  1704.0  2131.5  2630.50  5554.0
 <p>Menggunakan metode IQR (Interquartile Range) untuk mengidentifikasi artikel dengan panjang teks yang jauh berbeda dari mayoritas data — bisa jadi indikasi artikel yang terlalu pendek (ekstraksi gagal sebagian) atau terlalu panjang (artikel liputan khusus/mendalam).</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-<span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"sport"</span><span class="p">][</span><span class="s2">"panjang_teks"</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s2">"hist"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"sport"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
-<span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"finance"</span><span class="p">][</span><span class="s2">"panjang_teks"</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s2">"hist"</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"finance"</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Panjang teks (karakter)"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Jumlah artikel"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Distribusi Panjang Teks Artikel per Label"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="../_images/32983aec7c2ba420a74f6d571dfed17e6b045ed2bfd4ed2a53cbf102322e401f.png" src="../_images/32983aec7c2ba420a74f6d571dfed17e6b045ed2bfd4ed2a53cbf102322e401f.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">cek_outlier</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">cek_outlier</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
     <span class="n">q1</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"panjang_teks"</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.25</span><span class="p">)</span>
     <span class="n">q3</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s2">"panjang_teks"</span><span class="p">]</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="mf">0.75</span><span class="p">)</span>
     <span class="n">iqr</span> <span class="o">=</span> <span class="n">q3</span> <span class="o">-</span> <span class="n">q1</span>
@@ -634,100 +738,145 @@ sport    100.0  2274.33   812.942343  996.0  1704.0  2131.5  2630.50  5554.0
 </div>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">semua_outlier</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">outlier_sport</span><span class="p">,</span> <span class="n">outlier_finance</span><span class="p">])</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">semua_outlier</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">outlier_sport</span><span class="p">,</span> <span class="n">outlier_finance</span><span class="p">])</span>
 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">semua_outlier</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">"Detail artikel outlier:"</span><span class="p">)</span>
-    <span class="n">semua_outlier</span><span class="p">[[</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">,</span> <span class="s2">"panjang_teks"</span><span class="p">]]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Detail </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">semua_outlier</span><span class="p">)</span><span class="si">}</span><span class="s2"> artikel outlier:"</span><span class="p">)</span>
+    <span class="n">display</span><span class="p">(</span><span class="n">semua_outlier</span><span class="p">[[</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">,</span> <span class="s2">"panjang_teks"</span><span class="p">]])</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">"Tidak ditemukan outlier ekstrem pada dataset."</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Detail artikel outlier:
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Detail 16 artikel outlier:
 </pre></div>
 </div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>label</th>
+      <th>panjang_teks</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>12</th>
+      <td>13</td>
+      <td>sport</td>
+      <td>4021</td>
+    </tr>
+    <tr>
+      <th>57</th>
+      <td>58</td>
+      <td>sport</td>
+      <td>5554</td>
+    </tr>
+    <tr>
+      <th>60</th>
+      <td>61</td>
+      <td>sport</td>
+      <td>4144</td>
+    </tr>
+    <tr>
+      <th>98</th>
+      <td>99</td>
+      <td>sport</td>
+      <td>4070</td>
+    </tr>
+    <tr>
+      <th>114</th>
+      <td>115</td>
+      <td>finance</td>
+      <td>5760</td>
+    </tr>
+    <tr>
+      <th>116</th>
+      <td>117</td>
+      <td>finance</td>
+      <td>8169</td>
+    </tr>
+    <tr>
+      <th>118</th>
+      <td>119</td>
+      <td>finance</td>
+      <td>4508</td>
+    </tr>
+    <tr>
+      <th>123</th>
+      <td>124</td>
+      <td>finance</td>
+      <td>5384</td>
+    </tr>
+    <tr>
+      <th>127</th>
+      <td>128</td>
+      <td>finance</td>
+      <td>4823</td>
+    </tr>
+    <tr>
+      <th>140</th>
+      <td>141</td>
+      <td>finance</td>
+      <td>5704</td>
+    </tr>
+    <tr>
+      <th>163</th>
+      <td>164</td>
+      <td>finance</td>
+      <td>4594</td>
+    </tr>
+    <tr>
+      <th>173</th>
+      <td>174</td>
+      <td>finance</td>
+      <td>4417</td>
+    </tr>
+    <tr>
+      <th>188</th>
+      <td>189</td>
+      <td>finance</td>
+      <td>4463</td>
+    </tr>
+    <tr>
+      <th>193</th>
+      <td>194</td>
+      <td>finance</td>
+      <td>8124</td>
+    </tr>
+    <tr>
+      <th>195</th>
+      <td>196</td>
+      <td>finance</td>
+      <td>4865</td>
+    </tr>
+    <tr>
+      <th>196</th>
+      <td>197</td>
+      <td>finance</td>
+      <td>4785</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
 </div>
-</div>
+<p><strong>Takeaway:</strong> Outlier yang terdeteksi masih berupa artikel dengan konten memang lebih panjang/pendek secara wajar (misalnya liputan mendalam vs berita singkat), bukan hasil kegagalan ekstraksi — sehingga tidak perlu dihapus dari dataset.</p>
 </section>
-</section>
-<section id="distribusi-sub-kategori">
-<h2>Distribusi Sub-Kategori<a class="headerlink" href="#distribusi-sub-kategori" title="Permalink to this heading">#</a></h2>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
-
-<span class="n">sns</span><span class="o">.</span><span class="n">set_theme</span><span class="p">(</span><span class="n">style</span><span class="o">=</span><span class="s2">"whitegrid"</span><span class="p">,</span> <span class="n">font_scale</span><span class="o">=</span><span class="mf">1.05</span><span class="p">)</span>
-
-<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-
-<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">kategori</span><span class="p">,</span> <span class="n">warna</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="p">[</span><span class="s2">"sport"</span><span class="p">,</span> <span class="s2">"finance"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"#4C72B0"</span><span class="p">,</span> <span class="s2">"#DD8452"</span><span class="p">]):</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span> <span class="o">==</span> <span class="n">kategori</span><span class="p">][</span><span class="s2">"sub_kategori"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
-    <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">warna</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Sub-kategori </span><span class="si">{</span><span class="n">kategori</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Jumlah artikel"</span><span class="p">)</span>
-    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">values</span><span class="p">):</span>
-        <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">v</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">),</span> <span class="n">va</span><span class="o">=</span><span class="s2">"center"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
-    <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="../_images/e20e51c3c34ce9ad8e9d2482ef2840774516a51546e736513a5b1158c1ed76a2.png" src="../_images/e20e51c3c34ce9ad8e9d2482ef2840774516a51546e736513a5b1158c1ed76a2.png" />
-</div>
-</div>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">"panjang_teks"</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">"label"</span><span class="p">,</span>
-             <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="s2">"sport"</span><span class="p">:</span> <span class="s2">"#4C72B0"</span><span class="p">,</span> <span class="s2">"finance"</span><span class="p">:</span> <span class="s2">"#DD8452"</span><span class="p">},</span>
-             <span class="n">bins</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">"Distribusi Panjang Teks Artikel per Label"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Panjang teks (karakter)"</span><span class="p">)</span>
-<span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Jumlah artikel"</span><span class="p">)</span>
-<span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<img alt="../_images/e4a5e2381e40742b5634245a5f7ce91b3aa5d21badb83f078c690c1e3072d7d1.png" src="../_images/e4a5e2381e40742b5634245a5f7ce91b3aa5d21badb83f078c690c1e3072d7d1.png" />
-</div>
-</div>
-</section>
-<section id="contoh-artikel">
-<h2>Contoh Artikel<a class="headerlink" href="#contoh-artikel" title="Permalink to this heading">#</a></h2>
-<div class="cell docutils container">
-<div class="cell_input docutils container">
-<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">contoh_sport</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span><span class="o">==</span><span class="s2">"sport"</span><span class="p">]</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-<span class="n">contoh_finance</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span><span class="o">==</span><span class="s2">"finance"</span><span class="p">]</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">"=== CONTOH ARTIKEL SPORT ==="</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">contoh_sport</span><span class="p">[</span><span class="s2">"isi_berita"</span><span class="p">][:</span><span class="mi">400</span><span class="p">],</span> <span class="s2">"...</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
-
-<span class="nb">print</span><span class="p">(</span><span class="s2">"=== CONTOH ARTIKEL FINANCE ==="</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">contoh_finance</span><span class="p">[</span><span class="s2">"isi_berita"</span><span class="p">][:</span><span class="mi">400</span><span class="p">],</span> <span class="s2">"..."</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=== CONTOH ARTIKEL SPORT ===
-Bilal Hasan memulai debut di UFC dengan meyakinkan, menang KO. Legenda UFC, Henry Cejudo dibikin kagum olehnya.
-UFC Fight Night: Nurmagomedov vs Song dalam UFC Shanghai digelar di Oriental Sports Center, Sabtu (29/8). Bilal Hasan yang jalani laga debut, hadapi petarung asal Peru, Nilson Rojas di kelas flyweight.
-Kedua petarung punya rekor sama 9-0. Bilal menang di ronde kedua setelah pukulan lurus ...
-
-=== CONTOH ARTIKEL FINANCE ===
-Seluruh bandara yang sebelumnya terdampak erupsi Gunung Anak Krakatau kembali dibuka untuk operasional penerbangan. Berdasarkan pembaruan Kantor Otoritas Bandar Udara Wilayah I Kelas Utama, terdapat delapan bandara yang telah kembali beroperasi.
-Informasi tersebut disampaikan melalui pembaruan operasional penerbangan per Selasa (8/9/2026) pukul 10.00 WIB. Pembukaan dilakukan setelah sebelumnya ope ...
-</pre></div>
-</div>
-</div>
-</div>
 </section>
 <section id="ringkasan-data-understanding">
 <h2>Ringkasan Data Understanding<a class="headerlink" href="#ringkasan-data-understanding" title="Permalink to this heading">#</a></h2>
@@ -808,15 +957,18 @@ Informasi tersebut disampaikan melalui pembaruan operasional penerbangan per Sel
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#collect-data">1. Collect Data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#describe-data">2. Describe Data</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#explore-data">3. Explore Data</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#statistik-panjang-teks">Statistik Panjang Teks</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#distribusi-panjang-teks">Distribusi Panjang Teks</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sebaran-panjang-teks-per-label">Sebaran Panjang Teks per Label</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#distribusi-sub-kategori">Distribusi Sub-Kategori</a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#word-cloud-per-kategori">Word Cloud per Kategori</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#contoh-artikel">Contoh Artikel</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#verify-data-quality">4. Verify Data Quality</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-outlier-panjang-teks">Analisis Outlier (Panjang Teks)</a></li>
 </ul>
 </li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#distribusi-sub-kategori">Distribusi Sub-Kategori</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contoh-artikel">Contoh Artikel</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ringkasan-data-understanding">Ringkasan Data Understanding</a></li>
 </ul>
   </nav></div>
