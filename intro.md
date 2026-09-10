@@ -20,10 +20,12 @@ Dokumentasi ini disusun untuk tugas mata kuliah **Pencarian dan Penambangan Web 
 
 ## Struktur Dokumen
 
-- **Business Understanding** — latar belakang masalah dan kriteria keberhasilan proyek
-- **Data Understanding** — eksplorasi awal terhadap 200 artikel yang telah dikumpulkan
-- **Data Preparation** — proses crawling, ekstraksi isi artikel, dan pelabelan data
+- **Business Understanding** - latar belakang masalah dan kriteria keberhasilan proyek
+- **Data Understanding** - eksplorasi awal terhadap 200 artikel yang telah dikumpulkan
+- **Data Preparation** - proses crawling, ekstraksi isi artikel, dan pelabelan data
+- **Modeling** - pembangunan model klasifikasi (segera hadir)
+- **Evaluation** - evaluasi performa model (segera hadir)
+- **Deployment** - implementasi model ke penggunaan nyata (segera hadir)
 
-Navigasi tersedia pada menu di sebelah kiri.
 
 *Hanin Hammoud*
