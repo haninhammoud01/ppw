@@ -1,0 +1,1660 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Text Preprocessing (Versi Lengkap &amp; Mendalam) &#8212; PPW - Web Search &amp; Mining</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'CRISP-DM/Preprocessing';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Text Vectorization: TF-IDF, One-Hot Encoding, &amp; Reduksi Dimensi (PCA vs SVD)" href="Vectorization.html" />
+    <link rel="prev" title="Data Preparation" href="Input.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.jpeg" class="logo__image only-light" alt="PPW - Web Search & Mining - Home"/>
+    <script>document.write(`<img src="../_static/logo.jpeg" class="logo__image only-dark" alt="PPW - Web Search & Mining - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    PPW - Web Search & Mining
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Business.html">Business Understanding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EDA.html">Data Understanding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Input.html">Data Preparation (Crawling)</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Text Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vectorization.html">Text Vectorization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Output.html">Evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Production.html">Deployment</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/haninhammoud01/ppw" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/CRISP-DM/Preprocessing.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Text Preprocessing (Versi Lengkap & Mendalam)</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#health-check">0. Health Check</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#eksplorasi-awal-panjang-teks-sebelum-dibersihkan">Eksplorasi Awal: Panjang Teks Sebelum Dibersihkan</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#normalisasi-karakter-non-ascii">1. Normalisasi Karakter Non-ASCII</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deteksi-bahasa-per-kalimat">2. Deteksi Bahasa per Kalimat</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preservasi-artefak-penting">3. Preservasi Artefak Penting</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hitung-total-lihat-contoh-konteks-tiap-kategori-artefak">Hitung Total &amp; Lihat Contoh Konteks Tiap Kategori Artefak</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#case-folding-penghapusan-simbol">4. Case Folding &amp; Penghapusan Simbol</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sensus-token-pendek-1-2-huruf">5. Sensus Token Pendek (1-2 Huruf)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proteksi-nama-diri">6. Proteksi Nama Diri</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#normalisasi-kata-tidak-baku">7. Normalisasi Kata Tidak Baku</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#demonstrasi-kenapa-proteksi-nama-diri-penting">Demonstrasi: Kenapa Proteksi Nama Diri Penting?</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deteksi-terjemahkan-kata-asing">8. Deteksi &amp; Terjemahkan Kata Asing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistik-korpus-akhir-simpan-dataset">9. Statistik Korpus Akhir &amp; Simpan Dataset</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ringkasan-tahapan">Ringkasan Tahapan</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="text-preprocessing-versi-lengkap-mendalam">
+<h1>Text Preprocessing (Versi Lengkap &amp; Mendalam)<a class="headerlink" href="#text-preprocessing-versi-lengkap-mendalam" title="Permalink to this heading">#</a></h1>
+<p>Notebook ini membersihkan teks 200 artikel berita secara bertahap dan <strong>hati-hati</strong>. Setiap teknik pembersihan diuji dulu pada 1 contoh artikel, diterapkan ke seluruh dataset, lalu <strong>dampaknya diukur secara eksplisit</strong> - bukan hanya dijalankan lalu dipercaya begitu saja. Notebook ini disusun agar bisa menjadi referensi belajar Pencarian dan Penambangan Web (PPW), termasuk untuk adik tingkat yang akan mengerjakan tugas serupa.</p>
+<p><strong>Alur lengkap:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mf">0.</span> <span class="n">Health</span> <span class="n">Check</span> <span class="p">(</span><span class="n">validasi</span> <span class="n">data</span> <span class="n">mentah</span><span class="p">)</span>
+<span class="mf">1.</span> <span class="n">Normalisasi</span> <span class="n">karakter</span> <span class="n">non</span><span class="o">-</span><span class="n">ASCII</span> <span class="p">(</span><span class="n">aksen</span><span class="p">,</span> <span class="n">emoji</span><span class="p">)</span>
+<span class="mf">2.</span> <span class="n">Deteksi</span> <span class="n">bahasa</span> <span class="n">per</span> <span class="n">kalimat</span> <span class="p">(</span><span class="n">sebelum</span> <span class="n">tanda</span> <span class="n">baca</span> <span class="n">dihapus</span><span class="p">)</span>
+<span class="mf">3.</span> <span class="n">Preservasi</span> <span class="n">artefak</span> <span class="n">penting</span> <span class="p">(</span><span class="n">mata</span> <span class="n">uang</span><span class="p">,</span> <span class="n">kata</span> <span class="n">komposit</span> <span class="n">angka</span><span class="p">,</span> <span class="n">angka</span> <span class="n">Romawi</span><span class="p">,</span> <span class="n">URL</span> <span class="n">inline</span><span class="p">)</span>
+<span class="mf">4.</span> <span class="n">Case</span> <span class="n">folding</span> <span class="o">&amp;</span> <span class="n">penghapusan</span> <span class="n">simbol</span>
+<span class="mf">5.</span> <span class="n">Sensus</span> <span class="n">token</span> <span class="n">pendek</span> <span class="p">(</span><span class="mi">1</span><span class="o">-</span><span class="mi">2</span> <span class="n">huruf</span><span class="p">)</span> <span class="o">-</span> <span class="n">memastikan</span> <span class="n">tidak</span> <span class="n">ada</span> <span class="n">token</span> <span class="n">sampah</span> <span class="n">yang</span> <span class="n">lolos</span>
+<span class="mf">6.</span> <span class="n">Proteksi</span> <span class="n">nama</span> <span class="n">diri</span> <span class="p">(</span><span class="n">termasuk</span> <span class="n">partikel</span> <span class="n">pada</span> <span class="n">nama</span> <span class="n">multi</span><span class="o">-</span><span class="n">kata</span><span class="p">)</span>
+<span class="mf">7.</span> <span class="n">Normalisasi</span> <span class="n">kata</span> <span class="n">tidak</span> <span class="n">baku</span> <span class="o">+</span> <span class="n">demonstrasi</span> <span class="n">pentingnya</span> <span class="n">proteksi</span> <span class="n">nama</span> <span class="n">diri</span>
+<span class="mf">8.</span> <span class="n">Deteksi</span> <span class="o">&amp;</span> <span class="n">terjemahkan</span> <span class="n">kata</span> <span class="n">asing</span>
+<span class="mf">9.</span> <span class="n">Statistik</span> <span class="n">korpus</span> <span class="n">akhir</span> <span class="o">&amp;</span> <span class="n">simpan</span> <span class="n">dataset</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">unicodedata</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s2">"../data/dataset_berita_200.xlsx"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Dataset dimuat:"</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dataset dimuat: (200, 4)
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>isi_berita</th>
+      <th>label</th>
+      <th>url</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>Chef de Mission (CdM) Indonesia Todotua Pasari...</td>
+      <td>sport</td>
+      <td>https://sport.detik.com/sport-lain/d-8655308/c...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>Banjir besar melanda Nagoya, Jepang, menjelang...</td>
+      <td>sport</td>
+      <td>https://sport.detik.com/sport-lain/d-8655303/a...</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">konteks</span><span class="p">(</span><span class="n">daftar_teks</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">40</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Mencari kemunculan pertama sebuah token di kumpulan teks, beserta potongan</span>
+<span class="sd">    kalimat di sekitarnya, agar setiap keputusan pembersihan bisa diperiksa</span>
+<span class="sd">    dalam konteks aslinya (bukan sekadar dipercaya begitu saja)."""</span>
+    <span class="n">pola</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">"(?&lt;![A-Za-z])"</span> <span class="o">+</span> <span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">token</span><span class="p">)</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">"(?![A-Za-z])"</span><span class="p">,</span> <span class="n">re</span><span class="o">.</span><span class="n">IGNORECASE</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">teks</span> <span class="ow">in</span> <span class="n">daftar_teks</span><span class="p">:</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">pola</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">teks</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">m</span><span class="p">:</span>
+            <span class="n">mulai</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">start</span><span class="p">()</span> <span class="o">-</span> <span class="n">window</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">teks</span><span class="p">[</span><span class="n">mulai</span><span class="p">:</span><span class="n">m</span><span class="o">.</span><span class="n">end</span><span class="p">()</span> <span class="o">+</span> <span class="n">window</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">,</span> <span class="s2">" "</span><span class="p">)</span>
+    <span class="k">return</span> <span class="s2">"(tidak ditemukan)"</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="health-check">
+<h2>0. Health Check<a class="headerlink" href="#health-check" title="Permalink to this heading">#</a></h2>
+<p>Sebelum membersihkan teks, kita pastikan dulu data mentahnya “sehat”: tidak ada nilai kosong, tidak ada baris/URL duplikat, dan <code class="docutils literal notranslate"><span class="pre">id</span></code> lengkap berurutan 1-200.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">checks</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">"pemeriksaan"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"jumlah baris"</span><span class="p">,</span> <span class="s2">"nilai kosong"</span><span class="p">,</span> <span class="s2">"isi_berita ganda"</span><span class="p">,</span> <span class="s2">"URL ganda"</span><span class="p">,</span> <span class="s2">"urutan id"</span><span class="p">,</span> <span class="s2">"jumlah per label"</span><span class="p">],</span>
+    <span class="s2">"hasil"</span><span class="p">:</span> <span class="p">[</span>
+        <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="n">df</span><span class="o">.</span><span class="n">isna</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="n">df</span><span class="p">[</span><span class="s2">"isi_berita"</span><span class="p">]</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
+        <span class="n">df</span><span class="p">[</span><span class="s2">"url"</span><span class="p">]</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span>
+        <span class="s2">"lengkap 1-200"</span> <span class="k">if</span> <span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"id"</span><span class="p">])</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span> <span class="k">else</span> <span class="s2">"tidak urut"</span><span class="p">,</span>
+        <span class="s2">"; "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">v</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()),</span>
+    <span class="p">]</span>
+<span class="p">})</span>
+<span class="n">checks</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>pemeriksaan</th>
+      <th>hasil</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>jumlah baris</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>nilai kosong</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>isi_berita ganda</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>URL ganda</td>
+      <td>0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>urutan id</td>
+      <td>lengkap 1-200</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>jumlah per label</td>
+      <td>sport: 100; finance: 100</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<section id="eksplorasi-awal-panjang-teks-sebelum-dibersihkan">
+<h3>Eksplorasi Awal: Panjang Teks Sebelum Dibersihkan<a class="headerlink" href="#eksplorasi-awal-panjang-teks-sebelum-dibersihkan" title="Permalink to this heading">#</a></h3>
+<p>Sebelum melakukan pembersihan apa pun, kita amati dulu panjang teks per label - untuk mendeteksi anomali lebih awal (artikel nyaris kosong, ekor distribusi yang sangat panjang, dsb) sebelum anomali tersebut bercampur dengan efek pembersihan.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+
+<span class="n">stats_awal</span> <span class="o">=</span> <span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">panjang_karakter</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s2">"isi_berita"</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">len</span><span class="p">(),</span>
+                         <span class="n">jumlah_kata</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s2">"isi_berita"</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">len</span><span class="p">())</span>
+                <span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">"label"</span><span class="p">)[[</span><span class="s2">"panjang_karakter"</span><span class="p">,</span> <span class="s2">"jumlah_kata"</span><span class="p">]]</span>
+                <span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s2">"min"</span><span class="p">,</span> <span class="s2">"median"</span><span class="p">,</span> <span class="s2">"max"</span><span class="p">]))</span>
+<span class="n">stats_awal</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead tr th {
+        text-align: left;
+    }
+
+    .dataframe thead tr:last-of-type th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr>
+      <th></th>
+      <th colspan="3" halign="left">panjang_karakter</th>
+      <th colspan="3" halign="left">jumlah_kata</th>
+    </tr>
+    <tr>
+      <th></th>
+      <th>min</th>
+      <th>median</th>
+      <th>max</th>
+      <th>min</th>
+      <th>median</th>
+      <th>max</th>
+    </tr>
+    <tr>
+      <th>label</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>finance</th>
+      <td>826</td>
+      <td>2291.0</td>
+      <td>8169</td>
+      <td>126</td>
+      <td>315.0</td>
+      <td>1037</td>
+    </tr>
+    <tr>
+      <th>sport</th>
+      <td>996</td>
+      <td>2131.5</td>
+      <td>5554</td>
+      <td>140</td>
+      <td>297.0</td>
+      <td>690</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+</section>
+<section id="normalisasi-karakter-non-ascii">
+<h2>1. Normalisasi Karakter Non-ASCII<a class="headerlink" href="#normalisasi-karakter-non-ascii" title="Permalink to this heading">#</a></h2>
+<p>Beberapa artikel mungkin memuat karakter di luar alfabet standar - misalnya huruf beraksen pada nama asing (<code class="docutils literal notranslate"><span class="pre">é</span></code>, <code class="docutils literal notranslate"><span class="pre">ñ</span></code>) atau emoji yang tersisip dalam kutipan (misalnya kutipan dari media sosial). Karakter-karakter ini dinormalisasi lebih dulu, sebelum tahap pembersihan simbol utama, agar tidak menimbulkan artefak aneh di teks akhir.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">POLA_EMOJI</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+    <span class="s2">"["</span>
+    <span class="s2">"</span><span class="se">\U0001F600</span><span class="s2">-</span><span class="se">\U0001F64F</span><span class="s2">"</span>
+    <span class="s2">"</span><span class="se">\U0001F300</span><span class="s2">-</span><span class="se">\U0001F5FF</span><span class="s2">"</span>
+    <span class="s2">"</span><span class="se">\U0001F680</span><span class="s2">-</span><span class="se">\U0001F6FF</span><span class="s2">"</span>
+    <span class="s2">"</span><span class="se">\U0001F1E0</span><span class="s2">-</span><span class="se">\U0001F1FF</span><span class="s2">"</span>
+    <span class="s2">"</span><span class="se">\U00002700</span><span class="s2">-</span><span class="se">\U000027BF</span><span class="s2">"</span>
+    <span class="s2">"</span><span class="se">\U0001F900</span><span class="s2">-</span><span class="se">\U0001F9FF</span><span class="s2">"</span>
+    <span class="s2">"</span><span class="se">\U00002600</span><span class="s2">-</span><span class="se">\U000026FF</span><span class="s2">"</span>
+    <span class="s2">"]+"</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">re</span><span class="o">.</span><span class="n">UNICODE</span>
+<span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">cek_non_ascii</span><span class="p">(</span><span class="n">teks</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">any</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">127</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">teks</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">normalisasi_non_ascii</span><span class="p">(</span><span class="n">teks</span><span class="p">):</span>
+    <span class="n">teks</span> <span class="o">=</span> <span class="n">POLA_EMOJI</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">" "</span><span class="p">,</span> <span class="n">teks</span><span class="p">)</span>
+    <span class="n">teks</span> <span class="o">=</span> <span class="n">unicodedata</span><span class="o">.</span><span class="n">normalize</span><span class="p">(</span><span class="s2">"NFKD"</span><span class="p">,</span> <span class="n">teks</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">"ascii"</span><span class="p">,</span> <span class="s2">"ignore"</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">"utf-8"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">teks</span>
+
+<span class="n">jumlah_artikel_non_ascii</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"isi_berita"</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">cek_non_ascii</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Jumlah artikel yang memuat karakter non-ASCII: </span><span class="si">{</span><span class="n">jumlah_artikel_non_ascii</span><span class="si">}</span><span class="s2"> dari </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Jumlah artikel yang memuat karakter non-ASCII: 10 dari 200
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">artikel_non_ascii</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"isi_berita"</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">cek_non_ascii</span><span class="p">)]</span>
+
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">artikel_non_ascii</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">contoh_asli</span> <span class="o">=</span> <span class="n">artikel_non_ascii</span><span class="p">[</span><span class="s2">"isi_berita"</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">contoh_asli</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"isi_berita"</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">contoh_hasil</span> <span class="o">=</span> <span class="n">normalisasi_non_ascii</span><span class="p">(</span><span class="n">contoh_asli</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== SEBELUM ==="</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">contoh_asli</span><span class="p">[:</span><span class="mi">300</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== SESUDAH ==="</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">contoh_hasil</span><span class="p">[:</span><span class="mi">300</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=== SEBELUM ===
+Memperingati Hari Ulang Tahun (HUT) ke-81 TNI tahun 2026, Komando Operasi Udara Nasional (Koopsudnas) resmi mengagendakan serangkaian kejuaraan olahraga tingkat nasional.
+TNI Angkatan Udara (AU) menghadirkan berbagai kompetisi bergengsi, mulai dari Modern Pentathlon Open 2026 hingga Panahan Open 202
+
+=== SESUDAH ===
+Memperingati Hari Ulang Tahun (HUT) ke-81 TNI tahun 2026, Komando Operasi Udara Nasional (Koopsudnas) resmi mengagendakan serangkaian kejuaraan olahraga tingkat nasional.
+TNI Angkatan Udara (AU) menghadirkan berbagai kompetisi bergengsi, mulai dari Modern Pentathlon Open 2026 hingga Panahan Open 202
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap1"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"isi_berita"</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">normalisasi_non_ascii</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Normalisasi non-ASCII diterapkan ke seluruh 200 artikel."</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Normalisasi non-ASCII diterapkan ke seluruh 200 artikel.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="deteksi-bahasa-per-kalimat">
+<h2>2. Deteksi Bahasa per Kalimat<a class="headerlink" href="#deteksi-bahasa-per-kalimat" title="Permalink to this heading">#</a></h2>
+<p>Sebelum tanda baca dihapus, tiap artikel dipecah menjadi kalimat, lalu bahasa dideteksi <strong>per kalimat</strong> - jauh lebih akurat dibanding per kata (kata tunggal seperti “mission” mudah salah dideteksi, sedangkan kalimat penuh punya cukup konteks).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langdetect</span><span class="w"> </span><span class="kn">import</span> <span class="n">detect</span><span class="p">,</span> <span class="n">LangDetectException</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">pecah_kalimat</span><span class="p">(</span><span class="n">teks</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">k</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s2">"(?&lt;=[.!?])\s+"</span><span class="p">,</span> <span class="n">teks</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">deteksi_bahasa_kalimat</span><span class="p">(</span><span class="n">kalimat</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kalimat</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">"terlalu_pendek"</span>
+        <span class="k">return</span> <span class="n">detect</span><span class="p">(</span><span class="n">kalimat</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">LangDetectException</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">"tidak_dikenali"</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">semua_kalimat_dengan_bahasa</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">teks</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap1"</span><span class="p">]:</span>
+    <span class="k">for</span> <span class="n">kalimat</span> <span class="ow">in</span> <span class="n">pecah_kalimat</span><span class="p">(</span><span class="n">teks</span><span class="p">):</span>
+        <span class="n">semua_kalimat_dengan_bahasa</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">kalimat</span><span class="p">,</span> <span class="n">deteksi_bahasa_kalimat</span><span class="p">(</span><span class="n">kalimat</span><span class="p">)))</span>
+
+<span class="n">kalimat_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">semua_kalimat_dengan_bahasa</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"kalimat"</span><span class="p">,</span> <span class="s2">"bahasa"</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Total kalimat di seluruh dataset:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">kalimat_df</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Distribusi bahasa (persentase):"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">((</span><span class="n">kalimat_df</span><span class="p">[</span><span class="s2">"bahasa"</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">(</span><span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total kalimat di seluruh dataset: 4171
+
+Distribusi bahasa (persentase):
+bahasa
+id                95.4
+terlalu_pendek     3.5
+en                 0.3
+tl                 0.1
+pt                 0.1
+de                 0.1
+ro                 0.1
+ca                 0.1
+nl                 0.0
+it                 0.0
+sw                 0.0
+et                 0.0
+tr                 0.0
+sk                 0.0
+hr                 0.0
+fr                 0.0
+so                 0.0
+da                 0.0
+af                 0.0
+Name: proportion, dtype: float64
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Catatan:</strong> Bahasa <code class="docutils literal notranslate"><span class="pre">ms</span></code> (Melayu) yang muncul dalam jumlah kecil adalah hal wajar - Bahasa Indonesia dan Melayu sangat mirip sehingga algoritma deteksi bahasa kadang tertukar. Yang perlu diperhatikan adalah kalimat yang genuinely berbahasa Inggris penuh.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kandidat_kalimat_inggris</span> <span class="o">=</span> <span class="n">kalimat_df</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">kalimat_df</span><span class="p">[</span><span class="s2">"bahasa"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"en"</span><span class="p">)</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">kalimat_df</span><span class="p">[</span><span class="s2">"kalimat"</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">split</span><span class="p">()</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">len</span><span class="p">()</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">)</span>
+<span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Jumlah kalimat yang diduga kuat berbahasa Inggris asli: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">kandidat_kalimat_inggris</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kandidat_kalimat_inggris</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">kandidat_kalimat_inggris</span><span class="p">[</span><span class="s2">"kalimat"</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">to_string</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Jumlah kalimat yang diduga kuat berbahasa Inggris asli: 10
+               Good luck, Coach Nova," tulis PBSI.
+TITF World Tennis Tour M-15 Amman Mineral Men's...
+| Pos | Pebalap | Tim | Lap | \n| 1 | Kimi Anto...
+Jadwal MotoGP San Marino 2026\nJumat, 11 Septem...
+Mata Derrick Michael Xzavierro berbinar saat be...
+Petenis Indonesia Nathan Barki melaju ke peremp...
+Nice work SabRez!#BadmintonIndonesia #ChinaMast...
+Berikut harga tiket untuk menonton MotoGP Indon...
+               Bold Riders, Spirit of Brotherhood!
+Pada 4-6 September, World Encounter Summit Bali...
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="preservasi-artefak-penting">
+<h2>3. Preservasi Artefak Penting<a class="headerlink" href="#preservasi-artefak-penting" title="Permalink to this heading">#</a></h2>
+<p>Sebelum simbol dan angka dihapus secara massal, beberapa jenis token justru <strong>mengandung informasi penting</strong>:</p>
+<ul class="simple">
+<li><p><strong>Mata uang</strong> (<code class="docutils literal notranslate"><span class="pre">Rp5.000</span></code>, <code class="docutils literal notranslate"><span class="pre">US$100</span></code>) - relevan untuk artikel finance</p></li>
+<li><p><strong>Kata komposit berangka</strong> (<code class="docutils literal notranslate"><span class="pre">3x3</span></code>, <code class="docutils literal notranslate"><span class="pre">U-18</span></code>) - relevan untuk artikel sport</p></li>
+<li><p><strong>Angka Romawi</strong> (<code class="docutils literal notranslate"><span class="pre">III</span></code>, <code class="docutils literal notranslate"><span class="pre">IV</span></code>) - sering muncul di nama turnamen/edisi acara</p></li>
+<li><p><strong>URL inline</strong> yang tersisip di badan teks</p></li>
+</ul>
+<p>Token-token ini dilindungi sementara dengan kode berbasis huruf (agar selamat dari proses pembersihan simbol), lalu dikembalikan dalam bentuk ringkas setelah simbol lain dibuang.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">angka_ke_kode_huruf</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="n">huruf</span> <span class="o">=</span> <span class="s2">""</span>
+    <span class="n">n</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">while</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">n</span> <span class="o">-=</span> <span class="mi">1</span>
+        <span class="n">huruf</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_lowercase</span><span class="p">[</span><span class="n">n</span> <span class="o">%</span> <span class="mi">26</span><span class="p">]</span> <span class="o">+</span> <span class="n">huruf</span>
+        <span class="n">n</span> <span class="o">//=</span> <span class="mi">26</span>
+    <span class="k">return</span> <span class="n">huruf</span>
+
+<span class="n">POLA_ARTEFAK</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">"mata_uang"</span><span class="p">:</span> <span class="sa">r</span><span class="s2">"\bRp\.?\s?[\d.,]+(?:\s?(?:juta|miliar|triliun|ribu))?\b|\bUS\$\s?[\d.,]+\b"</span><span class="p">,</span>
+    <span class="s2">"komposit_angka"</span><span class="p">:</span> <span class="sa">r</span><span class="s2">"\b(?=[A-Za-z0-9-]*[A-Za-z])(?=[A-Za-z0-9-]*[0-9])[A-Za-z0-9-]{2,}\b"</span><span class="p">,</span>
+    <span class="s2">"angka_romawi"</span><span class="p">:</span> <span class="sa">r</span><span class="s2">"\b(?=[MDCLXVI])M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})\b"</span><span class="p">,</span>
+    <span class="s2">"url_inline"</span><span class="p">:</span> <span class="sa">r</span><span class="s2">"https?://\S+|www\.\S+"</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">lindungi_artefak</span><span class="p">(</span><span class="n">teks</span><span class="p">):</span>
+    <span class="n">ditemukan</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">urutan</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">buat_pengganti</span><span class="p">(</span><span class="n">kategori</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">pengganti</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+            <span class="k">nonlocal</span> <span class="n">urutan</span>
+            <span class="n">asli</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">nilai_akhir</span> <span class="o">=</span> <span class="s2">"urltautan"</span> <span class="k">if</span> <span class="n">kategori</span> <span class="o">==</span> <span class="s2">"url_inline"</span> <span class="k">else</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[^a-zA-Z0-9]"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">asli</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">kode</span> <span class="o">=</span> <span class="s2">"protectedtoken"</span> <span class="o">+</span> <span class="n">angka_ke_kode_huruf</span><span class="p">(</span><span class="n">urutan</span><span class="p">)</span>
+            <span class="n">urutan</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">ditemukan</span><span class="p">[</span><span class="n">kode</span><span class="p">]</span> <span class="o">=</span> <span class="n">nilai_akhir</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">" </span><span class="si">{</span><span class="n">kode</span><span class="si">}</span><span class="s2"> "</span>
+        <span class="k">return</span> <span class="n">pengganti</span>
+
+    <span class="k">for</span> <span class="n">kategori</span><span class="p">,</span> <span class="n">pola</span> <span class="ow">in</span> <span class="n">POLA_ARTEFAK</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">teks</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">pola</span><span class="p">,</span> <span class="n">buat_pengganti</span><span class="p">(</span><span class="n">kategori</span><span class="p">),</span> <span class="n">teks</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">teks</span><span class="p">,</span> <span class="n">ditemukan</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">pulihkan_artefak</span><span class="p">(</span><span class="n">teks</span><span class="p">,</span> <span class="n">ditemukan</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">kode</span><span class="p">,</span> <span class="n">nilai</span> <span class="ow">in</span> <span class="n">ditemukan</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">teks</span> <span class="o">=</span> <span class="n">teks</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">kode</span><span class="p">,</span> <span class="n">nilai</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">teks</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="hitung-total-lihat-contoh-konteks-tiap-kategori-artefak">
+<h3>Hitung Total &amp; Lihat Contoh Konteks Tiap Kategori Artefak<a class="headerlink" href="#hitung-total-lihat-contoh-konteks-tiap-kategori-artefak" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">total_per_kategori</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">POLA_ARTEFAK</span><span class="p">}</span>
+<span class="n">contoh_per_kategori</span> <span class="o">=</span> <span class="p">{}</span>
+
+<span class="k">for</span> <span class="n">kategori</span><span class="p">,</span> <span class="n">pola</span> <span class="ow">in</span> <span class="n">POLA_ARTEFAK</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">teks</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap1"</span><span class="p">]:</span>
+        <span class="n">total_per_kategori</span><span class="p">[</span><span class="n">kategori</span><span class="p">]</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">pola</span><span class="p">,</span> <span class="n">teks</span><span class="p">))</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">pola</span><span class="p">,</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap1"</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">50</span><span class="p">)))</span>
+    <span class="n">contoh_per_kategori</span><span class="p">[</span><span class="n">kategori</span><span class="p">]</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">if</span> <span class="n">m</span> <span class="k">else</span> <span class="s2">"-"</span>
+
+<span class="n">ringkasan_artefak</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">"kategori"</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">total_per_kategori</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
+    <span class="s2">"jumlah"</span><span class="p">:</span> <span class="nb">list</span><span class="p">(</span><span class="n">total_per_kategori</span><span class="o">.</span><span class="n">values</span><span class="p">()),</span>
+    <span class="s2">"contoh"</span><span class="p">:</span> <span class="p">[</span><span class="n">contoh_per_kategori</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">total_per_kategori</span><span class="p">],</span>
+<span class="p">})</span>
+<span class="n">ringkasan_artefak</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>kategori</th>
+      <th>jumlah</th>
+      <th>contoh</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>mata_uang</td>
+      <td>287</td>
+      <td>Rp 103,5 juta</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>komposit_angka</td>
+      <td>300</td>
+      <td>RS-GP26</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>angka_romawi</td>
+      <td>4374</td>
+      <td></td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>url_inline</td>
+      <td>0</td>
+      <td>-</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">daftar_teks_terlindungi</span><span class="p">,</span> <span class="n">daftar_artefak</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">teks</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap1"</span><span class="p">]:</span>
+    <span class="n">t</span><span class="p">,</span> <span class="n">a</span> <span class="o">=</span> <span class="n">lindungi_artefak</span><span class="p">(</span><span class="n">teks</span><span class="p">)</span>
+    <span class="n">daftar_teks_terlindungi</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+    <span class="n">daftar_artefak</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="p">)</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s2">"teks_terlindungi"</span><span class="p">]</span> <span class="o">=</span> <span class="n">daftar_teks_terlindungi</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">"_artefak"</span><span class="p">]</span> <span class="o">=</span> <span class="n">daftar_artefak</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Preservasi artefak diterapkan ke seluruh 200 artikel."</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Preservasi artefak diterapkan ke seluruh 200 artikel.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="case-folding-penghapusan-simbol">
+<h2>4. Case Folding &amp; Penghapusan Simbol<a class="headerlink" href="#case-folding-penghapusan-simbol" title="Permalink to this heading">#</a></h2>
+<p>Semua teks diubah menjadi huruf kecil dan tanda baca/simbol yang tersisa dihapus. Karena artefak penting sudah diamankan pada tahap sebelumnya, mereka akan selamat melewati proses ini.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">case_folding_dan_bersihkan</span><span class="p">(</span><span class="n">teks</span><span class="p">):</span>
+    <span class="n">teks</span> <span class="o">=</span> <span class="n">teks</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">teks</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[^a-z\s]"</span><span class="p">,</span> <span class="s2">" "</span><span class="p">,</span> <span class="n">teks</span><span class="p">)</span>
+    <span class="n">teks</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\s+"</span><span class="p">,</span> <span class="s2">" "</span><span class="p">,</span> <span class="n">teks</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">teks</span>
+
+<span class="n">teks_terlindungi_contoh</span><span class="p">,</span> <span class="n">artefak_ditemukan_contoh</span> <span class="o">=</span> <span class="n">lindungi_artefak</span><span class="p">(</span><span class="n">contoh_hasil</span><span class="p">)</span>
+<span class="n">contoh_bersih</span> <span class="o">=</span> <span class="n">case_folding_dan_bersihkan</span><span class="p">(</span><span class="n">teks_terlindungi_contoh</span><span class="p">)</span>
+<span class="n">contoh_pulih</span> <span class="o">=</span> <span class="n">pulihkan_artefak</span><span class="p">(</span><span class="n">contoh_bersih</span><span class="p">,</span> <span class="n">artefak_ditemukan_contoh</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== SEBELUM (artefak berupa kode) ==="</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">contoh_bersih</span><span class="p">[:</span><span class="mi">250</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">=== SESUDAH ARTEFAK DIPULIHKAN ==="</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">contoh_pulih</span><span class="p">[:</span><span class="mi">250</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=== SEBELUM (artefak berupa kode) ===
+protectedtokenc memperingati hari ulang tahun hut protectedtokena tni tahun komando operasi udara nasional koopsudnas resmi mengagendakan serangkaian kejuaraan olahraga tingkat nasional tni angkatan udara au menghadirkan berbagai kompetisi bergengsi 
+
+=== SESUDAH ARTEFAK DIPULIHKAN ===
+ memperingati hari ulang tahun hut ke81 tni tahun komando operasi udara nasional koopsudnas resmi mengagendakan serangkaian kejuaraan olahraga tingkat nasional tni angkatan udara au menghadirkan berbagai kompetisi bergengsi mulai dari  modern pentath
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap4"</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">pulihkan_artefak</span><span class="p">(</span><span class="n">case_folding_dan_bersihkan</span><span class="p">(</span><span class="n">t</span><span class="p">),</span> <span class="n">a</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"teks_terlindungi"</span><span class="p">],</span> <span class="n">df</span><span class="p">[</span><span class="s2">"_artefak"</span><span class="p">])</span>
+<span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Case folding + pembersihan simbol diterapkan ke seluruh 200 artikel."</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Case folding + pembersihan simbol diterapkan ke seluruh 200 artikel.
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="sensus-token-pendek-1-2-huruf">
+<h2>5. Sensus Token Pendek (1-2 Huruf)<a class="headerlink" href="#sensus-token-pendek-1-2-huruf" title="Permalink to this heading">#</a></h2>
+<p>Setelah pembersihan, kita periksa token yang sangat pendek (1-2 huruf) - apakah ada “pecahan kata” yang tidak masuk akal sebagai fitur (misalnya sisa dari kata yang salah terpotong)? Token satu huruf ditetapkan tidak pernah dijadikan fitur (panjang minimum kata adalah 2 huruf) karena hampir selalu berupa pecahan/singkatan yang tidak informatif untuk klasifikasi.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">semua_token_naif</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap4"</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="n">hitung_naif</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">semua_token_naif</span><span class="p">)</span>
+
+<span class="n">token_1_huruf</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="p">:</span> <span class="n">n</span> <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">hitung_naif</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">}</span>
+<span class="n">token_2_huruf</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="p">:</span> <span class="n">n</span> <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">hitung_naif</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Token total (sebelum filter panjang) : </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">semua_token_naif</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Token satu huruf (jenis unik)         : </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">token_1_huruf</span><span class="p">)</span><span class="si">}</span><span class="s2">  (total kemunculan: </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">token_1_huruf</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Token dua huruf (jenis unik)          : </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">token_2_huruf</span><span class="p">)</span><span class="si">}</span><span class="s2">  (total kemunculan: </span><span class="si">{</span><span class="nb">sum</span><span class="p">(</span><span class="n">token_2_huruf</span><span class="o">.</span><span class="n">values</span><span class="p">())</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Contoh token dua huruf paling sering muncul (beserta konteks):"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">token_2_huruf</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])[:</span><span class="mi">8</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  '</span><span class="si">{</span><span class="n">w</span><span class="si">}</span><span class="s2">' (</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">x) -&gt; ...</span><span class="si">{</span><span class="n">konteks</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s1">'teks_tahap4'</span><span class="p">]),</span><span class="w"> </span><span class="n">w</span><span class="p">)</span><span class="si">}</span><span class="s2">..."</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Token total (sebelum filter panjang) : 66,121
+Token satu huruf (jenis unik)         : 26  (total kemunculan: 449)
+Token dua huruf (jenis unik)          : 112  (total kemunculan: 2305)
+
+Contoh token dua huruf paling sering muncul (beserta konteks):
+  'di' (1298x) -&gt; ...tua pasaribu terus memonitoring kondisi di nagoya jepang jelang asian games  itu s...
+  'ke' (270x) -&gt; ... pada september air hujan juga merembes ke beberapa venue pertandingan sementara p...
+  'ia' (123x) -&gt; ... pelayanan umum sekolah juga kata todo  ia juga menegaskan pihaknya akan terus mem...
+  'pt' (67x) -&gt; ... nanti hal senada disampaikan  direktur pt tim  indonesia emas richard sam bera  i...
+  'as' (52x) -&gt; ...rena problem teknis terdeteksi ternyata as roda mobil bmw m4 gt3 yang dikendarainy...
+  'ya' (46x) -&gt; ...m depan dan meraih gelar juara nasional ya itu harapan saya semoga tak ada aral me...
+  'ri' (45x) -&gt; ...ta ubah pola pikir kita arahan presiden ri prabowo subianto olahraga adalah duta b...
+  'of' (28x) -&gt; ...lar sembilan event dengan tema the race of rising stars  memasuki sarga co membawa...
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">buang_token_terlalu_pendek</span><span class="p">(</span><span class="n">teks</span><span class="p">,</span> <span class="n">panjang_minimum</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">w</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">teks</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">panjang_minimum</span><span class="p">)</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap5"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap4"</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">buang_token_terlalu_pendek</span><span class="p">)</span>
+
+<span class="n">token_setelah</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap5"</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Token total setelah filter panjang minimum 2 huruf: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">token_setelah</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> (sebelumnya </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">semua_token_naif</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Token satu huruf yang berhasil dibuang:"</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">semua_token_naif</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Token total setelah filter panjang minimum 2 huruf: 65,672 (sebelumnya 66,121)
+Token satu huruf yang berhasil dibuang: 449
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="proteksi-nama-diri">
+<h2>6. Proteksi Nama Diri<a class="headerlink" href="#proteksi-nama-diri" title="Permalink to this heading">#</a></h2>
+<p>Sebelum menormalisasi kata tidak baku, kita perlu tahu dulu kata mana yang sebenarnya <strong>nama diri</strong>, agar tidak ikut “dibetulkan” secara keliru. Kita gunakan <strong>bukti kapitalisasi</strong>: kata yang muncul kapital di <strong>tengah kalimat</strong> (bukan di awal, karena awal kalimat selalu kapital) kemungkinan besar nama diri. Kita juga mendeteksi pola nama multi-kata dengan partikel di tengahnya (misalnya “de” pada “Chef de Mission”).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">PARTIKEL_NAMA</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"de"</span><span class="p">,</span> <span class="s2">"van"</span><span class="p">,</span> <span class="s2">"bin"</span><span class="p">,</span> <span class="s2">"binti"</span><span class="p">,</span> <span class="s2">"al"</span><span class="p">,</span> <span class="s2">"da"</span><span class="p">,</span> <span class="s2">"dos"</span><span class="p">,</span> <span class="s2">"du"</span><span class="p">,</span> <span class="s2">"el"</span><span class="p">}</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">temukan_nama_diri</span><span class="p">(</span><span class="n">daftar_kalimat</span><span class="p">):</span>
+    <span class="n">kandidat</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">kalimat</span> <span class="ow">in</span> <span class="n">daftar_kalimat</span><span class="p">:</span>
+        <span class="n">kata_kalimat</span> <span class="o">=</span> <span class="n">kalimat</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">kata_kalimat</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+            <span class="n">kata_bersih</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[^A-Za-z]"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">kata_kalimat</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">kata_bersih</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">kata_bersih</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">kata_bersih</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">kandidat</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">kata_bersih</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">:</span>
+                <span class="n">k1</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[^A-Za-z]"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">kata_kalimat</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">k2</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[^A-Za-z]"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">kata_kalimat</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+                <span class="n">k3</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[^A-Za-z]"</span><span class="p">,</span> <span class="s2">""</span><span class="p">,</span> <span class="n">kata_kalimat</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">k1</span> <span class="ow">and</span> <span class="n">k2</span> <span class="ow">and</span> <span class="n">k3</span> <span class="ow">and</span> <span class="n">k1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isupper</span><span class="p">()</span> <span class="ow">and</span> <span class="n">k2</span> <span class="ow">in</span> <span class="n">PARTIKEL_NAMA</span> <span class="ow">and</span> <span class="n">k3</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">isupper</span><span class="p">():</span>
+                    <span class="n">kandidat</span><span class="o">.</span><span class="n">update</span><span class="p">([</span><span class="n">k1</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="n">k2</span><span class="p">,</span> <span class="n">k3</span><span class="o">.</span><span class="n">lower</span><span class="p">()])</span>
+    <span class="k">return</span> <span class="n">kandidat</span>
+
+<span class="n">nama_diri_terlindungi</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">teks</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap1"</span><span class="p">]:</span>
+    <span class="n">nama_diri_terlindungi</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">temukan_nama_diri</span><span class="p">(</span><span class="n">pecah_kalimat</span><span class="p">(</span><span class="n">teks</span><span class="p">)))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Total nama diri unik yang terdeteksi &amp; dilindungi:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">nama_diri_terlindungi</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Contoh:"</span><span class="p">,</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">nama_diri_terlindungi</span><span class="p">))[:</span><span class="mi">20</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Partikel nama yang berhasil ikut terlindungi (dari nama multi-kata):"</span><span class="p">,</span>
+      <span class="nb">sorted</span><span class="p">(</span><span class="n">nama_diri_terlindungi</span> <span class="o">&amp;</span> <span class="n">PARTIKEL_NAMA</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total nama diri unik yang terdeteksi &amp; dilindungi: 3104
+Contoh: ['aadi', 'aam', 'aan', 'aau', 'abadi', 'abang', 'abangpalmerah', 'abdi', 'abdul', 'aberdeen', 'abraham', 'abu', 'abullah', 'accurate', 'aceh', 'acehsumut', 'achmad', 'acid', 'acosta', 'activ']
+
+Partikel nama yang berhasil ikut terlindungi (dari nama multi-kata): ['al', 'bin', 'da', 'de', 'el', 'van']
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="normalisasi-kata-tidak-baku">
+<h2>7. Normalisasi Kata Tidak Baku<a class="headerlink" href="#normalisasi-kata-tidak-baku" title="Permalink to this heading">#</a></h2>
+<p>Sekarang kita normalisasi kata-kata informal/tidak baku ke bentuk baku, menggunakan kamus normalisasi kata Bahasa Indonesia (open-source). Kata yang termasuk <strong>nama diri terlindungi</strong> atau <strong>kemungkinan singkatan resmi</strong> dikecualikan.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">url_kamus</span> <span class="o">=</span> <span class="s2">"https://raw.githubusercontent.com/nasalsabila/kamus-alay/master/colloquial-indonesian-lexicon.csv"</span>
+<span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url_kamus</span><span class="p">)</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">"kamus_alay.csv"</span><span class="p">,</span> <span class="s2">"wb"</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">resp</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+
+<span class="n">kamus_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s2">"kamus_alay.csv"</span><span class="p">)</span>
+<span class="n">kamus_normalisasi</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">kamus_df</span><span class="p">[</span><span class="s2">"slang"</span><span class="p">],</span> <span class="n">kamus_df</span><span class="p">[</span><span class="s2">"formal"</span><span class="p">]))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Jumlah entri kamus normalisasi:"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">kamus_df</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Jumlah entri kamus normalisasi: 15006
+</pre></div>
+</div>
+</div>
+</div>
+<section id="demonstrasi-kenapa-proteksi-nama-diri-penting">
+<h3>Demonstrasi: Kenapa Proteksi Nama Diri Penting?<a class="headerlink" href="#demonstrasi-kenapa-proteksi-nama-diri-penting" title="Permalink to this heading">#</a></h3>
+<p>Sebelum menerapkan normalisasi secara aman, mari kita lihat dulu apa yang terjadi <strong>tanpa</strong> proteksi nama diri - untuk membuktikan bahwa langkah proteksi ini benar-benar diperlukan, bukan sekadar langkah tambahan tanpa manfaat nyata.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">normalisasi_naif</span><span class="p">(</span><span class="n">teks</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">kamus_normalisasi</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">teks</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+<span class="n">contoh_teks5</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap5"</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">hasil_naif</span> <span class="o">=</span> <span class="n">normalisasi_naif</span><span class="p">(</span><span class="n">contoh_teks5</span><span class="p">)</span>
+<span class="n">kata_asli</span> <span class="o">=</span> <span class="n">contoh_teks5</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="n">kata_naif</span> <span class="o">=</span> <span class="n">hasil_naif</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+
+<span class="n">perubahan_naif</span> <span class="o">=</span> <span class="p">[(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">kata_asli</span><span class="p">,</span> <span class="n">kata_naif</span><span class="p">)</span> <span class="k">if</span> <span class="n">a</span> <span class="o">!=</span> <span class="n">b</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Tanpa proteksi nama diri, </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">perubahan_naif</span><span class="p">)</span><span class="si">}</span><span class="s2"> kata berubah pada contoh artikel ini:"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">asli</span><span class="p">,</span> <span class="n">baru</span> <span class="ow">in</span> <span class="n">perubahan_naif</span><span class="p">[:</span><span class="mi">10</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  '</span><span class="si">{</span><span class="n">asli</span><span class="si">}</span><span class="s2">' -&gt; '</span><span class="si">{</span><span class="n">baru</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Tanpa proteksi nama diri, 1 kata berubah pada contoh artikel ini:
+  'de' -&gt; 'deh'
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kata_dikecualikan_normalisasi</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">kemungkinan_singkatan</span><span class="p">(</span><span class="n">kata</span><span class="p">,</span> <span class="n">teks_asli_gabungan</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kata</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">5</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">pola_kapital_penuh</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">rf</span><span class="s2">"\b</span><span class="si">{</span><span class="n">kata</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span><span class="si">}</span><span class="s2">\b"</span><span class="p">,</span> <span class="n">teks_asli_gabungan</span><span class="p">)</span>
+    <span class="n">pola_kecil</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="sa">rf</span><span class="s2">"\b</span><span class="si">{</span><span class="n">kata</span><span class="si">}</span><span class="s2">\b"</span><span class="p">,</span> <span class="n">teks_asli_gabungan</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">pola_kecil</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">pola_kapital_penuh</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">pola_kecil</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mf">0.5</span>
+
+<span class="n">teks_asli_gabungan</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"isi_berita"</span><span class="p">])</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">normalisasi_kata_aman</span><span class="p">(</span><span class="n">teks</span><span class="p">):</span>
+    <span class="n">hasil</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">kata</span> <span class="ow">in</span> <span class="n">teks</span><span class="o">.</span><span class="n">split</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">kata</span> <span class="ow">in</span> <span class="n">nama_diri_terlindungi</span> <span class="ow">or</span> <span class="n">kemungkinan_singkatan</span><span class="p">(</span><span class="n">kata</span><span class="p">,</span> <span class="n">teks_asli_gabungan</span><span class="p">):</span>
+            <span class="n">kata_dikecualikan_normalisasi</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">kata</span><span class="p">)</span>
+            <span class="n">hasil</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kata</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hasil</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kamus_normalisasi</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">kata</span><span class="p">,</span> <span class="n">kata</span><span class="p">))</span>
+    <span class="k">return</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">hasil</span><span class="p">)</span>
+
+<span class="n">hasil_aman</span> <span class="o">=</span> <span class="n">normalisasi_kata_aman</span><span class="p">(</span><span class="n">contoh_teks5</span><span class="p">)</span>
+<span class="n">kata_aman</span> <span class="o">=</span> <span class="n">hasil_aman</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="n">perubahan_aman</span> <span class="o">=</span> <span class="p">[(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">kata_asli</span><span class="p">,</span> <span class="n">kata_aman</span><span class="p">)</span> <span class="k">if</span> <span class="n">a</span> <span class="o">!=</span> <span class="n">b</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Dengan proteksi nama diri, hanya </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">perubahan_aman</span><span class="p">)</span><span class="si">}</span><span class="s2"> kata yang benar-benar berubah:"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">asli</span><span class="p">,</span> <span class="n">baru</span> <span class="ow">in</span> <span class="n">perubahan_aman</span><span class="p">[:</span><span class="mi">10</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  '</span><span class="si">{</span><span class="n">asli</span><span class="si">}</span><span class="s2">' -&gt; '</span><span class="si">{</span><span class="n">baru</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
+
+<span class="n">kata_terselamatkan</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">perubahan_naif</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">a</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">perubahan_aman</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Kata yang berhasil diselamatkan dari normalisasi keliru: </span><span class="si">{</span><span class="nb">sorted</span><span class="p">(</span><span class="n">kata_terselamatkan</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dengan proteksi nama diri, hanya 0 kata yang benar-benar berubah:
+
+Kata yang berhasil diselamatkan dari normalisasi keliru: ['de']
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap7"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap5"</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">normalisasi_kata_aman</span><span class="p">)</span>
+
+<span class="n">total_kata_semua</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap5"</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+<span class="n">total_kata_berubah</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="mi">1</span> <span class="k">for</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+    <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap5"</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">(),</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap7"</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="p">)</span> <span class="k">if</span> <span class="n">a</span> <span class="o">!=</span> <span class="n">b</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Normalisasi diterapkan ke seluruh 200 artikel."</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Kata yang benar-benar dibakukan : </span><span class="si">{</span><span class="n">total_kata_berubah</span><span class="si">}</span><span class="s2"> dari </span><span class="si">{</span><span class="n">total_kata_semua</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2"> total kata"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Kata dikecualikan (nama diri/singkatan): </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">kata_dikecualikan_normalisasi</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Normalisasi diterapkan ke seluruh 200 artikel.
+Kata yang benar-benar dibakukan : 84 dari 65,672 total kata
+Kata dikecualikan (nama diri/singkatan): 2995
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="deteksi-terjemahkan-kata-asing">
+<h2>8. Deteksi &amp; Terjemahkan Kata Asing<a class="headerlink" href="#deteksi-terjemahkan-kata-asing" title="Permalink to this heading">#</a></h2>
+<p>Kata-kata unik yang terdeteksi Bahasa Inggris (dan bukan nama diri) dikumpulkan sekali, lalu diterjemahkan sekali per kata menggunakan WordNet sebagai sumber utama dan Google Translate sebagai cadangan.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">nltk</span>
+<span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s2">"words"</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nltk.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">words</span> <span class="k">as</span> <span class="n">nltk_words</span>
+
+<span class="n">kamus_inggris</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">w</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">nltk_words</span><span class="o">.</span><span class="n">words</span><span class="p">())</span>
+
+<span class="n">url_kbbi</span> <span class="o">=</span> <span class="s2">"https://raw.githubusercontent.com/sastrawi/sastrawi/master/data/kata-dasar.txt"</span>
+<span class="n">resp_kbbi</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">url_kbbi</span><span class="p">)</span>
+<span class="n">kamus_indonesia</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">resp_kbbi</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">))</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">kemungkinan_bahasa_asing</span><span class="p">(</span><span class="n">kata</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">kata</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">3</span> <span class="ow">or</span> <span class="n">kata</span> <span class="ow">in</span> <span class="n">nama_diri_terlindungi</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">kata</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kamus_indonesia</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">kata</span> <span class="ow">in</span> <span class="n">kamus_inggris</span><span class="p">)</span>
+
+<span class="n">semua_kata</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">teks</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap7"</span><span class="p">]:</span>
+    <span class="n">semua_kata</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">teks</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+<span class="n">kata_asing</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">semua_kata</span> <span class="k">if</span> <span class="n">kemungkinan_bahasa_asing</span><span class="p">(</span><span class="n">k</span><span class="p">)]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total kata unik di dataset: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">semua_kata</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Kata terdeteksi bahasa asing (nama diri sudah dikecualikan): </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">kata_asing</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Contoh:"</span><span class="p">,</span> <span class="n">kata_asing</span><span class="p">[:</span><span class="mi">20</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total kata unik di dataset: 8213
+Kata terdeteksi bahasa asing (nama diri sudah dikecualikan): 240
+Contoh: ['host', 'inflow', 'happy', 'year', 'ammonia', 'agent', 'acuan', 'break', 'basically', 'booth', 'looping', 'progress', 'handling', 'confidence', 'endorsement', 'driver', 'backhand', 'meng', 'beneficiary', 'stream']
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s2">"wordnet"</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s2">"omw-1.4"</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s2">"omw-2.0"</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+    <span class="k">pass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nltk.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">wordnet</span> <span class="k">as</span> <span class="n">wn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">deep_translator</span><span class="w"> </span><span class="kn">import</span> <span class="n">GoogleTranslator</span>
+
+<span class="n">translator</span> <span class="o">=</span> <span class="n">GoogleTranslator</span><span class="p">(</span><span class="n">source</span><span class="o">=</span><span class="s2">"en"</span><span class="p">,</span> <span class="n">target</span><span class="o">=</span><span class="s2">"id"</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">terjemahkan_wordnet</span><span class="p">(</span><span class="n">kata</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">syn</span> <span class="ow">in</span> <span class="n">wn</span><span class="o">.</span><span class="n">synsets</span><span class="p">(</span><span class="n">kata</span><span class="p">,</span> <span class="n">lang</span><span class="o">=</span><span class="s2">"eng"</span><span class="p">):</span>
+        <span class="n">lemma_id</span> <span class="o">=</span> <span class="n">syn</span><span class="o">.</span><span class="n">lemma_names</span><span class="p">(</span><span class="s2">"ind"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lemma_id</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">lemma_id</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">"_"</span><span class="p">,</span> <span class="s2">" "</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">None</span>
+
+<span class="n">kamus_terjemahan</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">sumber_terjemahan</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"wordnet"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"google_translate"</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="s2">"gagal"</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">kata</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">kata_asing</span><span class="p">):</span>
+    <span class="n">hasil</span> <span class="o">=</span> <span class="n">terjemahkan_wordnet</span><span class="p">(</span><span class="n">kata</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">hasil</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sumber_terjemahan</span><span class="p">[</span><span class="s2">"wordnet"</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.3</span><span class="p">)</span>
+            <span class="n">hasil</span> <span class="o">=</span> <span class="n">translator</span><span class="o">.</span><span class="n">translate</span><span class="p">(</span><span class="n">kata</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">hasil</span> <span class="o">!=</span> <span class="n">kata</span><span class="p">:</span>
+                <span class="n">sumber_terjemahan</span><span class="p">[</span><span class="s2">"google_translate"</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">sumber_terjemahan</span><span class="p">[</span><span class="s2">"gagal"</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">hasil</span> <span class="o">=</span> <span class="n">kata</span>
+            <span class="n">sumber_terjemahan</span><span class="p">[</span><span class="s2">"gagal"</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="n">kamus_terjemahan</span><span class="p">[</span><span class="n">kata</span><span class="p">]</span> <span class="o">=</span> <span class="n">hasil</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">50</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Progress: </span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">kata_asing</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Selesai membangun kamus terjemahan."</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Sumber terjemahan:"</span><span class="p">,</span> <span class="n">sumber_terjemahan</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Progress: 50/240
+Progress: 100/240
+Progress: 150/240
+Progress: 200/240
+Selesai membangun kamus terjemahan.
+Sumber terjemahan: {'wordnet': 214, 'google_translate': 0, 'gagal': 26}
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">terjemahkan_teks</span><span class="p">(</span><span class="n">teks</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">kamus_terjemahan</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">teks</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s2">"teks_bersih"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"teks_tahap7"</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">terjemahkan_teks</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"=== CONTOH HASIL AKHIR (SEMUA TAHAP) ==="</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"teks_bersih"</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">400</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>=== CONTOH HASIL AKHIR (SEMUA TAHAP) ===
+chef de mission cdm indonesia todotua pasaribu terus memonitoring kondisi di nagoya jepang jelang asian games itu setelah adanya banjir besar yang menimpa kota tersebut hal tersebut ditekankan todo sapaan karibnya karena berkaitan dengan kontingen indonesia yang akan tampil di asian games mengutip laman straitstimes ratusan atlet asian games di jepang sempat dievakuasi dari tempat penginapan merek
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="statistik-korpus-akhir-simpan-dataset">
+<h2>9. Statistik Korpus Akhir &amp; Simpan Dataset<a class="headerlink" href="#statistik-korpus-akhir-simpan-dataset" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">semua_token_final</span> <span class="o">=</span> <span class="s2">" "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"teks_bersih"</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="n">total_token_final</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">semua_token_final</span><span class="p">)</span>
+<span class="n">total_kata_unik_final</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">semua_token_final</span><span class="p">))</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total token di seluruh korpus : </span><span class="si">{</span><span class="n">total_token_final</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total kata unik (vocabulary)  : </span><span class="si">{</span><span class="n">total_kata_unik_final</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Type-Token Ratio (TTR)        : </span><span class="si">{</span><span class="n">total_kata_unik_final</span><span class="o">/</span><span class="n">total_token_final</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total token di seluruh korpus : 65,708
+Total kata unik (vocabulary)  : 8,121
+Type-Token Ratio (TTR)        : 0.1236
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ringkasan_akhir</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">"metrik"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"dokumen"</span><span class="p">,</span> <span class="s2">"token mentah (naif)"</span><span class="p">,</span> <span class="s2">"token setelah filter panjang"</span><span class="p">,</span> <span class="s2">"kata unik akhir"</span><span class="p">,</span>
+               <span class="s2">"nama diri terlindungi"</span><span class="p">,</span> <span class="s2">"kata dibakukan"</span><span class="p">,</span> <span class="s2">"kata asing diterjemahkan"</span><span class="p">,</span>
+               <span class="s2">"artefak diselamatkan (total)"</span><span class="p">],</span>
+    <span class="s2">"nilai"</span><span class="p">:</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">df</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">semua_token_naif</span><span class="p">),</span> <span class="n">total_token_final</span><span class="p">,</span> <span class="n">total_kata_unik_final</span><span class="p">,</span>
+              <span class="nb">len</span><span class="p">(</span><span class="n">nama_diri_terlindungi</span><span class="p">),</span> <span class="n">total_kata_berubah</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">kata_asing</span><span class="p">),</span>
+              <span class="nb">sum</span><span class="p">(</span><span class="n">total_per_kategori</span><span class="o">.</span><span class="n">values</span><span class="p">())]</span>
+<span class="p">})</span>
+<span class="n">ringkasan_akhir</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>metrik</th>
+      <th>nilai</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>dokumen</td>
+      <td>200</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>token mentah (naif)</td>
+      <td>66121</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>token setelah filter panjang</td>
+      <td>65708</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>kata unik akhir</td>
+      <td>8121</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>nama diri terlindungi</td>
+      <td>3104</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>kata dibakukan</td>
+      <td>84</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>kata asing diterjemahkan</td>
+      <td>240</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>artefak diselamatkan (total)</td>
+      <td>4961</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kolom_simpan</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">,</span> <span class="s2">"url"</span><span class="p">,</span> <span class="s2">"teks_bersih"</span><span class="p">]</span>
+<span class="n">df</span><span class="p">[</span><span class="n">kolom_simpan</span><span class="p">]</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="s2">"../data/dataset_berita_200_bersih.xlsx"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Dataset hasil preprocessing disimpan ke data/dataset_berita_200_bersih.xlsx"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dataset hasil preprocessing disimpan ke data/dataset_berita_200_bersih.xlsx
+</pre></div>
+</div>
+</div>
+</div>
+<section id="ringkasan-tahapan">
+<h3>Ringkasan Tahapan<a class="headerlink" href="#ringkasan-tahapan" title="Permalink to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Tahap</p></th>
+<th class="head"><p>Tujuan</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0. Health Check</p></td>
+<td><p>Memastikan data mentah bebas nilai kosong &amp; duplikat</p></td>
+</tr>
+<tr class="row-odd"><td><p>1. Non-ASCII</p></td>
+<td><p>Membersihkan aksen &amp; emoji</p></td>
+</tr>
+<tr class="row-even"><td><p>2. Deteksi bahasa per kalimat</p></td>
+<td><p>Mengidentifikasi kalimat asing secara akurat</p></td>
+</tr>
+<tr class="row-odd"><td><p>3. Preservasi artefak</p></td>
+<td><p>Menyelamatkan mata uang, kode kategori, angka Romawi, URL</p></td>
+</tr>
+<tr class="row-even"><td><p>4. Case folding &amp; simbol</p></td>
+<td><p>Menyeragamkan huruf kecil, membuang tanda baca</p></td>
+</tr>
+<tr class="row-odd"><td><p>5. Sensus token pendek</p></td>
+<td><p>Membuang token 1 huruf yang tidak informatif</p></td>
+</tr>
+<tr class="row-even"><td><p>6. Proteksi nama diri</p></td>
+<td><p>Mencegah nama orang/tempat salah dinormalisasi</p></td>
+</tr>
+<tr class="row-odd"><td><p>7. Normalisasi kata tidak baku</p></td>
+<td><p>Membakukan kata informal (dibuktikan dengan demo before/after)</p></td>
+</tr>
+<tr class="row-even"><td><p>8. Terjemahan kata asing</p></td>
+<td><p>Mengubah istilah Inggris menjadi Bahasa Indonesia</p></td>
+</tr>
+<tr class="row-odd"><td><p>9. Statistik &amp; simpan</p></td>
+<td><p>Dataset bersih siap untuk tahap Vectorization</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "enwebmining"
+        },
+        kernelOptions: {
+            name: "enwebmining",
+            path: "./CRISP-DM"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'enwebmining'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Input.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Data Preparation</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Vectorization.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Text Vectorization: TF-IDF, One-Hot Encoding, &amp; Reduksi Dimensi (PCA vs SVD)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#health-check">0. Health Check</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#eksplorasi-awal-panjang-teks-sebelum-dibersihkan">Eksplorasi Awal: Panjang Teks Sebelum Dibersihkan</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#normalisasi-karakter-non-ascii">1. Normalisasi Karakter Non-ASCII</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deteksi-bahasa-per-kalimat">2. Deteksi Bahasa per Kalimat</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#preservasi-artefak-penting">3. Preservasi Artefak Penting</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#hitung-total-lihat-contoh-konteks-tiap-kategori-artefak">Hitung Total &amp; Lihat Contoh Konteks Tiap Kategori Artefak</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#case-folding-penghapusan-simbol">4. Case Folding &amp; Penghapusan Simbol</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sensus-token-pendek-1-2-huruf">5. Sensus Token Pendek (1-2 Huruf)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#proteksi-nama-diri">6. Proteksi Nama Diri</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#normalisasi-kata-tidak-baku">7. Normalisasi Kata Tidak Baku</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#demonstrasi-kenapa-proteksi-nama-diri-penting">Demonstrasi: Kenapa Proteksi Nama Diri Penting?</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deteksi-terjemahkan-kata-asing">8. Deteksi &amp; Terjemahkan Kata Asing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statistik-korpus-akhir-simpan-dataset">9. Statistik Korpus Akhir &amp; Simpan Dataset</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ringkasan-tahapan">Ringkasan Tahapan</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Hanin Hammoud
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

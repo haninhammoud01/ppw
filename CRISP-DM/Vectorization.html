@@ -1,0 +1,1238 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Text Vectorization: TF-IDF, One-Hot Encoding, &amp; Reduksi Dimensi (PCA vs SVD) &#8212; PPW - Web Search &amp; Mining</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'CRISP-DM/Vectorization';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Modeling" href="Modeling.html" />
+    <link rel="prev" title="Text Preprocessing (Versi Lengkap &amp; Mendalam)" href="Preprocessing.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.jpeg" class="logo__image only-light" alt="PPW - Web Search & Mining - Home"/>
+    <script>document.write(`<img src="../_static/logo.jpeg" class="logo__image only-dark" alt="PPW - Web Search & Mining - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    PPW - Web Search & Mining
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Business.html">Business Understanding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EDA.html">Data Understanding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Input.html">Data Preparation (Crawling)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Preprocessing.html">Text Preprocessing</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Text Vectorization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Output.html">Evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Production.html">Deployment</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/haninhammoud01/ppw" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/CRISP-DM/Vectorization.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Text Vectorization: TF-IDF, One-Hot Encoding, & Reduksi Dimensi (PCA vs SVD)</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-dataset-hasil-preprocessing">1. Load Dataset Hasil Preprocessing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tf-idf-vectorization">2. TF-IDF Vectorization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#susun-sebagai-dataframe-baris-dokumen-korpus-kolom-kata-unik-indeks-nilai-bobot-tf-idf">Susun sebagai DataFrame: Baris = Dokumen (Korpus), Kolom = Kata Unik (Indeks), Nilai = Bobot TF-IDF</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kata-paling-khas-per-kategori">Kata Paling Khas per Kategori</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vocabulary-eksklusif-per-kategori">Vocabulary Eksklusif per Kategori</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#one-hot-encoding-label">3. One-Hot Encoding Label</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reduksi-dimensi-pca-vs-truncated-svd">4. Reduksi Dimensi: PCA vs Truncated SVD</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#menentukan-jumlah-komponen-target-80-variance-untuk-pca">4.1 Menentukan Jumlah Komponen (Target 80% Variance) - untuk PCA</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#menentukan-jumlah-komponen-target-80-variance-untuk-truncated-svd">4.2 Menentukan Jumlah Komponen (Target 80% Variance) - untuk Truncated SVD</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bandingkan-kurva-explained-variance">4.3 Bandingkan Kurva Explained Variance</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#terapkan-kedua-teknik-ukur-waktu-komputasi">4.4 Terapkan Kedua Teknik &amp; Ukur Waktu Komputasi</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-2d-pca-vs-svd-berdampingan">4.5 Visualisasi 2D: PCA vs SVD Berdampingan</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simpan-kedua-dataset-hasil-reduksi">4.6 Simpan Kedua Dataset Hasil Reduksi</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ringkasan-perbandingan">5. Ringkasan Perbandingan</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="text-vectorization-tf-idf-one-hot-encoding-reduksi-dimensi-pca-vs-svd">
+<h1>Text Vectorization: TF-IDF, One-Hot Encoding, &amp; Reduksi Dimensi (PCA vs SVD)<a class="headerlink" href="#text-vectorization-tf-idf-one-hot-encoding-reduksi-dimensi-pca-vs-svd" title="Permalink to this heading">#</a></h1>
+<p>Tahap ini mengubah teks bersih menjadi representasi numerik menggunakan <strong>TF-IDF</strong>, meng-encode label (<strong>One-Hot Encoding</strong>), lalu membandingkan dua teknik reduksi dimensi yang umum dipakai untuk data teks: <strong>PCA (Principal Component Analysis)</strong> dan <strong>Truncated SVD (Singular Value Decomposition)</strong>.</p>
+<p><strong>Alur:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Teks</span> <span class="n">bersih</span> <span class="p">(</span><span class="mi">200</span> <span class="n">dokumen</span><span class="p">)</span>
+        <span class="o">|</span>
+   <span class="n">TF</span><span class="o">-</span><span class="n">IDF</span> <span class="n">Vectorization</span>  <span class="o">-&gt;</span> <span class="n">matriks</span> <span class="p">(</span><span class="mi">200</span> <span class="n">x</span> <span class="n">jumlah</span> <span class="n">kata</span> <span class="n">unik</span><span class="p">)</span>
+        <span class="o">|</span>
+   <span class="n">One</span><span class="o">-</span><span class="n">Hot</span> <span class="n">Encoding</span> <span class="n">label</span>
+        <span class="o">|</span>
+   <span class="n">Simpan</span> <span class="n">dataset</span> <span class="n">TF</span><span class="o">-</span><span class="n">IDF</span> <span class="n">penuh</span>
+        <span class="o">|</span>
+   <span class="n">Reduksi</span> <span class="n">Dimensi</span><span class="p">:</span> <span class="n">PCA</span>  <span class="n">VS</span>  <span class="n">Truncated</span> <span class="n">SVD</span> <span class="p">(</span><span class="n">LSA</span><span class="p">)</span>
+        <span class="o">|</span>
+   <span class="n">Bandingkan</span> <span class="n">hasil</span> <span class="n">keduanya</span>
+        <span class="o">|</span>
+   <span class="n">Simpan</span> <span class="n">kedua</span> <span class="n">dataset</span> <span class="n">hasil</span> <span class="n">reduksi</span>
+</pre></div>
+</div>
+<section id="load-dataset-hasil-preprocessing">
+<h2>1. Load Dataset Hasil Preprocessing<a class="headerlink" href="#load-dataset-hasil-preprocessing" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s2">"../data/dataset_berita_200_bersih.xlsx"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Ukuran dataset:"</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[[</span><span class="s2">"id"</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">,</span> <span class="s2">"teks_bersih"</span><span class="p">]]</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ukuran dataset: (200, 4)
+</pre></div>
+</div>
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>id</th>
+      <th>label</th>
+      <th>teks_bersih</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>1</td>
+      <td>sport</td>
+      <td>chef de mission cdm indonesia todotua pasaribu...</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2</td>
+      <td>sport</td>
+      <td>banjir besar melanda nagoya jepang menjelang a...</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>3</td>
+      <td>sport</td>
+      <td>ketua umum komite olimpiade indonesia koi raja...</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+<section id="tf-idf-vectorization">
+<h2>2. TF-IDF Vectorization<a class="headerlink" href="#tf-idf-vectorization" title="Permalink to this heading">#</a></h2>
+<div class="note admonition">
+<p class="admonition-title">Apa itu TF-IDF?</p>
+<p><strong>TF-IDF (Term Frequency - Inverse Document Frequency)</strong> memberi bobot pada tiap kata berdasarkan dua hal:</p>
+<ul class="simple">
+<li><p><strong>TF</strong> - seberapa sering kata muncul dalam satu dokumen.</p></li>
+<li><p><strong>IDF</strong> - seberapa “jarang” kata itu muncul di seluruh korpus. Kata yang muncul di hampir semua dokumen (misal “yang”, “dan”) mendapat bobot rendah, sedangkan kata yang khas untuk topik tertentu mendapat bobot tinggi.</p></li>
+</ul>
+</div>
+<p>Parameter <code class="docutils literal notranslate"><span class="pre">min_df=3</span></code> diterapkan agar kata yang hanya muncul di 1-2 dokumen (seringkali nama orang/tempat yang disebut sesekali) tidak ikut menjadi fitur, sehingga vocabulary lebih fokus pada kata yang representatif.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_extraction.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">TfidfVectorizer</span>
+
+<span class="n">vectorizer</span> <span class="o">=</span> <span class="n">TfidfVectorizer</span><span class="p">(</span><span class="n">min_df</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">tfidf_matrix</span> <span class="o">=</span> <span class="n">vectorizer</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"teks_bersih"</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Ukuran matriks TF-IDF:"</span><span class="p">,</span> <span class="n">tfidf_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Jumlah kata unik (vocabulary):"</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">vectorizer</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">()))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Tipe data matriks:"</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">tfidf_matrix</span><span class="p">),</span> <span class="s2">"(sparse - sebagian besar nilainya 0)"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ukuran matriks TF-IDF: (200, 2556)
+Jumlah kata unik (vocabulary): 2556
+Tipe data matriks: &lt;class 'scipy.sparse._csr.csr_matrix'&gt; (sparse - sebagian besar nilainya 0)
+</pre></div>
+</div>
+</div>
+</div>
+<section id="susun-sebagai-dataframe-baris-dokumen-korpus-kolom-kata-unik-indeks-nilai-bobot-tf-idf">
+<h3>Susun sebagai DataFrame: Baris = Dokumen (Korpus), Kolom = Kata Unik (Indeks), Nilai = Bobot TF-IDF<a class="headerlink" href="#susun-sebagai-dataframe-baris-dokumen-korpus-kolom-kata-unik-indeks-nilai-bobot-tf-idf" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tfidf_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">tfidf_matrix</span><span class="o">.</span><span class="n">toarray</span><span class="p">(),</span>
+    <span class="n">columns</span><span class="o">=</span><span class="n">vectorizer</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">()</span>
+<span class="p">)</span>
+<span class="n">tfidf_df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"doc_id"</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Ukuran DataFrame TF-IDF (sebelum label):"</span><span class="p">,</span> <span class="n">tfidf_df</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="n">sampel</span> <span class="o">=</span> <span class="n">tfidf_df</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:</span><span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">:</span><span class="mi">11</span><span class="p">]</span>
+<span class="n">sampel</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">background_gradient</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s2">"Blues"</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">"</span><span class="si">{:.3f}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ukuran DataFrame TF-IDF (sebelum label): (200, 2557)
+</pre></div>
+</div>
+<div class="output text_html"><style type="text/css">
+#T_c6782_row0_col0, #T_c6782_row0_col1, #T_c6782_row0_col2, #T_c6782_row0_col3, #T_c6782_row0_col4, #T_c6782_row0_col5, #T_c6782_row0_col6, #T_c6782_row0_col7, #T_c6782_row0_col8, #T_c6782_row1_col0, #T_c6782_row1_col1, #T_c6782_row1_col2, #T_c6782_row1_col3, #T_c6782_row1_col4, #T_c6782_row1_col6, #T_c6782_row1_col7, #T_c6782_row1_col8, #T_c6782_row2_col0, #T_c6782_row2_col1, #T_c6782_row2_col2, #T_c6782_row2_col3, #T_c6782_row2_col4, #T_c6782_row2_col5, #T_c6782_row2_col6, #T_c6782_row2_col7, #T_c6782_row2_col8, #T_c6782_row3_col0, #T_c6782_row3_col1, #T_c6782_row3_col2, #T_c6782_row3_col3, #T_c6782_row3_col4, #T_c6782_row3_col5, #T_c6782_row3_col6, #T_c6782_row3_col7, #T_c6782_row3_col8, #T_c6782_row4_col0, #T_c6782_row4_col1, #T_c6782_row4_col2, #T_c6782_row4_col3, #T_c6782_row4_col4, #T_c6782_row4_col5, #T_c6782_row4_col6, #T_c6782_row4_col7, #T_c6782_row4_col8, #T_c6782_row4_col9, #T_c6782_row5_col0, #T_c6782_row5_col1, #T_c6782_row5_col2, #T_c6782_row5_col3, #T_c6782_row5_col4, #T_c6782_row5_col5, #T_c6782_row5_col6, #T_c6782_row5_col7, #T_c6782_row5_col8, #T_c6782_row6_col0, #T_c6782_row6_col1, #T_c6782_row6_col3, #T_c6782_row6_col4, #T_c6782_row6_col5, #T_c6782_row6_col6, #T_c6782_row6_col7, #T_c6782_row6_col8, #T_c6782_row6_col9, #T_c6782_row7_col0, #T_c6782_row7_col1, #T_c6782_row7_col2, #T_c6782_row7_col3, #T_c6782_row7_col4, #T_c6782_row7_col6, #T_c6782_row7_col7, #T_c6782_row7_col8, #T_c6782_row8_col0, #T_c6782_row8_col1, #T_c6782_row8_col2, #T_c6782_row8_col3, #T_c6782_row8_col4, #T_c6782_row8_col6, #T_c6782_row8_col7, #T_c6782_row8_col8, #T_c6782_row8_col9, #T_c6782_row9_col0, #T_c6782_row9_col1, #T_c6782_row9_col2, #T_c6782_row9_col3, #T_c6782_row9_col4, #T_c6782_row9_col5, #T_c6782_row9_col6, #T_c6782_row9_col7, #T_c6782_row9_col8, #T_c6782_row9_col9 {
+  background-color: #f7fbff;
+  color: #000000;
+}
+#T_c6782_row0_col9 {
+  background-color: #4d99ca;
+  color: #f1f1f1;
+}
+#T_c6782_row1_col5 {
+  background-color: #b9d6ea;
+  color: #000000;
+}
+#T_c6782_row1_col9 {
+  background-color: #abd0e6;
+  color: #000000;
+}
+#T_c6782_row2_col9 {
+  background-color: #61a7d2;
+  color: #f1f1f1;
+}
+#T_c6782_row3_col9 {
+  background-color: #cde0f1;
+  color: #000000;
+}
+#T_c6782_row5_col9 {
+  background-color: #d6e6f4;
+  color: #000000;
+}
+#T_c6782_row6_col2 {
+  background-color: #08306b;
+  color: #f1f1f1;
+}
+#T_c6782_row7_col5 {
+  background-color: #c9ddf0;
+  color: #000000;
+}
+#T_c6782_row7_col9 {
+  background-color: #dceaf6;
+  color: #000000;
+}
+#T_c6782_row8_col5 {
+  background-color: #c4daee;
+  color: #000000;
+}
+</style>
+<table id="T_c6782">
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_c6782_level0_col0" class="col_heading level0 col0" >10k</th>
+      <th id="T_c6782_level0_col1" class="col_heading level0 col1" >5k</th>
+      <th id="T_c6782_level0_col2" class="col_heading level0 col2" >abdul</th>
+      <th id="T_c6782_level0_col3" class="col_heading level0 col3" >absen</th>
+      <th id="T_c6782_level0_col4" class="col_heading level0 col4" >abu</th>
+      <th id="T_c6782_level0_col5" class="col_heading level0 col5" >acara</th>
+      <th id="T_c6782_level0_col6" class="col_heading level0 col6" >acd</th>
+      <th id="T_c6782_level0_col7" class="col_heading level0 col7" >aceh</th>
+      <th id="T_c6782_level0_col8" class="col_heading level0 col8" >acosta</th>
+      <th id="T_c6782_level0_col9" class="col_heading level0 col9" >ada</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_c6782_level0_row0" class="row_heading level0 row0" >0</th>
+      <td id="T_c6782_row0_col0" class="data row0 col0" >0.000</td>
+      <td id="T_c6782_row0_col1" class="data row0 col1" >0.000</td>
+      <td id="T_c6782_row0_col2" class="data row0 col2" >0.000</td>
+      <td id="T_c6782_row0_col3" class="data row0 col3" >0.000</td>
+      <td id="T_c6782_row0_col4" class="data row0 col4" >0.000</td>
+      <td id="T_c6782_row0_col5" class="data row0 col5" >0.000</td>
+      <td id="T_c6782_row0_col6" class="data row0 col6" >0.000</td>
+      <td id="T_c6782_row0_col7" class="data row0 col7" >0.000</td>
+      <td id="T_c6782_row0_col8" class="data row0 col8" >0.000</td>
+      <td id="T_c6782_row0_col9" class="data row0 col9" >0.081</td>
+    </tr>
+    <tr>
+      <th id="T_c6782_level0_row1" class="row_heading level0 row1" >1</th>
+      <td id="T_c6782_row1_col0" class="data row1 col0" >0.000</td>
+      <td id="T_c6782_row1_col1" class="data row1 col1" >0.000</td>
+      <td id="T_c6782_row1_col2" class="data row1 col2" >0.000</td>
+      <td id="T_c6782_row1_col3" class="data row1 col3" >0.000</td>
+      <td id="T_c6782_row1_col4" class="data row1 col4" >0.000</td>
+      <td id="T_c6782_row1_col5" class="data row1 col5" >0.040</td>
+      <td id="T_c6782_row1_col6" class="data row1 col6" >0.000</td>
+      <td id="T_c6782_row1_col7" class="data row1 col7" >0.000</td>
+      <td id="T_c6782_row1_col8" class="data row1 col8" >0.000</td>
+      <td id="T_c6782_row1_col9" class="data row1 col9" >0.046</td>
+    </tr>
+    <tr>
+      <th id="T_c6782_level0_row2" class="row_heading level0 row2" >2</th>
+      <td id="T_c6782_row2_col0" class="data row2 col0" >0.000</td>
+      <td id="T_c6782_row2_col1" class="data row2 col1" >0.000</td>
+      <td id="T_c6782_row2_col2" class="data row2 col2" >0.000</td>
+      <td id="T_c6782_row2_col3" class="data row2 col3" >0.000</td>
+      <td id="T_c6782_row2_col4" class="data row2 col4" >0.000</td>
+      <td id="T_c6782_row2_col5" class="data row2 col5" >0.000</td>
+      <td id="T_c6782_row2_col6" class="data row2 col6" >0.000</td>
+      <td id="T_c6782_row2_col7" class="data row2 col7" >0.000</td>
+      <td id="T_c6782_row2_col8" class="data row2 col8" >0.000</td>
+      <td id="T_c6782_row2_col9" class="data row2 col9" >0.072</td>
+    </tr>
+    <tr>
+      <th id="T_c6782_level0_row3" class="row_heading level0 row3" >3</th>
+      <td id="T_c6782_row3_col0" class="data row3 col0" >0.000</td>
+      <td id="T_c6782_row3_col1" class="data row3 col1" >0.000</td>
+      <td id="T_c6782_row3_col2" class="data row3 col2" >0.000</td>
+      <td id="T_c6782_row3_col3" class="data row3 col3" >0.000</td>
+      <td id="T_c6782_row3_col4" class="data row3 col4" >0.000</td>
+      <td id="T_c6782_row3_col5" class="data row3 col5" >0.000</td>
+      <td id="T_c6782_row3_col6" class="data row3 col6" >0.000</td>
+      <td id="T_c6782_row3_col7" class="data row3 col7" >0.000</td>
+      <td id="T_c6782_row3_col8" class="data row3 col8" >0.000</td>
+      <td id="T_c6782_row3_col9" class="data row3 col9" >0.029</td>
+    </tr>
+    <tr>
+      <th id="T_c6782_level0_row4" class="row_heading level0 row4" >4</th>
+      <td id="T_c6782_row4_col0" class="data row4 col0" >0.000</td>
+      <td id="T_c6782_row4_col1" class="data row4 col1" >0.000</td>
+      <td id="T_c6782_row4_col2" class="data row4 col2" >0.000</td>
+      <td id="T_c6782_row4_col3" class="data row4 col3" >0.000</td>
+      <td id="T_c6782_row4_col4" class="data row4 col4" >0.000</td>
+      <td id="T_c6782_row4_col5" class="data row4 col5" >0.000</td>
+      <td id="T_c6782_row4_col6" class="data row4 col6" >0.000</td>
+      <td id="T_c6782_row4_col7" class="data row4 col7" >0.000</td>
+      <td id="T_c6782_row4_col8" class="data row4 col8" >0.000</td>
+      <td id="T_c6782_row4_col9" class="data row4 col9" >0.000</td>
+    </tr>
+    <tr>
+      <th id="T_c6782_level0_row5" class="row_heading level0 row5" >5</th>
+      <td id="T_c6782_row5_col0" class="data row5 col0" >0.000</td>
+      <td id="T_c6782_row5_col1" class="data row5 col1" >0.000</td>
+      <td id="T_c6782_row5_col2" class="data row5 col2" >0.000</td>
+      <td id="T_c6782_row5_col3" class="data row5 col3" >0.000</td>
+      <td id="T_c6782_row5_col4" class="data row5 col4" >0.000</td>
+      <td id="T_c6782_row5_col5" class="data row5 col5" >0.000</td>
+      <td id="T_c6782_row5_col6" class="data row5 col6" >0.000</td>
+      <td id="T_c6782_row5_col7" class="data row5 col7" >0.000</td>
+      <td id="T_c6782_row5_col8" class="data row5 col8" >0.000</td>
+      <td id="T_c6782_row5_col9" class="data row5 col9" >0.023</td>
+    </tr>
+    <tr>
+      <th id="T_c6782_level0_row6" class="row_heading level0 row6" >6</th>
+      <td id="T_c6782_row6_col0" class="data row6 col0" >0.000</td>
+      <td id="T_c6782_row6_col1" class="data row6 col1" >0.000</td>
+      <td id="T_c6782_row6_col2" class="data row6 col2" >0.136</td>
+      <td id="T_c6782_row6_col3" class="data row6 col3" >0.000</td>
+      <td id="T_c6782_row6_col4" class="data row6 col4" >0.000</td>
+      <td id="T_c6782_row6_col5" class="data row6 col5" >0.000</td>
+      <td id="T_c6782_row6_col6" class="data row6 col6" >0.000</td>
+      <td id="T_c6782_row6_col7" class="data row6 col7" >0.000</td>
+      <td id="T_c6782_row6_col8" class="data row6 col8" >0.000</td>
+      <td id="T_c6782_row6_col9" class="data row6 col9" >0.000</td>
+    </tr>
+    <tr>
+      <th id="T_c6782_level0_row7" class="row_heading level0 row7" >7</th>
+      <td id="T_c6782_row7_col0" class="data row7 col0" >0.000</td>
+      <td id="T_c6782_row7_col1" class="data row7 col1" >0.000</td>
+      <td id="T_c6782_row7_col2" class="data row7 col2" >0.000</td>
+      <td id="T_c6782_row7_col3" class="data row7 col3" >0.000</td>
+      <td id="T_c6782_row7_col4" class="data row7 col4" >0.000</td>
+      <td id="T_c6782_row7_col5" class="data row7 col5" >0.032</td>
+      <td id="T_c6782_row7_col6" class="data row7 col6" >0.000</td>
+      <td id="T_c6782_row7_col7" class="data row7 col7" >0.000</td>
+      <td id="T_c6782_row7_col8" class="data row7 col8" >0.000</td>
+      <td id="T_c6782_row7_col9" class="data row7 col9" >0.018</td>
+    </tr>
+    <tr>
+      <th id="T_c6782_level0_row8" class="row_heading level0 row8" >8</th>
+      <td id="T_c6782_row8_col0" class="data row8 col0" >0.000</td>
+      <td id="T_c6782_row8_col1" class="data row8 col1" >0.000</td>
+      <td id="T_c6782_row8_col2" class="data row8 col2" >0.000</td>
+      <td id="T_c6782_row8_col3" class="data row8 col3" >0.000</td>
+      <td id="T_c6782_row8_col4" class="data row8 col4" >0.000</td>
+      <td id="T_c6782_row8_col5" class="data row8 col5" >0.035</td>
+      <td id="T_c6782_row8_col6" class="data row8 col6" >0.000</td>
+      <td id="T_c6782_row8_col7" class="data row8 col7" >0.000</td>
+      <td id="T_c6782_row8_col8" class="data row8 col8" >0.000</td>
+      <td id="T_c6782_row8_col9" class="data row8 col9" >0.000</td>
+    </tr>
+    <tr>
+      <th id="T_c6782_level0_row9" class="row_heading level0 row9" >9</th>
+      <td id="T_c6782_row9_col0" class="data row9 col0" >0.000</td>
+      <td id="T_c6782_row9_col1" class="data row9 col1" >0.000</td>
+      <td id="T_c6782_row9_col2" class="data row9 col2" >0.000</td>
+      <td id="T_c6782_row9_col3" class="data row9 col3" >0.000</td>
+      <td id="T_c6782_row9_col4" class="data row9 col4" >0.000</td>
+      <td id="T_c6782_row9_col5" class="data row9 col5" >0.000</td>
+      <td id="T_c6782_row9_col6" class="data row9 col6" >0.000</td>
+      <td id="T_c6782_row9_col7" class="data row9 col7" >0.000</td>
+      <td id="T_c6782_row9_col8" class="data row9 col8" >0.000</td>
+      <td id="T_c6782_row9_col9" class="data row9 col9" >0.000</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+</section>
+<section id="kata-paling-khas-per-kategori">
+<h3>Kata Paling Khas per Kategori<a class="headerlink" href="#kata-paling-khas-per-kategori" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">tfidf_dengan_label</span> <span class="o">=</span> <span class="n">tfidf_df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"doc_id"</span><span class="p">])</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">tfidf_dengan_label</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+
+<span class="n">top_n</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">13</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">kategori</span><span class="p">,</span> <span class="n">warna</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="p">[</span><span class="s2">"sport"</span><span class="p">,</span> <span class="s2">"finance"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"#4C72B0"</span><span class="p">,</span> <span class="s2">"#DD8452"</span><span class="p">]):</span>
+    <span class="n">rata_rata</span> <span class="o">=</span> <span class="n">tfidf_dengan_label</span><span class="p">[</span><span class="n">tfidf_dengan_label</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span> <span class="o">==</span> <span class="n">kategori</span><span class="p">]</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"label"</span><span class="p">])</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="n">top_kata</span> <span class="o">=</span> <span class="n">rata_rata</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">top_n</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">top_kata</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">top_kata</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">warna</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Top </span><span class="si">{</span><span class="n">top_n</span><span class="si">}</span><span class="s2"> Kata - </span><span class="si">{</span><span class="n">kategori</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Rata-rata Bobot TF-IDF"</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/10304b5a390caf1689842e61d51c35ffc7f2bb3e84abb62dc0eda7fc17b3eb2e.png" src="../_images/10304b5a390caf1689842e61d51c35ffc7f2bb3e84abb62dc0eda7fc17b3eb2e.png" />
+</div>
+</div>
+</section>
+<section id="vocabulary-eksklusif-per-kategori">
+<h3>Vocabulary Eksklusif per Kategori<a class="headerlink" href="#vocabulary-eksklusif-per-kategori" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kata_sport</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">tfidf_dengan_label</span><span class="p">[</span><span class="n">tfidf_dengan_label</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"sport"</span><span class="p">]</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"label"</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">tfidf_dengan_label</span><span class="p">[</span><span class="n">tfidf_dengan_label</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"sport"</span><span class="p">]</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"label"</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+<span class="p">])</span>
+<span class="n">kata_finance</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">tfidf_dengan_label</span><span class="p">[</span><span class="n">tfidf_dengan_label</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"finance"</span><span class="p">]</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"label"</span><span class="p">])</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">tfidf_dengan_label</span><span class="p">[</span><span class="n">tfidf_dengan_label</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span> <span class="o">==</span> <span class="s2">"finance"</span><span class="p">]</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"label"</span><span class="p">])</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+<span class="p">])</span>
+
+<span class="n">hanya_sport</span> <span class="o">=</span> <span class="n">kata_sport</span> <span class="o">-</span> <span class="n">kata_finance</span>
+<span class="n">hanya_finance</span> <span class="o">=</span> <span class="n">kata_finance</span> <span class="o">-</span> <span class="n">kata_sport</span>
+<span class="n">bersama</span> <span class="o">=</span> <span class="n">kata_sport</span> <span class="o">&amp;</span> <span class="n">kata_finance</span>
+
+<span class="n">vocab_summary</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">"kategori"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"Hanya di Sport"</span><span class="p">,</span> <span class="s2">"Hanya di Finance"</span><span class="p">,</span> <span class="s2">"Muncul di Keduanya"</span><span class="p">],</span>
+    <span class="s2">"jumlah_kata"</span><span class="p">:</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">hanya_sport</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">hanya_finance</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">bersama</span><span class="p">)],</span>
+<span class="p">})</span>
+<span class="n">vocab_summary</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>kategori</th>
+      <th>jumlah_kata</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>Hanya di Sport</td>
+      <td>530</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>Hanya di Finance</td>
+      <td>501</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Muncul di Keduanya</td>
+      <td>1525</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+</section>
+</section>
+<section id="one-hot-encoding-label">
+<h2>3. One-Hot Encoding Label<a class="headerlink" href="#one-hot-encoding-label" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">label_encoded</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">get_dummies</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">],</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">"label"</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">label_encoded</span><span class="o">.</span><span class="n">head</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">Kolom hasil one-hot encoding:"</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">label_encoded</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>   label_finance  label_sport
+0              0            1
+1              0            1
+2              0            1
+3              0            1
+4              0            1
+
+Kolom hasil one-hot encoding: ['label_finance', 'label_sport']
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dataset_tfidf_final</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">tfidf_df</span><span class="p">,</span> <span class="n">label_encoded</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">"label_asli"</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">dataset_tfidf_final</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="s2">"../data/dataset_tfidf.xlsx"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Ukuran dataset TF-IDF final:"</span><span class="p">,</span> <span class="n">dataset_tfidf_final</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Dataset TF-IDF disimpan ke data/dataset_tfidf.xlsx"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ukuran dataset TF-IDF final: (200, 2560)
+Dataset TF-IDF disimpan ke data/dataset_tfidf.xlsx
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="reduksi-dimensi-pca-vs-truncated-svd">
+<h2>4. Reduksi Dimensi: PCA vs Truncated SVD<a class="headerlink" href="#reduksi-dimensi-pca-vs-truncated-svd" title="Permalink to this heading">#</a></h2>
+<div class="tip admonition">
+<p class="admonition-title">PCA vs SVD - Apa Bedanya?</p>
+<p>Keduanya sama-sama teknik reduksi dimensi, tapi caranya berbeda:</p>
+<ul class="simple">
+<li><p><strong>PCA (Principal Component Analysis)</strong> mula-mula men-<em>center</em>-kan data (mengurangi tiap kolom dengan rata-ratanya), lalu mencari arah dengan variasi terbesar. Proses centering ini membuat matriks yang tadinya <em>sparse</em> (banyak nilai nol) menjadi <em>dense</em> (penuh angka), sehingga untuk data TF-IDF berukuran besar, PCA menjadi kurang efisien.</p></li>
+<li><p><strong>Truncated SVD (Singular Value Decomposition)</strong> bekerja langsung pada matriks asli <strong>tanpa proses centering</strong>, sehingga bisa langsung memproses matriks sparse tanpa perlu diubah ke bentuk dense terlebih dahulu. SVD lebih efisien secara komputasi untuk data teks berdimensi besar seperti TF-IDF. Ketika diterapkan pada matriks TF-IDF, teknik ini dikenal juga sebagai <strong>LSA (Latent Semantic Analysis)</strong>.</p></li>
+</ul>
+</div>
+<p>Kita terapkan keduanya dan bandingkan hasilnya secara langsung.</p>
+<section id="menentukan-jumlah-komponen-target-80-variance-untuk-pca">
+<h3>4.1 Menentukan Jumlah Komponen (Target 80% Variance) - untuk PCA<a class="headerlink" href="#menentukan-jumlah-komponen-target-80-variance-untuk-pca" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
+
+<span class="n">maks_komponen</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">199</span><span class="p">,</span> <span class="n">tfidf_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">tfidf_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+<span class="n">pca_cek</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">maks_komponen</span><span class="p">)</span>
+<span class="n">pca_cek</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">tfidf_matrix</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>
+<span class="n">variance_kumulatif_pca</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">pca_cek</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">)</span>
+
+<span class="n">n_komponen_pca</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">variance_kumulatif_pca</span> <span class="o">&gt;=</span> <span class="mf">0.80</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[PCA] Jumlah komponen untuk 80% variance: </span><span class="si">{</span><span class="n">n_komponen_pca</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[PCA] Jumlah komponen untuk 80% variance: 104
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="menentukan-jumlah-komponen-target-80-variance-untuk-truncated-svd">
+<h3>4.2 Menentukan Jumlah Komponen (Target 80% Variance) - untuk Truncated SVD<a class="headerlink" href="#menentukan-jumlah-komponen-target-80-variance-untuk-truncated-svd" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">TruncatedSVD</span>
+
+<span class="n">svd_cek</span> <span class="o">=</span> <span class="n">TruncatedSVD</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">maks_komponen</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">svd_cek</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">tfidf_matrix</span><span class="p">)</span>  <span class="c1"># langsung pada matriks sparse, tanpa .toarray()</span>
+<span class="n">variance_kumulatif_svd</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">svd_cek</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">)</span>
+
+<span class="n">n_komponen_svd</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">variance_kumulatif_svd</span> <span class="o">&gt;=</span> <span class="mf">0.80</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"[SVD] Jumlah komponen untuk 80% variance: </span><span class="si">{</span><span class="n">n_komponen_svd</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[SVD] Jumlah komponen untuk 80% variance: 105
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="bandingkan-kurva-explained-variance">
+<h3>4.3 Bandingkan Kurva Explained Variance<a class="headerlink" href="#bandingkan-kurva-explained-variance" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">variance_kumulatif_pca</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">variance_kumulatif_pca</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"PCA"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"#4C72B0"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">variance_kumulatif_svd</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">variance_kumulatif_svd</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Truncated SVD"</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"#DD8452"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axhline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mf">0.80</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"gray"</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">"--"</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Target 80% variance"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Jumlah Komponen"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Variance Kumulatif"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Explained Variance: PCA vs Truncated SVD"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/974076575ef568da4a42a9f0185c8a0d2e867b5649b254867debbed8e0239ff7.png" src="../_images/974076575ef568da4a42a9f0185c8a0d2e867b5649b254867debbed8e0239ff7.png" />
+</div>
+</div>
+</section>
+<section id="terapkan-kedua-teknik-ukur-waktu-komputasi">
+<h3>4.4 Terapkan Kedua Teknik &amp; Ukur Waktu Komputasi<a class="headerlink" href="#terapkan-kedua-teknik-ukur-waktu-komputasi" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- PCA ---</span>
+<span class="n">mulai</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">n_komponen_pca</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">tfidf_pca</span> <span class="o">=</span> <span class="n">pca</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">tfidf_matrix</span><span class="o">.</span><span class="n">toarray</span><span class="p">())</span>  <span class="c1"># perlu .toarray() -&gt; lebih berat</span>
+<span class="n">waktu_pca</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">mulai</span>
+
+<span class="c1"># --- Truncated SVD ---</span>
+<span class="n">mulai</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+<span class="n">svd</span> <span class="o">=</span> <span class="n">TruncatedSVD</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="n">n_komponen_svd</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">tfidf_svd</span> <span class="o">=</span> <span class="n">svd</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">tfidf_matrix</span><span class="p">)</span>  <span class="c1"># langsung pada sparse matrix -&gt; lebih ringan</span>
+<span class="n">waktu_svd</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="n">mulai</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"PCA : </span><span class="si">{</span><span class="n">tfidf_pca</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, variance dipertahankan </span><span class="si">{</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, waktu </span><span class="si">{</span><span class="n">waktu_pca</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> detik"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"SVD : </span><span class="si">{</span><span class="n">tfidf_svd</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s2">, variance dipertahankan </span><span class="si">{</span><span class="n">svd</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">, waktu </span><span class="si">{</span><span class="n">waktu_svd</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> detik"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>PCA : (200, 104), variance dipertahankan 0.7985, waktu 0.163 detik
+SVD : (200, 105), variance dipertahankan 0.8003, waktu 0.456 detik
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="visualisasi-2d-pca-vs-svd-berdampingan">
+<h3>4.5 Visualisasi 2D: PCA vs SVD Berdampingan<a class="headerlink" href="#visualisasi-2d-pca-vs-svd-berdampingan" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">hasil</span><span class="p">,</span> <span class="n">judul</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="p">[</span><span class="n">tfidf_pca</span><span class="p">,</span> <span class="n">tfidf_svd</span><span class="p">],</span> <span class="p">[</span><span class="s2">"PCA"</span><span class="p">,</span> <span class="s2">"Truncated SVD"</span><span class="p">]):</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">hasil</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="n">hasil</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+        <span class="n">hue</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">],</span> <span class="n">palette</span><span class="o">=</span><span class="p">{</span><span class="s2">"sport"</span><span class="p">:</span> <span class="s2">"#4C72B0"</span><span class="p">,</span> <span class="s2">"finance"</span><span class="p">:</span> <span class="s2">"#DD8452"</span><span class="p">},</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.8</span>
+    <span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">"Komponen 1"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">"Komponen 2"</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Proyeksi 2 Komponen Pertama - </span><span class="si">{</span><span class="n">judul</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Variance yang tertangkap oleh 2 komponen pertama saja:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  PCA : </span><span class="si">{</span><span class="n">pca_cek</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">pca_cek</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  SVD : </span><span class="si">{</span><span class="n">svd_cek</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="n">svd_cek</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%)"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/c9e420b4095e0543a5aa3af976683774fcf260023054acaf8dfcb5a2c446b2c2.png" src="../_images/c9e420b4095e0543a5aa3af976683774fcf260023054acaf8dfcb5a2c446b2c2.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Variance yang tertangkap oleh 2 komponen pertama saja:
+  PCA : 0.0614 (6.1%)
+  SVD : 0.0394 (3.9%)
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Interpretasi:</strong> Nilai variance yang tertangkap oleh 2 komponen pertama biasanya terlihat kecil karena data TF-IDF memiliki ribuan dimensi - ini wajar. Menariknya, pada dataset skala kecil ini (200 dokumen), Truncated SVD justru sedikit lebih lambat dibanding PCA dalam waktu komputasi mentah - keunggulan efisiensi SVD terhadap data sparse baru signifikan pada dataset berskala jauh lebih besar. Secara visual, PCA menghasilkan pemisahan sport-finance yang tampak lebih rapi pada 2 komponen pertama dibanding SVD pada dataset ini, meski keduanya menangkap proporsi variance yang serupa - menunjukkan bahwa “variance terbesar” tidak selalu berarti “pemisahan kelas terbaik”. Baik dataset TF-IDF, PCA, maupun SVD tetap disiapkan sebagai alternatif input untuk tahap Modeling, agar performa klasifikasi dari ketiganya bisa dibandingkan secara empiris.</p>
+</section>
+<section id="simpan-kedua-dataset-hasil-reduksi">
+<h3>4.6 Simpan Kedua Dataset Hasil Reduksi<a class="headerlink" href="#simpan-kedua-dataset-hasil-reduksi" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kolom_pca</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"pc_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_komponen_pca</span><span class="p">)]</span>
+<span class="n">pca_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">tfidf_pca</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">kolom_pca</span><span class="p">)</span>
+<span class="n">pca_df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"doc_id"</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">dataset_pca_final</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pca_df</span><span class="p">,</span> <span class="n">label_encoded</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">"label_asli"</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">dataset_pca_final</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="s2">"../data/dataset_pca.xlsx"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">kolom_svd</span> <span class="o">=</span> <span class="p">[</span><span class="sa">f</span><span class="s2">"svd_</span><span class="si">{</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">"</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_komponen_svd</span><span class="p">)]</span>
+<span class="n">svd_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">tfidf_svd</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">kolom_svd</span><span class="p">)</span>
+<span class="n">svd_df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">"doc_id"</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">dataset_svd_final</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">svd_df</span><span class="p">,</span> <span class="n">label_encoded</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">"label"</span><span class="p">]</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="s2">"label_asli"</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">dataset_svd_final</span><span class="o">.</span><span class="n">to_excel</span><span class="p">(</span><span class="s2">"../data/dataset_svd.xlsx"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Dataset PCA disimpan ke data/dataset_pca.xlsx :"</span><span class="p">,</span> <span class="n">dataset_pca_final</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Dataset SVD disimpan ke data/dataset_svd.xlsx :"</span><span class="p">,</span> <span class="n">dataset_svd_final</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dataset PCA disimpan ke data/dataset_pca.xlsx : (200, 108)
+Dataset SVD disimpan ke data/dataset_svd.xlsx : (200, 109)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="ringkasan-perbandingan">
+<h2>5. Ringkasan Perbandingan<a class="headerlink" href="#ringkasan-perbandingan" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">ringkasan</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s2">"Metode"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"TF-IDF (sebelum reduksi)"</span><span class="p">,</span> <span class="s2">"PCA"</span><span class="p">,</span> <span class="s2">"Truncated SVD"</span><span class="p">],</span>
+    <span class="s2">"Jumlah Kolom"</span><span class="p">:</span> <span class="p">[</span><span class="n">tfidf_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">n_komponen_pca</span><span class="p">,</span> <span class="n">n_komponen_svd</span><span class="p">],</span>
+    <span class="s2">"Variance Dipertahankan"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"100% (data asli)"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">pca</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">svd</span><span class="o">.</span><span class="n">explained_variance_ratio_</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">:</span><span class="s2">.1%</span><span class="si">}</span><span class="s2">"</span><span class="p">],</span>
+    <span class="s2">"Perlu Data Dense?"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"-"</span><span class="p">,</span> <span class="s2">"Ya (.toarray())"</span><span class="p">,</span> <span class="s2">"Tidak (langsung sparse)"</span><span class="p">],</span>
+    <span class="s2">"Waktu Komputasi (detik)"</span><span class="p">:</span> <span class="p">[</span><span class="s2">"-"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">waktu_pca</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">,</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">waktu_svd</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">"</span><span class="p">],</span>
+<span class="p">})</span>
+<span class="n">ringkasan</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Metode</th>
+      <th>Jumlah Kolom</th>
+      <th>Variance Dipertahankan</th>
+      <th>Perlu Data Dense?</th>
+      <th>Waktu Komputasi (detik)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>TF-IDF (sebelum reduksi)</td>
+      <td>2556</td>
+      <td>100% (data asli)</td>
+      <td>-</td>
+      <td>-</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>PCA</td>
+      <td>104</td>
+      <td>79.8%</td>
+      <td>Ya (.toarray())</td>
+      <td>0.163</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>Truncated SVD</td>
+      <td>105</td>
+      <td>80.0%</td>
+      <td>Tidak (langsung sparse)</td>
+      <td>0.456</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<ul class="simple">
+<li><p><strong>Dataset TF-IDF</strong> (<code class="docutils literal notranslate"><span class="pre">data/dataset_tfidf.xlsx</span></code>): representasi penuh, 200 dokumen x seluruh kata unik.</p></li>
+<li><p><strong>Dataset PCA</strong> (<code class="docutils literal notranslate"><span class="pre">data/dataset_pca.xlsx</span></code>) dan <strong>Dataset SVD</strong> (<code class="docutils literal notranslate"><span class="pre">data/dataset_svd.xlsx</span></code>): dua alternatif hasil reduksi dimensi, keduanya mempertahankan ~80% variance dari data asli namun dengan pendekatan komputasi yang berbeda.</p></li>
+<li><p><strong>Truncated SVD</strong> lebih sesuai secara teknis untuk data TF-IDF karena bekerja langsung pada matriks sparse tanpa perlu proses centering, sehingga lebih efisien untuk dataset dengan jumlah fitur yang sangat besar.</p></li>
+<li><p>Ketiga dataset (TF-IDF, PCA, SVD) disiapkan sebagai alternatif input untuk tahap <strong>Modeling</strong> - perbandingan performa klasifikasi menggunakan ketiganya dapat menjadi bagian menarik dari analisis pada tahap berikutnya.</p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "enwebmining"
+        },
+        kernelOptions: {
+            name: "enwebmining",
+            path: "./CRISP-DM"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'enwebmining'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Preprocessing.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Text Preprocessing (Versi Lengkap &amp; Mendalam)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Modeling.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Modeling</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#load-dataset-hasil-preprocessing">1. Load Dataset Hasil Preprocessing</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tf-idf-vectorization">2. TF-IDF Vectorization</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#susun-sebagai-dataframe-baris-dokumen-korpus-kolom-kata-unik-indeks-nilai-bobot-tf-idf">Susun sebagai DataFrame: Baris = Dokumen (Korpus), Kolom = Kata Unik (Indeks), Nilai = Bobot TF-IDF</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kata-paling-khas-per-kategori">Kata Paling Khas per Kategori</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vocabulary-eksklusif-per-kategori">Vocabulary Eksklusif per Kategori</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#one-hot-encoding-label">3. One-Hot Encoding Label</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#reduksi-dimensi-pca-vs-truncated-svd">4. Reduksi Dimensi: PCA vs Truncated SVD</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#menentukan-jumlah-komponen-target-80-variance-untuk-pca">4.1 Menentukan Jumlah Komponen (Target 80% Variance) - untuk PCA</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#menentukan-jumlah-komponen-target-80-variance-untuk-truncated-svd">4.2 Menentukan Jumlah Komponen (Target 80% Variance) - untuk Truncated SVD</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bandingkan-kurva-explained-variance">4.3 Bandingkan Kurva Explained Variance</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#terapkan-kedua-teknik-ukur-waktu-komputasi">4.4 Terapkan Kedua Teknik &amp; Ukur Waktu Komputasi</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-2d-pca-vs-svd-berdampingan">4.5 Visualisasi 2D: PCA vs SVD Berdampingan</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#simpan-kedua-dataset-hasil-reduksi">4.6 Simpan Kedua Dataset Hasil Reduksi</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ringkasan-perbandingan">5. Ringkasan Perbandingan</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Hanin Hammoud
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
