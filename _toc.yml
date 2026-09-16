@@ -6,7 +6,11 @@ chapters:
   - file: CRISP-DM/EDA
     title: Data Understanding
   - file: CRISP-DM/Input
-    title: Data Preparation
+    title: Data Preparation (Crawling)
+  - file: CRISP-DM/Preprocessing
+    title: Text Preprocessing
+  - file: CRISP-DM/Vectorization
+    title: Text Vectorization
   - file: CRISP-DM/Modeling
     title: Modeling
   - file: CRISP-DM/Output
