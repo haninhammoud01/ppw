@@ -65,8 +65,8 @@ const thebe_selector_output = ".output, .cell_output"
     <script>DOCUMENTATION_OPTIONS.pagename = 'CRISP-DM/Vectorization';</script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Modeling" href="Modeling.html" />
-    <link rel="prev" title="Text Preprocessing" href="Preprocessing.html" />
+    <link rel="next" title="Word Embedding: Skip-gram Manual dengan Jaringan Saraf Tiruan" href="Skipgram.html" />
+    <link rel="prev" title="Perbandingan Preprocessing terhadap Performa Klasifikasi" href="Preprocessing_Ablation.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -178,7 +178,9 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="EDA.html">Data Understanding</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Input.html">Data Preparation (Crawling)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Preprocessing.html">Text Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Preprocessing_Ablation.html">Perbandingan Preprocessing</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Text Vectorization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Skipgram.html">Word Embedding (Skip-gram)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Output.html">Evaluation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Production.html">Deployment</a></li>
@@ -513,197 +515,197 @@ Tipe data matriks: &lt;class 'scipy.sparse._csr.csr_matrix'&gt; (sparse - sebagi
 </pre></div>
 </div>
 <div class="output text_html"><style type="text/css">
-#T_c6782_row0_col0, #T_c6782_row0_col1, #T_c6782_row0_col2, #T_c6782_row0_col3, #T_c6782_row0_col4, #T_c6782_row0_col5, #T_c6782_row0_col6, #T_c6782_row0_col7, #T_c6782_row0_col8, #T_c6782_row1_col0, #T_c6782_row1_col1, #T_c6782_row1_col2, #T_c6782_row1_col3, #T_c6782_row1_col4, #T_c6782_row1_col6, #T_c6782_row1_col7, #T_c6782_row1_col8, #T_c6782_row2_col0, #T_c6782_row2_col1, #T_c6782_row2_col2, #T_c6782_row2_col3, #T_c6782_row2_col4, #T_c6782_row2_col5, #T_c6782_row2_col6, #T_c6782_row2_col7, #T_c6782_row2_col8, #T_c6782_row3_col0, #T_c6782_row3_col1, #T_c6782_row3_col2, #T_c6782_row3_col3, #T_c6782_row3_col4, #T_c6782_row3_col5, #T_c6782_row3_col6, #T_c6782_row3_col7, #T_c6782_row3_col8, #T_c6782_row4_col0, #T_c6782_row4_col1, #T_c6782_row4_col2, #T_c6782_row4_col3, #T_c6782_row4_col4, #T_c6782_row4_col5, #T_c6782_row4_col6, #T_c6782_row4_col7, #T_c6782_row4_col8, #T_c6782_row4_col9, #T_c6782_row5_col0, #T_c6782_row5_col1, #T_c6782_row5_col2, #T_c6782_row5_col3, #T_c6782_row5_col4, #T_c6782_row5_col5, #T_c6782_row5_col6, #T_c6782_row5_col7, #T_c6782_row5_col8, #T_c6782_row6_col0, #T_c6782_row6_col1, #T_c6782_row6_col3, #T_c6782_row6_col4, #T_c6782_row6_col5, #T_c6782_row6_col6, #T_c6782_row6_col7, #T_c6782_row6_col8, #T_c6782_row6_col9, #T_c6782_row7_col0, #T_c6782_row7_col1, #T_c6782_row7_col2, #T_c6782_row7_col3, #T_c6782_row7_col4, #T_c6782_row7_col6, #T_c6782_row7_col7, #T_c6782_row7_col8, #T_c6782_row8_col0, #T_c6782_row8_col1, #T_c6782_row8_col2, #T_c6782_row8_col3, #T_c6782_row8_col4, #T_c6782_row8_col6, #T_c6782_row8_col7, #T_c6782_row8_col8, #T_c6782_row8_col9, #T_c6782_row9_col0, #T_c6782_row9_col1, #T_c6782_row9_col2, #T_c6782_row9_col3, #T_c6782_row9_col4, #T_c6782_row9_col5, #T_c6782_row9_col6, #T_c6782_row9_col7, #T_c6782_row9_col8, #T_c6782_row9_col9 {
+#T_709cd_row0_col0, #T_709cd_row0_col1, #T_709cd_row0_col2, #T_709cd_row0_col3, #T_709cd_row0_col4, #T_709cd_row0_col5, #T_709cd_row0_col6, #T_709cd_row0_col7, #T_709cd_row0_col8, #T_709cd_row1_col0, #T_709cd_row1_col1, #T_709cd_row1_col2, #T_709cd_row1_col3, #T_709cd_row1_col4, #T_709cd_row1_col6, #T_709cd_row1_col7, #T_709cd_row1_col8, #T_709cd_row2_col0, #T_709cd_row2_col1, #T_709cd_row2_col2, #T_709cd_row2_col3, #T_709cd_row2_col4, #T_709cd_row2_col5, #T_709cd_row2_col6, #T_709cd_row2_col7, #T_709cd_row2_col8, #T_709cd_row3_col0, #T_709cd_row3_col1, #T_709cd_row3_col2, #T_709cd_row3_col3, #T_709cd_row3_col4, #T_709cd_row3_col5, #T_709cd_row3_col6, #T_709cd_row3_col7, #T_709cd_row3_col8, #T_709cd_row4_col0, #T_709cd_row4_col1, #T_709cd_row4_col2, #T_709cd_row4_col3, #T_709cd_row4_col4, #T_709cd_row4_col5, #T_709cd_row4_col6, #T_709cd_row4_col7, #T_709cd_row4_col8, #T_709cd_row4_col9, #T_709cd_row5_col0, #T_709cd_row5_col1, #T_709cd_row5_col2, #T_709cd_row5_col3, #T_709cd_row5_col4, #T_709cd_row5_col5, #T_709cd_row5_col6, #T_709cd_row5_col7, #T_709cd_row5_col8, #T_709cd_row6_col0, #T_709cd_row6_col1, #T_709cd_row6_col3, #T_709cd_row6_col4, #T_709cd_row6_col5, #T_709cd_row6_col6, #T_709cd_row6_col7, #T_709cd_row6_col8, #T_709cd_row6_col9, #T_709cd_row7_col0, #T_709cd_row7_col1, #T_709cd_row7_col2, #T_709cd_row7_col3, #T_709cd_row7_col4, #T_709cd_row7_col6, #T_709cd_row7_col7, #T_709cd_row7_col8, #T_709cd_row8_col0, #T_709cd_row8_col1, #T_709cd_row8_col2, #T_709cd_row8_col3, #T_709cd_row8_col4, #T_709cd_row8_col6, #T_709cd_row8_col7, #T_709cd_row8_col8, #T_709cd_row8_col9, #T_709cd_row9_col0, #T_709cd_row9_col1, #T_709cd_row9_col2, #T_709cd_row9_col3, #T_709cd_row9_col4, #T_709cd_row9_col5, #T_709cd_row9_col6, #T_709cd_row9_col7, #T_709cd_row9_col8, #T_709cd_row9_col9 {
   background-color: #f7fbff;
   color: #000000;
 }
-#T_c6782_row0_col9 {
+#T_709cd_row0_col9 {
   background-color: #4d99ca;
   color: #f1f1f1;
 }
-#T_c6782_row1_col5 {
+#T_709cd_row1_col5 {
   background-color: #b9d6ea;
   color: #000000;
 }
-#T_c6782_row1_col9 {
+#T_709cd_row1_col9 {
   background-color: #abd0e6;
   color: #000000;
 }
-#T_c6782_row2_col9 {
+#T_709cd_row2_col9 {
   background-color: #61a7d2;
   color: #f1f1f1;
 }
-#T_c6782_row3_col9 {
+#T_709cd_row3_col9 {
   background-color: #cde0f1;
   color: #000000;
 }
-#T_c6782_row5_col9 {
+#T_709cd_row5_col9 {
   background-color: #d6e6f4;
   color: #000000;
 }
-#T_c6782_row6_col2 {
+#T_709cd_row6_col2 {
   background-color: #08306b;
   color: #f1f1f1;
 }
-#T_c6782_row7_col5 {
+#T_709cd_row7_col5 {
   background-color: #c9ddf0;
   color: #000000;
 }
-#T_c6782_row7_col9 {
+#T_709cd_row7_col9 {
   background-color: #dceaf6;
   color: #000000;
 }
-#T_c6782_row8_col5 {
+#T_709cd_row8_col5 {
   background-color: #c4daee;
   color: #000000;
 }
 </style>
-<table id="T_c6782">
+<table id="T_709cd">
   <thead>
     <tr>
       <th class="blank level0" >&nbsp;</th>
-      <th id="T_c6782_level0_col0" class="col_heading level0 col0" >10k</th>
-      <th id="T_c6782_level0_col1" class="col_heading level0 col1" >5k</th>
-      <th id="T_c6782_level0_col2" class="col_heading level0 col2" >abdul</th>
-      <th id="T_c6782_level0_col3" class="col_heading level0 col3" >absen</th>
-      <th id="T_c6782_level0_col4" class="col_heading level0 col4" >abu</th>
-      <th id="T_c6782_level0_col5" class="col_heading level0 col5" >acara</th>
-      <th id="T_c6782_level0_col6" class="col_heading level0 col6" >acd</th>
-      <th id="T_c6782_level0_col7" class="col_heading level0 col7" >aceh</th>
-      <th id="T_c6782_level0_col8" class="col_heading level0 col8" >acosta</th>
-      <th id="T_c6782_level0_col9" class="col_heading level0 col9" >ada</th>
+      <th id="T_709cd_level0_col0" class="col_heading level0 col0" >10k</th>
+      <th id="T_709cd_level0_col1" class="col_heading level0 col1" >5k</th>
+      <th id="T_709cd_level0_col2" class="col_heading level0 col2" >abdul</th>
+      <th id="T_709cd_level0_col3" class="col_heading level0 col3" >absen</th>
+      <th id="T_709cd_level0_col4" class="col_heading level0 col4" >abu</th>
+      <th id="T_709cd_level0_col5" class="col_heading level0 col5" >acara</th>
+      <th id="T_709cd_level0_col6" class="col_heading level0 col6" >acd</th>
+      <th id="T_709cd_level0_col7" class="col_heading level0 col7" >aceh</th>
+      <th id="T_709cd_level0_col8" class="col_heading level0 col8" >acosta</th>
+      <th id="T_709cd_level0_col9" class="col_heading level0 col9" >ada</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <th id="T_c6782_level0_row0" class="row_heading level0 row0" >0</th>
-      <td id="T_c6782_row0_col0" class="data row0 col0" >0.000</td>
-      <td id="T_c6782_row0_col1" class="data row0 col1" >0.000</td>
-      <td id="T_c6782_row0_col2" class="data row0 col2" >0.000</td>
-      <td id="T_c6782_row0_col3" class="data row0 col3" >0.000</td>
-      <td id="T_c6782_row0_col4" class="data row0 col4" >0.000</td>
-      <td id="T_c6782_row0_col5" class="data row0 col5" >0.000</td>
-      <td id="T_c6782_row0_col6" class="data row0 col6" >0.000</td>
-      <td id="T_c6782_row0_col7" class="data row0 col7" >0.000</td>
-      <td id="T_c6782_row0_col8" class="data row0 col8" >0.000</td>
-      <td id="T_c6782_row0_col9" class="data row0 col9" >0.081</td>
+      <th id="T_709cd_level0_row0" class="row_heading level0 row0" >0</th>
+      <td id="T_709cd_row0_col0" class="data row0 col0" >0.000</td>
+      <td id="T_709cd_row0_col1" class="data row0 col1" >0.000</td>
+      <td id="T_709cd_row0_col2" class="data row0 col2" >0.000</td>
+      <td id="T_709cd_row0_col3" class="data row0 col3" >0.000</td>
+      <td id="T_709cd_row0_col4" class="data row0 col4" >0.000</td>
+      <td id="T_709cd_row0_col5" class="data row0 col5" >0.000</td>
+      <td id="T_709cd_row0_col6" class="data row0 col6" >0.000</td>
+      <td id="T_709cd_row0_col7" class="data row0 col7" >0.000</td>
+      <td id="T_709cd_row0_col8" class="data row0 col8" >0.000</td>
+      <td id="T_709cd_row0_col9" class="data row0 col9" >0.081</td>
     </tr>
     <tr>
-      <th id="T_c6782_level0_row1" class="row_heading level0 row1" >1</th>
-      <td id="T_c6782_row1_col0" class="data row1 col0" >0.000</td>
-      <td id="T_c6782_row1_col1" class="data row1 col1" >0.000</td>
-      <td id="T_c6782_row1_col2" class="data row1 col2" >0.000</td>
-      <td id="T_c6782_row1_col3" class="data row1 col3" >0.000</td>
-      <td id="T_c6782_row1_col4" class="data row1 col4" >0.000</td>
-      <td id="T_c6782_row1_col5" class="data row1 col5" >0.040</td>
-      <td id="T_c6782_row1_col6" class="data row1 col6" >0.000</td>
-      <td id="T_c6782_row1_col7" class="data row1 col7" >0.000</td>
-      <td id="T_c6782_row1_col8" class="data row1 col8" >0.000</td>
-      <td id="T_c6782_row1_col9" class="data row1 col9" >0.046</td>
+      <th id="T_709cd_level0_row1" class="row_heading level0 row1" >1</th>
+      <td id="T_709cd_row1_col0" class="data row1 col0" >0.000</td>
+      <td id="T_709cd_row1_col1" class="data row1 col1" >0.000</td>
+      <td id="T_709cd_row1_col2" class="data row1 col2" >0.000</td>
+      <td id="T_709cd_row1_col3" class="data row1 col3" >0.000</td>
+      <td id="T_709cd_row1_col4" class="data row1 col4" >0.000</td>
+      <td id="T_709cd_row1_col5" class="data row1 col5" >0.040</td>
+      <td id="T_709cd_row1_col6" class="data row1 col6" >0.000</td>
+      <td id="T_709cd_row1_col7" class="data row1 col7" >0.000</td>
+      <td id="T_709cd_row1_col8" class="data row1 col8" >0.000</td>
+      <td id="T_709cd_row1_col9" class="data row1 col9" >0.046</td>
     </tr>
     <tr>
-      <th id="T_c6782_level0_row2" class="row_heading level0 row2" >2</th>
-      <td id="T_c6782_row2_col0" class="data row2 col0" >0.000</td>
-      <td id="T_c6782_row2_col1" class="data row2 col1" >0.000</td>
-      <td id="T_c6782_row2_col2" class="data row2 col2" >0.000</td>
-      <td id="T_c6782_row2_col3" class="data row2 col3" >0.000</td>
-      <td id="T_c6782_row2_col4" class="data row2 col4" >0.000</td>
-      <td id="T_c6782_row2_col5" class="data row2 col5" >0.000</td>
-      <td id="T_c6782_row2_col6" class="data row2 col6" >0.000</td>
-      <td id="T_c6782_row2_col7" class="data row2 col7" >0.000</td>
-      <td id="T_c6782_row2_col8" class="data row2 col8" >0.000</td>
-      <td id="T_c6782_row2_col9" class="data row2 col9" >0.072</td>
+      <th id="T_709cd_level0_row2" class="row_heading level0 row2" >2</th>
+      <td id="T_709cd_row2_col0" class="data row2 col0" >0.000</td>
+      <td id="T_709cd_row2_col1" class="data row2 col1" >0.000</td>
+      <td id="T_709cd_row2_col2" class="data row2 col2" >0.000</td>
+      <td id="T_709cd_row2_col3" class="data row2 col3" >0.000</td>
+      <td id="T_709cd_row2_col4" class="data row2 col4" >0.000</td>
+      <td id="T_709cd_row2_col5" class="data row2 col5" >0.000</td>
+      <td id="T_709cd_row2_col6" class="data row2 col6" >0.000</td>
+      <td id="T_709cd_row2_col7" class="data row2 col7" >0.000</td>
+      <td id="T_709cd_row2_col8" class="data row2 col8" >0.000</td>
+      <td id="T_709cd_row2_col9" class="data row2 col9" >0.072</td>
     </tr>
     <tr>
-      <th id="T_c6782_level0_row3" class="row_heading level0 row3" >3</th>
-      <td id="T_c6782_row3_col0" class="data row3 col0" >0.000</td>
-      <td id="T_c6782_row3_col1" class="data row3 col1" >0.000</td>
-      <td id="T_c6782_row3_col2" class="data row3 col2" >0.000</td>
-      <td id="T_c6782_row3_col3" class="data row3 col3" >0.000</td>
-      <td id="T_c6782_row3_col4" class="data row3 col4" >0.000</td>
-      <td id="T_c6782_row3_col5" class="data row3 col5" >0.000</td>
-      <td id="T_c6782_row3_col6" class="data row3 col6" >0.000</td>
-      <td id="T_c6782_row3_col7" class="data row3 col7" >0.000</td>
-      <td id="T_c6782_row3_col8" class="data row3 col8" >0.000</td>
-      <td id="T_c6782_row3_col9" class="data row3 col9" >0.029</td>
+      <th id="T_709cd_level0_row3" class="row_heading level0 row3" >3</th>
+      <td id="T_709cd_row3_col0" class="data row3 col0" >0.000</td>
+      <td id="T_709cd_row3_col1" class="data row3 col1" >0.000</td>
+      <td id="T_709cd_row3_col2" class="data row3 col2" >0.000</td>
+      <td id="T_709cd_row3_col3" class="data row3 col3" >0.000</td>
+      <td id="T_709cd_row3_col4" class="data row3 col4" >0.000</td>
+      <td id="T_709cd_row3_col5" class="data row3 col5" >0.000</td>
+      <td id="T_709cd_row3_col6" class="data row3 col6" >0.000</td>
+      <td id="T_709cd_row3_col7" class="data row3 col7" >0.000</td>
+      <td id="T_709cd_row3_col8" class="data row3 col8" >0.000</td>
+      <td id="T_709cd_row3_col9" class="data row3 col9" >0.029</td>
     </tr>
     <tr>
-      <th id="T_c6782_level0_row4" class="row_heading level0 row4" >4</th>
-      <td id="T_c6782_row4_col0" class="data row4 col0" >0.000</td>
-      <td id="T_c6782_row4_col1" class="data row4 col1" >0.000</td>
-      <td id="T_c6782_row4_col2" class="data row4 col2" >0.000</td>
-      <td id="T_c6782_row4_col3" class="data row4 col3" >0.000</td>
-      <td id="T_c6782_row4_col4" class="data row4 col4" >0.000</td>
-      <td id="T_c6782_row4_col5" class="data row4 col5" >0.000</td>
-      <td id="T_c6782_row4_col6" class="data row4 col6" >0.000</td>
-      <td id="T_c6782_row4_col7" class="data row4 col7" >0.000</td>
-      <td id="T_c6782_row4_col8" class="data row4 col8" >0.000</td>
-      <td id="T_c6782_row4_col9" class="data row4 col9" >0.000</td>
+      <th id="T_709cd_level0_row4" class="row_heading level0 row4" >4</th>
+      <td id="T_709cd_row4_col0" class="data row4 col0" >0.000</td>
+      <td id="T_709cd_row4_col1" class="data row4 col1" >0.000</td>
+      <td id="T_709cd_row4_col2" class="data row4 col2" >0.000</td>
+      <td id="T_709cd_row4_col3" class="data row4 col3" >0.000</td>
+      <td id="T_709cd_row4_col4" class="data row4 col4" >0.000</td>
+      <td id="T_709cd_row4_col5" class="data row4 col5" >0.000</td>
+      <td id="T_709cd_row4_col6" class="data row4 col6" >0.000</td>
+      <td id="T_709cd_row4_col7" class="data row4 col7" >0.000</td>
+      <td id="T_709cd_row4_col8" class="data row4 col8" >0.000</td>
+      <td id="T_709cd_row4_col9" class="data row4 col9" >0.000</td>
     </tr>
     <tr>
-      <th id="T_c6782_level0_row5" class="row_heading level0 row5" >5</th>
-      <td id="T_c6782_row5_col0" class="data row5 col0" >0.000</td>
-      <td id="T_c6782_row5_col1" class="data row5 col1" >0.000</td>
-      <td id="T_c6782_row5_col2" class="data row5 col2" >0.000</td>
-      <td id="T_c6782_row5_col3" class="data row5 col3" >0.000</td>
-      <td id="T_c6782_row5_col4" class="data row5 col4" >0.000</td>
-      <td id="T_c6782_row5_col5" class="data row5 col5" >0.000</td>
-      <td id="T_c6782_row5_col6" class="data row5 col6" >0.000</td>
-      <td id="T_c6782_row5_col7" class="data row5 col7" >0.000</td>
-      <td id="T_c6782_row5_col8" class="data row5 col8" >0.000</td>
-      <td id="T_c6782_row5_col9" class="data row5 col9" >0.023</td>
+      <th id="T_709cd_level0_row5" class="row_heading level0 row5" >5</th>
+      <td id="T_709cd_row5_col0" class="data row5 col0" >0.000</td>
+      <td id="T_709cd_row5_col1" class="data row5 col1" >0.000</td>
+      <td id="T_709cd_row5_col2" class="data row5 col2" >0.000</td>
+      <td id="T_709cd_row5_col3" class="data row5 col3" >0.000</td>
+      <td id="T_709cd_row5_col4" class="data row5 col4" >0.000</td>
+      <td id="T_709cd_row5_col5" class="data row5 col5" >0.000</td>
+      <td id="T_709cd_row5_col6" class="data row5 col6" >0.000</td>
+      <td id="T_709cd_row5_col7" class="data row5 col7" >0.000</td>
+      <td id="T_709cd_row5_col8" class="data row5 col8" >0.000</td>
+      <td id="T_709cd_row5_col9" class="data row5 col9" >0.023</td>
     </tr>
     <tr>
-      <th id="T_c6782_level0_row6" class="row_heading level0 row6" >6</th>
-      <td id="T_c6782_row6_col0" class="data row6 col0" >0.000</td>
-      <td id="T_c6782_row6_col1" class="data row6 col1" >0.000</td>
-      <td id="T_c6782_row6_col2" class="data row6 col2" >0.136</td>
-      <td id="T_c6782_row6_col3" class="data row6 col3" >0.000</td>
-      <td id="T_c6782_row6_col4" class="data row6 col4" >0.000</td>
-      <td id="T_c6782_row6_col5" class="data row6 col5" >0.000</td>
-      <td id="T_c6782_row6_col6" class="data row6 col6" >0.000</td>
-      <td id="T_c6782_row6_col7" class="data row6 col7" >0.000</td>
-      <td id="T_c6782_row6_col8" class="data row6 col8" >0.000</td>
-      <td id="T_c6782_row6_col9" class="data row6 col9" >0.000</td>
+      <th id="T_709cd_level0_row6" class="row_heading level0 row6" >6</th>
+      <td id="T_709cd_row6_col0" class="data row6 col0" >0.000</td>
+      <td id="T_709cd_row6_col1" class="data row6 col1" >0.000</td>
+      <td id="T_709cd_row6_col2" class="data row6 col2" >0.136</td>
+      <td id="T_709cd_row6_col3" class="data row6 col3" >0.000</td>
+      <td id="T_709cd_row6_col4" class="data row6 col4" >0.000</td>
+      <td id="T_709cd_row6_col5" class="data row6 col5" >0.000</td>
+      <td id="T_709cd_row6_col6" class="data row6 col6" >0.000</td>
+      <td id="T_709cd_row6_col7" class="data row6 col7" >0.000</td>
+      <td id="T_709cd_row6_col8" class="data row6 col8" >0.000</td>
+      <td id="T_709cd_row6_col9" class="data row6 col9" >0.000</td>
     </tr>
     <tr>
-      <th id="T_c6782_level0_row7" class="row_heading level0 row7" >7</th>
-      <td id="T_c6782_row7_col0" class="data row7 col0" >0.000</td>
-      <td id="T_c6782_row7_col1" class="data row7 col1" >0.000</td>
-      <td id="T_c6782_row7_col2" class="data row7 col2" >0.000</td>
-      <td id="T_c6782_row7_col3" class="data row7 col3" >0.000</td>
-      <td id="T_c6782_row7_col4" class="data row7 col4" >0.000</td>
-      <td id="T_c6782_row7_col5" class="data row7 col5" >0.032</td>
-      <td id="T_c6782_row7_col6" class="data row7 col6" >0.000</td>
-      <td id="T_c6782_row7_col7" class="data row7 col7" >0.000</td>
-      <td id="T_c6782_row7_col8" class="data row7 col8" >0.000</td>
-      <td id="T_c6782_row7_col9" class="data row7 col9" >0.018</td>
+      <th id="T_709cd_level0_row7" class="row_heading level0 row7" >7</th>
+      <td id="T_709cd_row7_col0" class="data row7 col0" >0.000</td>
+      <td id="T_709cd_row7_col1" class="data row7 col1" >0.000</td>
+      <td id="T_709cd_row7_col2" class="data row7 col2" >0.000</td>
+      <td id="T_709cd_row7_col3" class="data row7 col3" >0.000</td>
+      <td id="T_709cd_row7_col4" class="data row7 col4" >0.000</td>
+      <td id="T_709cd_row7_col5" class="data row7 col5" >0.032</td>
+      <td id="T_709cd_row7_col6" class="data row7 col6" >0.000</td>
+      <td id="T_709cd_row7_col7" class="data row7 col7" >0.000</td>
+      <td id="T_709cd_row7_col8" class="data row7 col8" >0.000</td>
+      <td id="T_709cd_row7_col9" class="data row7 col9" >0.018</td>
     </tr>
     <tr>
-      <th id="T_c6782_level0_row8" class="row_heading level0 row8" >8</th>
-      <td id="T_c6782_row8_col0" class="data row8 col0" >0.000</td>
-      <td id="T_c6782_row8_col1" class="data row8 col1" >0.000</td>
-      <td id="T_c6782_row8_col2" class="data row8 col2" >0.000</td>
-      <td id="T_c6782_row8_col3" class="data row8 col3" >0.000</td>
-      <td id="T_c6782_row8_col4" class="data row8 col4" >0.000</td>
-      <td id="T_c6782_row8_col5" class="data row8 col5" >0.035</td>
-      <td id="T_c6782_row8_col6" class="data row8 col6" >0.000</td>
-      <td id="T_c6782_row8_col7" class="data row8 col7" >0.000</td>
-      <td id="T_c6782_row8_col8" class="data row8 col8" >0.000</td>
-      <td id="T_c6782_row8_col9" class="data row8 col9" >0.000</td>
+      <th id="T_709cd_level0_row8" class="row_heading level0 row8" >8</th>
+      <td id="T_709cd_row8_col0" class="data row8 col0" >0.000</td>
+      <td id="T_709cd_row8_col1" class="data row8 col1" >0.000</td>
+      <td id="T_709cd_row8_col2" class="data row8 col2" >0.000</td>
+      <td id="T_709cd_row8_col3" class="data row8 col3" >0.000</td>
+      <td id="T_709cd_row8_col4" class="data row8 col4" >0.000</td>
+      <td id="T_709cd_row8_col5" class="data row8 col5" >0.035</td>
+      <td id="T_709cd_row8_col6" class="data row8 col6" >0.000</td>
+      <td id="T_709cd_row8_col7" class="data row8 col7" >0.000</td>
+      <td id="T_709cd_row8_col8" class="data row8 col8" >0.000</td>
+      <td id="T_709cd_row8_col9" class="data row8 col9" >0.000</td>
     </tr>
     <tr>
-      <th id="T_c6782_level0_row9" class="row_heading level0 row9" >9</th>
-      <td id="T_c6782_row9_col0" class="data row9 col0" >0.000</td>
-      <td id="T_c6782_row9_col1" class="data row9 col1" >0.000</td>
-      <td id="T_c6782_row9_col2" class="data row9 col2" >0.000</td>
-      <td id="T_c6782_row9_col3" class="data row9 col3" >0.000</td>
-      <td id="T_c6782_row9_col4" class="data row9 col4" >0.000</td>
-      <td id="T_c6782_row9_col5" class="data row9 col5" >0.000</td>
-      <td id="T_c6782_row9_col6" class="data row9 col6" >0.000</td>
-      <td id="T_c6782_row9_col7" class="data row9 col7" >0.000</td>
-      <td id="T_c6782_row9_col8" class="data row9 col8" >0.000</td>
-      <td id="T_c6782_row9_col9" class="data row9 col9" >0.000</td>
+      <th id="T_709cd_level0_row9" class="row_heading level0 row9" >9</th>
+      <td id="T_709cd_row9_col0" class="data row9 col0" >0.000</td>
+      <td id="T_709cd_row9_col1" class="data row9 col1" >0.000</td>
+      <td id="T_709cd_row9_col2" class="data row9 col2" >0.000</td>
+      <td id="T_709cd_row9_col3" class="data row9 col3" >0.000</td>
+      <td id="T_709cd_row9_col4" class="data row9 col4" >0.000</td>
+      <td id="T_709cd_row9_col5" class="data row9 col5" >0.000</td>
+      <td id="T_709cd_row9_col6" class="data row9 col6" >0.000</td>
+      <td id="T_709cd_row9_col7" class="data row9 col7" >0.000</td>
+      <td id="T_709cd_row9_col8" class="data row9 col8" >0.000</td>
+      <td id="T_709cd_row9_col9" class="data row9 col9" >0.000</td>
     </tr>
   </tbody>
 </table>
@@ -946,8 +948,8 @@ Dataset TF-IDF disimpan ke data/dataset_tfidf.xlsx
 </div>
 </div>
 <div class="cell_output docutils container">
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>PCA : (200, 104), variance dipertahankan 0.7985, waktu 0.163 detik
-SVD : (200, 105), variance dipertahankan 0.8003, waktu 0.456 detik
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>PCA : (200, 104), variance dipertahankan 0.7985, waktu 0.486 detik
+SVD : (200, 105), variance dipertahankan 0.8003, waktu 0.311 detik
 </pre></div>
 </div>
 </div>
@@ -1076,7 +1078,7 @@ Dataset SVD disimpan ke data/dataset_svd.xlsx : (200, 109)
       <td>104</td>
       <td>79.8%</td>
       <td>Ya (.toarray())</td>
-      <td>0.163</td>
+      <td>0.486</td>
     </tr>
     <tr>
       <th>2</th>
@@ -1084,11 +1086,34 @@ Dataset SVD disimpan ke data/dataset_svd.xlsx : (200, 109)
       <td>105</td>
       <td>80.0%</td>
       <td>Tidak (langsung sparse)</td>
-      <td>0.456</td>
+      <td>0.311</td>
     </tr>
   </tbody>
 </table>
 </div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Simpan juga dalam format CSV untuk keperluan Orange Data Mining</span>
+<span class="n">dataset_pca_final</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">"../data/dataset_pca.csv"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">dataset_svd_final</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">"../data/dataset_svd.csv"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">dataset_tfidf_final</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">"../data/dataset_tfidf.csv"</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"File CSV berhasil disimpan:"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"  data/dataset_pca.csv  -&gt;"</span><span class="p">,</span> <span class="n">dataset_pca_final</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"  data/dataset_svd.csv  -&gt;"</span><span class="p">,</span> <span class="n">dataset_svd_final</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"  data/dataset_tfidf.csv -&gt;"</span><span class="p">,</span> <span class="n">dataset_tfidf_final</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>File CSV berhasil disimpan:
+  data/dataset_pca.csv  -&gt; (200, 108)
+  data/dataset_svd.csv  -&gt; (200, 109)
+  data/dataset_tfidf.csv -&gt; (200, 2560)
+</pre></div>
+</div>
+</div>
 </div>
 <ul class="simple">
 <li><p><strong>Dataset TF-IDF</strong> (<code class="docutils literal notranslate"><span class="pre">data/dataset_tfidf.xlsx</span></code>): representasi penuh, 200 dokumen x seluruh kata unik.</p></li>
@@ -1130,20 +1155,20 @@ Dataset SVD disimpan ke data/dataset_svd.xlsx : (200, 109)
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="Preprocessing.html"
+       href="Preprocessing_Ablation.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Text Preprocessing</p>
+        <p class="prev-next-title">Perbandingan Preprocessing terhadap Performa Klasifikasi</p>
       </div>
     </a>
     <a class="right-next"
-       href="Modeling.html"
+       href="Skipgram.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">Modeling</p>
+        <p class="prev-next-title">Word Embedding: Skip-gram Manual dengan Jaringan Saraf Tiruan</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>

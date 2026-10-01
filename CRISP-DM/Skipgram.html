@@ -1,0 +1,1748 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+    <title>Word Embedding: Skip-gram Manual dengan Jaringan Saraf Tiruan &#8212; PPW - Web Search &amp; Mining</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" href="../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.4510f1fc1dee50b3e5859aac5469c37c29e427902b24a333a5f9fcb2f0b3ac41.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/design-style.4045f2051d55cab465a707391d5b2007.min.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/clipboard.min.js"></script>
+    <script src="../_static/copybutton.js"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"
+const thebe_selector = ".thebe,.cell"
+const thebe_selector_input = "pre"
+const thebe_selector_output = ".output, .cell_output"
+</script>
+    <script async="async" src="../_static/sphinx-thebe.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'CRISP-DM/Skipgram';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Modeling" href="Modeling.html" />
+    <link rel="prev" title="Text Vectorization: TF-IDF, One-Hot Encoding, &amp; Reduksi Dimensi (PCA vs SVD)" href="Vectorization.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../intro.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.jpeg" class="logo__image only-light" alt="PPW - Web Search & Mining - Home"/>
+    <script>document.write(`<img src="../_static/logo.jpeg" class="logo__image only-dark" alt="PPW - Web Search & Mining - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../intro.html">
+                    PPW - Web Search & Mining
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="Business.html">Business Understanding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="EDA.html">Data Understanding</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Input.html">Data Preparation (Crawling)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Preprocessing.html">Text Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Preprocessing_Ablation.html">Perbandingan Preprocessing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Vectorization.html">Text Vectorization</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Word Embedding (Skip-gram)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Output.html">Evaluation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Production.html">Deployment</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+<a href="https://github.com/haninhammoud01/ppw" target="_blank"
+   class="btn btn-sm btn-source-repository-button"
+   title="Source repository"
+   data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+
+</a>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/CRISP-DM/Skipgram.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Word Embedding: Skip-gram Manual dengan Jaringan Saraf Tiruan</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ambil-3-kalimat-dari-dataset">1. Ambil 3 Kalimat dari Dataset</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pembersihan-ringan-tokenisasi">Pembersihan Ringan &amp; Tokenisasi</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bangun-vocabulary">2. Bangun Vocabulary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bangun-pasangan-target-context-skip-gram">3. Bangun Pasangan (Target, Context) - Skip-gram</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#one-hot-encoding-x-target-dan-y-context">4. One-Hot Encoding: X (Target) dan y (Context)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#arsitektur-jaringan-saraf-tiruan">5. Arsitektur Jaringan Saraf Tiruan</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uji-forward-pass-sebelum-training-bobot-masih-acak">Uji Forward Pass Sebelum Training (Bobot Masih Acak)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-forward-pass-hitung-loss-backpropagation">6. Training: Forward Pass, Hitung Loss, Backpropagation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bandingkan-prediksi-sebelum-vs-sesudah-training">Bandingkan Prediksi Sebelum vs Sesudah Training</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hasil-akhir-vektor-kata-w1-ukuran-v-x-3">7. Hasil Akhir: Vektor Kata (W1, ukuran V x 3)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kata-paling-mirip-cosine-similarity">Kata Paling Mirip (Cosine Similarity)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-embedding-3-dimensi-diproyeksikan-ke-2d-dengan-pca">Visualisasi Embedding (3 Dimensi -&gt; Diproyeksikan ke 2D dengan PCA)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ringkasan">Ringkasan</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="word-embedding-skip-gram-manual-dengan-jaringan-saraf-tiruan">
+<h1>Word Embedding: Skip-gram Manual dengan Jaringan Saraf Tiruan<a class="headerlink" href="#word-embedding-skip-gram-manual-dengan-jaringan-saraf-tiruan" title="Permalink to this heading">#</a></h1>
+<p>Notebook ini membangun representasi vektor kata (<em>word embedding</em>) menggunakan arsitektur <strong>Skip-gram</strong>, dilatih dari nol menggunakan jaringan saraf tiruan sederhana (murni <code class="docutils literal notranslate"><span class="pre">numpy</span></code>, tanpa library embedding siap pakai), sesuai arahan: arsitektur harus terlihat eksplisit - matriks bobot Input-&gt;Hidden berukuran <code class="docutils literal notranslate"><span class="pre">V</span> <span class="pre">x</span> <span class="pre">3</span></code> dan Hidden-&gt;Output berukuran <code class="docutils literal notranslate"><span class="pre">3</span> <span class="pre">x</span> <span class="pre">V</span></code> (dimensi embedding = 3).</p>
+<p><strong>Alur:</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">3</span> <span class="n">kalimat</span> <span class="n">dari</span> <span class="n">dataset</span>
+        <span class="o">|</span>
+   <span class="n">Tokenisasi</span> <span class="o">&amp;</span> <span class="n">bangun</span> <span class="n">vocabulary</span> <span class="p">(</span><span class="n">ukuran</span> <span class="n">V</span><span class="p">)</span>
+        <span class="o">|</span>
+   <span class="n">Bangun</span> <span class="n">pasangan</span> <span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span> <span class="o">-</span> <span class="n">Skip</span><span class="o">-</span><span class="n">gram</span>
+        <span class="o">|</span>
+   <span class="n">One</span><span class="o">-</span><span class="n">Hot</span> <span class="n">Encoding</span> <span class="o">-&gt;</span> <span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="p">(</span><span class="n">target</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">y</span> <span class="p">(</span><span class="n">context</span><span class="p">)</span>
+        <span class="o">|</span>
+   <span class="n">Jaringan</span> <span class="n">Saraf</span><span class="p">:</span> <span class="n">Input</span> <span class="p">(</span><span class="n">V</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Hidden</span><span class="o">/</span><span class="n">Embedding</span> <span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Output</span> <span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">softmax</span><span class="p">)</span>
+        <span class="o">|</span>
+   <span class="n">Training</span> <span class="p">(</span><span class="n">forward</span> <span class="k">pass</span><span class="p">,</span> <span class="n">hitung</span> <span class="n">loss</span><span class="p">,</span> <span class="n">backpropagation</span><span class="p">)</span>
+        <span class="o">|</span>
+   <span class="n">Ambil</span> <span class="n">bobot</span> <span class="n">Hidden</span> <span class="n">Layer</span> <span class="p">(</span><span class="n">W1</span><span class="p">,</span> <span class="n">ukuran</span> <span class="n">V</span> <span class="n">x</span> <span class="mi">3</span><span class="p">)</span> <span class="o">=</span> <span class="n">Vektor</span> <span class="n">Kata</span>
+</pre></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="ambil-3-kalimat-dari-dataset">
+<h2>1. Ambil 3 Kalimat dari Dataset<a class="headerlink" href="#ambil-3-kalimat-dari-dataset" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s2">"../data/dataset_berita_200.xlsx"</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">pecah_kalimat</span><span class="p">(</span><span class="n">teks</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">[</span><span class="n">k</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="sa">r</span><span class="s2">"(?&lt;=[.!?])\s+"</span><span class="p">,</span> <span class="n">teks</span><span class="p">)</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">&gt;=</span> <span class="mi">5</span><span class="p">]</span>
+
+<span class="n">sumber</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">"sport"</span><span class="p">),</span> <span class="p">(</span><span class="mi">50</span><span class="p">,</span> <span class="s2">"sport"</span><span class="p">),</span> <span class="p">(</span><span class="mi">101</span><span class="p">,</span> <span class="s2">"finance"</span><span class="p">)]</span>
+
+<span class="n">kalimat_terpilih</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">doc_id</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">sumber</span><span class="p">:</span>
+    <span class="n">teks_artikel</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s2">"id"</span><span class="p">]</span> <span class="o">==</span> <span class="n">doc_id</span><span class="p">][</span><span class="s2">"isi_berita"</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">kalimat_pertama</span> <span class="o">=</span> <span class="n">pecah_kalimat</span><span class="p">(</span><span class="n">teks_artikel</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">kalimat_terpilih</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">"id"</span><span class="p">:</span> <span class="n">doc_id</span><span class="p">,</span> <span class="s2">"label"</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span> <span class="s2">"kalimat"</span><span class="p">:</span> <span class="n">kalimat_pertama</span><span class="p">})</span>
+
+<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">kalimat_terpilih</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">"[id=</span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">] </span><span class="si">{}</span><span class="s2">"</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s2">"id"</span><span class="p">],</span> <span class="n">k</span><span class="p">[</span><span class="s2">"label"</span><span class="p">],</span> <span class="n">k</span><span class="p">[</span><span class="s2">"kalimat"</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[id=1, sport] Chef de Mission (CdM) Indonesia Todotua Pasaribu terus memonitoring kondisi di Nagoya, Jepang jelang Asian Games 2026.
+[id=50, sport] Banyak orang urung coba yoga karena mikir harus lentur dulu atau paham semua gerakan sejak awal.
+[id=101, finance] PT NexAl Digital Infrastruktur Tbk (MGLV) yang sebelumnya bernama PT Panca Anugrah Wisesa Tbk, resmi mengubah fokus bisnis usaha.
+</pre></div>
+</div>
+</div>
+</div>
+<section id="pembersihan-ringan-tokenisasi">
+<h3>Pembersihan Ringan &amp; Tokenisasi<a class="headerlink" href="#pembersihan-ringan-tokenisasi" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">bersihkan_ringan</span><span class="p">(</span><span class="n">teks</span><span class="p">):</span>
+    <span class="n">teks</span> <span class="o">=</span> <span class="n">teks</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">teks</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"[^a-z\s]"</span><span class="p">,</span> <span class="s2">" "</span><span class="p">,</span> <span class="n">teks</span><span class="p">)</span>
+    <span class="n">teks</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">"\s+"</span><span class="p">,</span> <span class="s2">" "</span><span class="p">,</span> <span class="n">teks</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">teks</span>
+
+<span class="n">daftar_kalimat_token</span> <span class="o">=</span> <span class="p">[</span><span class="n">bersihkan_ringan</span><span class="p">(</span><span class="n">k</span><span class="p">[</span><span class="s2">"kalimat"</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">kalimat_terpilih</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">tokens</span> <span class="ow">in</span> <span class="n">daftar_kalimat_token</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">tokens</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>['chef', 'de', 'mission', 'cdm', 'indonesia', 'todotua', 'pasaribu', 'terus', 'memonitoring', 'kondisi', 'di', 'nagoya', 'jepang', 'jelang', 'asian', 'games']
+['banyak', 'orang', 'urung', 'coba', 'yoga', 'karena', 'mikir', 'harus', 'lentur', 'dulu', 'atau', 'paham', 'semua', 'gerakan', 'sejak', 'awal']
+['pt', 'nexal', 'digital', 'infrastruktur', 'tbk', 'mglv', 'yang', 'sebelumnya', 'bernama', 'pt', 'panca', 'anugrah', 'wisesa', 'tbk', 'resmi', 'mengubah', 'fokus', 'bisnis', 'usaha']
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="bangun-vocabulary">
+<h2>2. Bangun Vocabulary<a class="headerlink" href="#bangun-vocabulary" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">semua_token</span> <span class="o">=</span> <span class="p">[</span><span class="n">kata</span> <span class="k">for</span> <span class="n">kalimat</span> <span class="ow">in</span> <span class="n">daftar_kalimat_token</span> <span class="k">for</span> <span class="n">kata</span> <span class="ow">in</span> <span class="n">kalimat</span><span class="p">]</span>
+<span class="n">vocab</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">semua_token</span><span class="p">))</span>
+<span class="n">word2idx</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">w</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vocab</span><span class="p">)}</span>
+<span class="n">idx2word</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">w</span> <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">word2idx</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+<span class="n">V</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Ukuran vocabulary (V): </span><span class="si">{</span><span class="n">V</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">vocab</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ukuran vocabulary (V): 49
+['anugrah', 'asian', 'atau', 'awal', 'banyak', 'bernama', 'bisnis', 'cdm', 'chef', 'coba', 'de', 'di', 'digital', 'dulu', 'fokus', 'games', 'gerakan', 'harus', 'indonesia', 'infrastruktur', 'jelang', 'jepang', 'karena', 'kondisi', 'lentur', 'memonitoring', 'mengubah', 'mglv', 'mikir', 'mission', 'nagoya', 'nexal', 'orang', 'paham', 'panca', 'pasaribu', 'pt', 'resmi', 'sebelumnya', 'sejak', 'semua', 'tbk', 'terus', 'todotua', 'urung', 'usaha', 'wisesa', 'yang', 'yoga']
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="bangun-pasangan-target-context-skip-gram">
+<h2>3. Bangun Pasangan (Target, Context) - Skip-gram<a class="headerlink" href="#bangun-pasangan-target-context-skip-gram" title="Permalink to this heading">#</a></h2>
+<p>Untuk setiap kata (<em>target</em>), kata-kata di sekitarnya dalam jendela <code class="docutils literal notranslate"><span class="pre">window</span></code> menjadi <em>context</em>-nya. Pasangan dibuat per kalimat (tidak menyeberang antar kalimat).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">buat_pasangan_skipgram</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="n">pasangan</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">target</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">tokens</span><span class="p">):</span>
+        <span class="n">mulai</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">i</span> <span class="o">-</span> <span class="n">window</span><span class="p">)</span>
+        <span class="n">akhir</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tokens</span><span class="p">),</span> <span class="n">i</span> <span class="o">+</span> <span class="n">window</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">mulai</span><span class="p">,</span> <span class="n">akhir</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">j</span> <span class="o">!=</span> <span class="n">i</span><span class="p">:</span>
+                <span class="n">pasangan</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">target</span><span class="p">,</span> <span class="n">tokens</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="n">pasangan</span>
+
+<span class="n">WINDOW</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">semua_pasangan</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">tokens</span> <span class="ow">in</span> <span class="n">daftar_kalimat_token</span><span class="p">:</span>
+    <span class="n">semua_pasangan</span> <span class="o">+=</span> <span class="n">buat_pasangan_skipgram</span><span class="p">(</span><span class="n">tokens</span><span class="p">,</span> <span class="n">window</span><span class="o">=</span><span class="n">WINDOW</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Total pasangan (target, context): </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">semua_pasangan</span><span class="p">)</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">semua_pasangan</span><span class="p">[:</span><span class="mi">10</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  target='</span><span class="si">{</span><span class="n">t</span><span class="si">:</span><span class="s2">12</span><span class="si">}</span><span class="s2">' -&gt; context='</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">'"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total pasangan (target, context): 186
+  target='chef        ' -&gt; context='de'
+  target='chef        ' -&gt; context='mission'
+  target='de          ' -&gt; context='chef'
+  target='de          ' -&gt; context='mission'
+  target='de          ' -&gt; context='cdm'
+  target='mission     ' -&gt; context='chef'
+  target='mission     ' -&gt; context='de'
+  target='mission     ' -&gt; context='cdm'
+  target='mission     ' -&gt; context='indonesia'
+  target='cdm         ' -&gt; context='de'
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="one-hot-encoding-x-target-dan-y-context">
+<h2>4. One-Hot Encoding: X (Target) dan y (Context)<a class="headerlink" href="#one-hot-encoding-x-target-dan-y-context" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>X[i]</strong>: one-hot vector dari kata <em>target</em> pada pasangan ke-i (ukuran V)</p></li>
+<li><p><strong>y[i]</strong>: one-hot vector dari kata <em>context</em> pada pasangan ke-i (ukuran V)</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">one_hot</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+    <span class="n">vektor</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+    <span class="n">vektor</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="n">vektor</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">one_hot</span><span class="p">(</span><span class="n">word2idx</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">V</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">semua_pasangan</span><span class="p">])</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">one_hot</span><span class="p">(</span><span class="n">word2idx</span><span class="p">[</span><span class="n">c</span><span class="p">],</span> <span class="n">V</span><span class="p">)</span> <span class="k">for</span> <span class="n">t</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">semua_pasangan</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Bentuk X (target) :"</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="s2">"-&gt; (jumlah pasangan, V)"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Bentuk y (context):"</span><span class="p">,</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Bentuk X (target) : (186, 49) -&gt; (jumlah pasangan, V)
+Bentuk y (context): (186, 49)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">target_i</span><span class="p">,</span> <span class="n">context_i</span> <span class="o">=</span> <span class="n">semua_pasangan</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Contoh pasangan ke-</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">: target='</span><span class="si">{</span><span class="n">target_i</span><span class="si">}</span><span class="s2">', context='</span><span class="si">{</span><span class="n">context_i</span><span class="si">}</span><span class="s2">'</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"X[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">] (one-hot target, panjang </span><span class="si">{</span><span class="n">V</span><span class="si">}</span><span class="s2">):"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">X</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"</span><span class="se">\n</span><span class="s2">y[</span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2">] (one-hot context, panjang </span><span class="si">{</span><span class="n">V</span><span class="si">}</span><span class="s2">):"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">y</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Contoh pasangan ke-0: target='chef', context='de'
+
+X[0] (one-hot target, panjang 49):
+[0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0]
+
+y[0] (one-hot context, panjang 49):
+[0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0 0 0]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="arsitektur-jaringan-saraf-tiruan">
+<h2>5. Arsitektur Jaringan Saraf Tiruan<a class="headerlink" href="#arsitektur-jaringan-saraf-tiruan" title="Permalink to this heading">#</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Input</span> <span class="p">(</span><span class="n">V</span><span class="p">)</span>  <span class="o">--</span><span class="p">[</span><span class="n">W1</span><span class="p">:</span> <span class="n">V</span> <span class="n">x</span> <span class="mi">3</span><span class="p">]</span><span class="o">--&gt;</span>  <span class="n">Hidden</span><span class="o">/</span><span class="n">Embedding</span> <span class="p">(</span><span class="mi">3</span><span class="p">)</span>  <span class="o">--</span><span class="p">[</span><span class="n">W2</span><span class="p">:</span> <span class="mi">3</span> <span class="n">x</span> <span class="n">V</span><span class="p">]</span><span class="o">--&gt;</span>  <span class="n">Output</span> <span class="p">(</span><span class="n">V</span><span class="p">)</span>  <span class="o">--</span><span class="p">[</span><span class="n">softmax</span><span class="p">]</span><span class="o">--&gt;</span>  <span class="n">Probabilitas</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p><strong>W1</strong> berukuran <code class="docutils literal notranslate"><span class="pre">V</span> <span class="pre">x</span> <span class="pre">3</span></code>: setiap baris menjadi vektor embedding (3 dimensi) untuk kata yang bersangkutan setelah training.</p></li>
+<li><p><strong>W2</strong> berukuran <code class="docutils literal notranslate"><span class="pre">3</span> <span class="pre">x</span> <span class="pre">V</span></code>: memetakan kembali dari ruang embedding ke ruang vocabulary untuk memprediksi kata context.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">DIM_EMBEDDING</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># sesuai spesifikasi: hidden layer berdimensi 3</span>
+
+<span class="n">W1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">V</span><span class="p">,</span> <span class="n">DIM_EMBEDDING</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span>   <span class="c1"># Input -&gt; Hidden,  ukuran V x 3</span>
+<span class="n">W2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randn</span><span class="p">(</span><span class="n">DIM_EMBEDDING</span><span class="p">,</span> <span class="n">V</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.1</span>   <span class="c1"># Hidden -&gt; Output, ukuran 3 x V</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Ukuran W1 (Input -&gt; Hidden) :"</span><span class="p">,</span> <span class="n">W1</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Ukuran W2 (Hidden -&gt; Output):"</span><span class="p">,</span> <span class="n">W2</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Ukuran W1 (Input -&gt; Hidden) : (49, 3)
+Ukuran W2 (Hidden -&gt; Output): (3, 49)
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">softmax</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="n">x_geser</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="n">x_geser</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">e</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">keepdims</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">forward_pass</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">W1</span><span class="p">,</span> <span class="n">W2</span><span class="p">):</span>
+    <span class="n">h</span> <span class="o">=</span> <span class="n">X</span> <span class="o">@</span> <span class="n">W1</span>          <span class="c1"># (N, 3)  - proyeksi ke ruang embedding</span>
+    <span class="n">u</span> <span class="o">=</span> <span class="n">h</span> <span class="o">@</span> <span class="n">W2</span>          <span class="c1"># (N, V)  - skor mentah tiap kata di vocabulary</span>
+    <span class="n">y_pred</span> <span class="o">=</span> <span class="n">softmax</span><span class="p">(</span><span class="n">u</span><span class="p">)</span> <span class="c1"># (N, V)  - probabilitas tiap kata sebagai context</span>
+    <span class="k">return</span> <span class="n">h</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">y_pred</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="uji-forward-pass-sebelum-training-bobot-masih-acak">
+<h3>Uji Forward Pass Sebelum Training (Bobot Masih Acak)<a class="headerlink" href="#uji-forward-pass-sebelum-training-bobot-masih-acak" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">h_awal</span><span class="p">,</span> <span class="n">u_awal</span><span class="p">,</span> <span class="n">y_pred_awal</span> <span class="o">=</span> <span class="n">forward_pass</span><span class="p">(</span><span class="n">X</span><span class="p">[:</span><span class="mi">1</span><span class="p">],</span> <span class="n">W1</span><span class="p">,</span> <span class="n">W2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Prediksi probabilitas sebelum training (untuk X[0]):"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">y_pred_awal</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">3</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Prediksi tertinggi: '</span><span class="si">{</span><span class="n">idx2word</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">y_pred_awal</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span><span class="si">}</span><span class="s2">' (masih acak/belum bermakna)"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Prediksi probabilitas sebelum training (untuk X[0]):
+[0.021 0.02  0.021 0.02  0.02  0.021 0.02  0.02  0.02  0.021 0.02  0.02
+ 0.021 0.02  0.02  0.021 0.021 0.021 0.021 0.02  0.02  0.02  0.021 0.021
+ 0.021 0.02  0.021 0.02  0.02  0.021 0.02  0.02  0.02  0.02  0.021 0.021
+ 0.02  0.02  0.021 0.02  0.021 0.021 0.02  0.02  0.02  0.02  0.021 0.021
+ 0.02 ]
+Prediksi tertinggi: 'harus' (masih acak/belum bermakna)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="training-forward-pass-hitung-loss-backpropagation">
+<h2>6. Training: Forward Pass, Hitung Loss, Backpropagation<a class="headerlink" href="#training-forward-pass-hitung-loss-backpropagation" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">tqdm</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">hitung_loss</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">y_target</span><span class="p">):</span>
+    <span class="k">return</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">y_target</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">y_pred</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">y_target</span><span class="p">)</span>
+
+<span class="n">LEARNING_RATE</span> <span class="o">=</span> <span class="mf">0.5</span>   <span class="c1"># dari 0.05, dinaikkan 10x</span>
+<span class="n">EPOCHS</span> <span class="o">=</span> <span class="mi">5000</span>          <span class="c1"># dari 1000, dinaikkan 5x</span>
+<span class="n">riwayat_loss</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="n">progress</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">EPOCHS</span><span class="p">),</span> <span class="n">desc</span><span class="o">=</span><span class="s2">"Training Skip-gram"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="n">progress</span><span class="p">:</span>
+    <span class="n">h</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">y_pred</span> <span class="o">=</span> <span class="n">forward_pass</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">W1</span><span class="p">,</span> <span class="n">W2</span><span class="p">)</span>
+    <span class="n">loss</span> <span class="o">=</span> <span class="n">hitung_loss</span><span class="p">(</span><span class="n">y_pred</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+    <span class="n">riwayat_loss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loss</span><span class="p">)</span>
+
+    <span class="n">dU</span> <span class="o">=</span> <span class="p">(</span><span class="n">y_pred</span> <span class="o">-</span> <span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>      <span class="c1"># (N, V)</span>
+    <span class="n">dW2</span> <span class="o">=</span> <span class="n">h</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">dU</span>                  <span class="c1"># (3, V)</span>
+    <span class="n">dH</span> <span class="o">=</span> <span class="n">dU</span> <span class="o">@</span> <span class="n">W2</span><span class="o">.</span><span class="n">T</span>                  <span class="c1"># (N, 3)</span>
+    <span class="n">dW1</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">dH</span>                  <span class="c1"># (V, 3)</span>
+
+    <span class="n">W1</span> <span class="o">-=</span> <span class="n">LEARNING_RATE</span> <span class="o">*</span> <span class="n">dW1</span>
+    <span class="n">W2</span> <span class="o">-=</span> <span class="n">LEARNING_RATE</span> <span class="o">*</span> <span class="n">dW2</span>
+
+    <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="mi">20</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">epoch</span> <span class="o">==</span> <span class="n">EPOCHS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="n">progress</span><span class="o">.</span><span class="n">set_postfix</span><span class="p">({</span><span class="s2">"loss"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"</span><span class="si">{</span><span class="n">loss</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">})</span>
+
+<span class="n">penurunan</span> <span class="o">=</span> <span class="p">(</span><span class="n">riwayat_loss</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">riwayat_loss</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="n">riwayat_loss</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">100</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loss awal  : </span><span class="si">{</span><span class="n">riwayat_loss</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Loss akhir : </span><span class="si">{</span><span class="n">riwayat_loss</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Penurunan  : </span><span class="si">{</span><span class="n">penurunan</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">%"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Training Skip-gram: 100%|██████████| 5000/5000 [00:03&lt;00:00, 1429.05it/s, loss=1.7131]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Loss awal  : 3.8702
+Loss akhir : 1.7131
+Penurunan  : 55.7%
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">riwayat_loss</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">"#4C72B0"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"Epoch"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"Loss (Cross-Entropy)"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Kurva Loss Selama Training Skip-gram Manual"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/8a789f25b4a9347a3dab92e1b5273be713a74d0c21be238de92fe43c23220558.png" src="../_images/8a789f25b4a9347a3dab92e1b5273be713a74d0c21be238de92fe43c23220558.png" />
+</div>
+</div>
+<section id="bandingkan-prediksi-sebelum-vs-sesudah-training">
+<h3>Bandingkan Prediksi Sebelum vs Sesudah Training<a class="headerlink" href="#bandingkan-prediksi-sebelum-vs-sesudah-training" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">y_pred_akhir</span> <span class="o">=</span> <span class="n">forward_pass</span><span class="p">(</span><span class="n">X</span><span class="p">[:</span><span class="mi">1</span><span class="p">],</span> <span class="n">W1</span><span class="p">,</span> <span class="n">W2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Pasangan uji: target='</span><span class="si">{</span><span class="n">target_i</span><span class="si">}</span><span class="s2">', context asli='</span><span class="si">{</span><span class="n">context_i</span><span class="si">}</span><span class="s2">'</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"SEBELUM training - top 3 prediksi:"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">y_pred_awal</span><span class="p">[</span><span class="mi">0</span><span class="p">])[::</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="mi">3</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">idx2word</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="si">:</span><span class="s2">12</span><span class="si">}</span><span class="s2"> (probabilitas: </span><span class="si">{</span><span class="n">y_pred_awal</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">SESUDAH training - top 3 prediksi:"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">argsort</span><span class="p">(</span><span class="n">y_pred_akhir</span><span class="p">[</span><span class="mi">0</span><span class="p">])[::</span><span class="o">-</span><span class="mi">1</span><span class="p">][:</span><span class="mi">3</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">idx2word</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="si">:</span><span class="s2">12</span><span class="si">}</span><span class="s2"> (probabilitas: </span><span class="si">{</span><span class="n">y_pred_akhir</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">idx</span><span class="p">]</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Pasangan uji: target='chef', context asli='de'
+
+SEBELUM training - top 3 prediksi:
+  harus        (probabilitas: 0.021)
+  semua        (probabilitas: 0.021)
+  karena       (probabilitas: 0.021)
+
+SESUDAH training - top 3 prediksi:
+  de           (probabilitas: 0.518)
+  mission      (probabilitas: 0.421)
+  chef         (probabilitas: 0.032)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="hasil-akhir-vektor-kata-w1-ukuran-v-x-3">
+<h2>7. Hasil Akhir: Vektor Kata (W1, ukuran V x 3)<a class="headerlink" href="#hasil-akhir-vektor-kata-w1-ukuran-v-x-3" title="Permalink to this heading">#</a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">embedding_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">W1</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">vocab</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">"dim_1"</span><span class="p">,</span> <span class="s2">"dim_2"</span><span class="p">,</span> <span class="s2">"dim_3"</span><span class="p">])</span>
+<span class="n">embedding_df</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">background_gradient</span><span class="p">(</span><span class="n">cmap</span><span class="o">=</span><span class="s2">"RdBu"</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">"</span><span class="si">{:.3f}</span><span class="s2">"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><style type="text/css">
+#T_50f8b_row0_col0 {
+  background-color: #f5a886;
+  color: #000000;
+}
+#T_50f8b_row0_col1 {
+  background-color: #760521;
+  color: #f1f1f1;
+}
+#T_50f8b_row0_col2, #T_50f8b_row24_col1, #T_50f8b_row26_col2 {
+  background-color: #a0cce2;
+  color: #000000;
+}
+#T_50f8b_row1_col0 {
+  background-color: #c7e0ed;
+  color: #000000;
+}
+#T_50f8b_row1_col1, #T_50f8b_row13_col0 {
+  background-color: #2267ac;
+  color: #f1f1f1;
+}
+#T_50f8b_row1_col2 {
+  background-color: #3e8cbf;
+  color: #f1f1f1;
+}
+#T_50f8b_row2_col0 {
+  background-color: #98c8e0;
+  color: #000000;
+}
+#T_50f8b_row2_col1 {
+  background-color: #3783bb;
+  color: #f1f1f1;
+}
+#T_50f8b_row2_col2, #T_50f8b_row29_col2 {
+  background-color: #f9efe9;
+  color: #000000;
+}
+#T_50f8b_row3_col0 {
+  background-color: #08366a;
+  color: #f1f1f1;
+}
+#T_50f8b_row3_col1, #T_50f8b_row11_col1 {
+  background-color: #c0dceb;
+  color: #000000;
+}
+#T_50f8b_row3_col2, #T_50f8b_row20_col1 {
+  background-color: #d5e7f1;
+  color: #000000;
+}
+#T_50f8b_row4_col0, #T_50f8b_row14_col2 {
+  background-color: #90c4dd;
+  color: #000000;
+}
+#T_50f8b_row4_col1, #T_50f8b_row37_col1 {
+  background-color: #d6604d;
+  color: #f1f1f1;
+}
+#T_50f8b_row4_col2 {
+  background-color: #db6b55;
+  color: #f1f1f1;
+}
+#T_50f8b_row5_col0, #T_50f8b_row45_col1 {
+  background-color: #ec9374;
+  color: #f1f1f1;
+}
+#T_50f8b_row5_col1, #T_50f8b_row8_col2, #T_50f8b_row18_col0 {
+  background-color: #e17860;
+  color: #f1f1f1;
+}
+#T_50f8b_row5_col2 {
+  background-color: #f9c4a9;
+  color: #000000;
+}
+#T_50f8b_row6_col0, #T_50f8b_row28_col1 {
+  background-color: #dae9f2;
+  color: #000000;
+}
+#T_50f8b_row6_col1 {
+  background-color: #e48066;
+  color: #f1f1f1;
+}
+#T_50f8b_row6_col2 {
+  background-color: #175290;
+  color: #f1f1f1;
+}
+#T_50f8b_row7_col0 {
+  background-color: #d05548;
+  color: #f1f1f1;
+}
+#T_50f8b_row7_col1 {
+  background-color: #8dc2dc;
+  color: #000000;
+}
+#T_50f8b_row7_col2, #T_50f8b_row9_col1 {
+  background-color: #f9c2a7;
+  color: #000000;
+}
+#T_50f8b_row8_col0 {
+  background-color: #f2a17f;
+  color: #000000;
+}
+#T_50f8b_row8_col1 {
+  background-color: #4997c5;
+  color: #f1f1f1;
+}
+#T_50f8b_row9_col0, #T_50f8b_row43_col2 {
+  background-color: #bbdaea;
+  color: #000000;
+}
+#T_50f8b_row9_col2, #T_50f8b_row22_col2 {
+  background-color: #ba2832;
+  color: #f1f1f1;
+}
+#T_50f8b_row10_col0 {
+  background-color: #fbccb4;
+  color: #000000;
+}
+#T_50f8b_row10_col1 {
+  background-color: #0f437b;
+  color: #f1f1f1;
+}
+#T_50f8b_row10_col2, #T_50f8b_row29_col0 {
+  background-color: #fbe3d4;
+  color: #000000;
+}
+#T_50f8b_row11_col0, #T_50f8b_row30_col0, #T_50f8b_row47_col2 {
+  background-color: #fce2d2;
+  color: #000000;
+}
+#T_50f8b_row11_col2 {
+  background-color: #8ac0db;
+  color: #000000;
+}
+#T_50f8b_row12_col0, #T_50f8b_row38_col2 {
+  background-color: #fcd3bc;
+  color: #000000;
+}
+#T_50f8b_row12_col1 {
+  background-color: #c2383a;
+  color: #f1f1f1;
+}
+#T_50f8b_row12_col2 {
+  background-color: #fdd9c4;
+  color: #000000;
+}
+#T_50f8b_row13_col1 {
+  background-color: #59a1ca;
+  color: #f1f1f1;
+}
+#T_50f8b_row13_col2 {
+  background-color: #eb9172;
+  color: #f1f1f1;
+}
+#T_50f8b_row14_col0, #T_50f8b_row18_col2 {
+  background-color: #e3edf3;
+  color: #000000;
+}
+#T_50f8b_row14_col1, #T_50f8b_row34_col1 {
+  background-color: #f8bfa4;
+  color: #000000;
+}
+#T_50f8b_row15_col0 {
+  background-color: #96c7df;
+  color: #000000;
+}
+#T_50f8b_row15_col1, #T_50f8b_row48_col0 {
+  background-color: #b3d6e8;
+  color: #000000;
+}
+#T_50f8b_row15_col2 {
+  background-color: #0d3f76;
+  color: #f1f1f1;
+}
+#T_50f8b_row16_col0 {
+  background-color: #65a9cf;
+  color: #f1f1f1;
+}
+#T_50f8b_row16_col1, #T_50f8b_row34_col2 {
+  background-color: #d4e6f1;
+  color: #000000;
+}
+#T_50f8b_row16_col2 {
+  background-color: #d2e6f0;
+  color: #000000;
+}
+#T_50f8b_row17_col0 {
+  background-color: #d8e9f1;
+  color: #000000;
+}
+#T_50f8b_row17_col1 {
+  background-color: #4f9bc7;
+  color: #f1f1f1;
+}
+#T_50f8b_row17_col2 {
+  background-color: #bb2a34;
+  color: #f1f1f1;
+}
+#T_50f8b_row18_col1 {
+  background-color: #3480b9;
+  color: #f1f1f1;
+}
+#T_50f8b_row19_col0 {
+  background-color: #fbe4d6;
+  color: #000000;
+}
+#T_50f8b_row19_col1 {
+  background-color: #ea8e70;
+  color: #f1f1f1;
+}
+#T_50f8b_row19_col2 {
+  background-color: #fce0d0;
+  color: #000000;
+}
+#T_50f8b_row20_col0 {
+  background-color: #e0ecf3;
+  color: #000000;
+}
+#T_50f8b_row20_col2 {
+  background-color: #7bb6d6;
+  color: #000000;
+}
+#T_50f8b_row21_col0 {
+  background-color: #ecf2f5;
+  color: #000000;
+}
+#T_50f8b_row21_col1 {
+  background-color: #cae1ee;
+  color: #000000;
+}
+#T_50f8b_row21_col2 {
+  background-color: #053061;
+  color: #f1f1f1;
+}
+#T_50f8b_row22_col0 {
+  background-color: #2a71b2;
+  color: #f1f1f1;
+}
+#T_50f8b_row22_col1 {
+  background-color: #deebf2;
+  color: #000000;
+}
+#T_50f8b_row23_col0 {
+  background-color: #e37e64;
+  color: #f1f1f1;
+}
+#T_50f8b_row23_col1 {
+  background-color: #d7e8f1;
+  color: #000000;
+}
+#T_50f8b_row23_col2, #T_50f8b_row30_col2 {
+  background-color: #2065ab;
+  color: #f1f1f1;
+}
+#T_50f8b_row24_col0, #T_50f8b_row42_col1 {
+  background-color: #87beda;
+  color: #000000;
+}
+#T_50f8b_row24_col2 {
+  background-color: #f6b191;
+  color: #000000;
+}
+#T_50f8b_row25_col0, #T_50f8b_row27_col2 {
+  background-color: #e58368;
+  color: #f1f1f1;
+}
+#T_50f8b_row25_col1 {
+  background-color: #3f8ec0;
+  color: #f1f1f1;
+}
+#T_50f8b_row25_col2 {
+  background-color: #408fc1;
+  color: #f1f1f1;
+}
+#T_50f8b_row26_col0 {
+  background-color: #a2cde3;
+  color: #000000;
+}
+#T_50f8b_row26_col1 {
+  background-color: #cb4942;
+  color: #f1f1f1;
+}
+#T_50f8b_row27_col0 {
+  background-color: #fcdecd;
+  color: #000000;
+}
+#T_50f8b_row27_col1, #T_50f8b_row46_col1 {
+  background-color: #cc4c44;
+  color: #f1f1f1;
+}
+#T_50f8b_row28_col0 {
+  background-color: #c2ddec;
+  color: #000000;
+}
+#T_50f8b_row28_col2 {
+  background-color: #f7b799;
+  color: #000000;
+}
+#T_50f8b_row29_col1 {
+  background-color: #acd2e5;
+  color: #000000;
+}
+#T_50f8b_row30_col1 {
+  background-color: #3681ba;
+  color: #f1f1f1;
+}
+#T_50f8b_row31_col0 {
+  background-color: #f6af8e;
+  color: #000000;
+}
+#T_50f8b_row31_col1 {
+  background-color: #bd2d35;
+  color: #f1f1f1;
+}
+#T_50f8b_row31_col2 {
+  background-color: #fddcc9;
+  color: #000000;
+}
+#T_50f8b_row32_col0 {
+  background-color: #2b73b3;
+  color: #f1f1f1;
+}
+#T_50f8b_row32_col1 {
+  background-color: #f7b596;
+  color: #000000;
+}
+#T_50f8b_row32_col2 {
+  background-color: #f8bb9e;
+  color: #000000;
+}
+#T_50f8b_row33_col0 {
+  background-color: #5fa5cd;
+  color: #f1f1f1;
+}
+#T_50f8b_row33_col1 {
+  background-color: #1c5c9f;
+  color: #f1f1f1;
+}
+#T_50f8b_row33_col2, #T_50f8b_row37_col0 {
+  background-color: #f8f1ed;
+  color: #000000;
+}
+#T_50f8b_row34_col0 {
+  background-color: #67001f;
+  color: #f1f1f1;
+}
+#T_50f8b_row35_col0 {
+  background-color: #a51429;
+  color: #f1f1f1;
+}
+#T_50f8b_row35_col1 {
+  background-color: #cfe4ef;
+  color: #000000;
+}
+#T_50f8b_row35_col2 {
+  background-color: #b6d7e8;
+  color: #000000;
+}
+#T_50f8b_row36_col0, #T_50f8b_row47_col0 {
+  background-color: #fae7dc;
+  color: #000000;
+}
+#T_50f8b_row36_col1 {
+  background-color: #fae8de;
+  color: #000000;
+}
+#T_50f8b_row36_col2 {
+  background-color: #f8f3f0;
+  color: #000000;
+}
+#T_50f8b_row37_col2 {
+  background-color: #6bacd1;
+  color: #f1f1f1;
+}
+#T_50f8b_row38_col0 {
+  background-color: #c84440;
+  color: #f1f1f1;
+}
+#T_50f8b_row38_col1 {
+  background-color: #e98b6e;
+  color: #f1f1f1;
+}
+#T_50f8b_row39_col0 {
+  background-color: #246aae;
+  color: #f1f1f1;
+}
+#T_50f8b_row39_col1, #T_50f8b_row39_col2 {
+  background-color: #7eb8d7;
+  color: #000000;
+}
+#T_50f8b_row40_col0 {
+  background-color: #124984;
+  color: #f1f1f1;
+}
+#T_50f8b_row40_col1 {
+  background-color: #a7d0e4;
+  color: #000000;
+}
+#T_50f8b_row40_col2 {
+  background-color: #f9ebe3;
+  color: #000000;
+}
+#T_50f8b_row41_col0 {
+  background-color: #f9f0eb;
+  color: #000000;
+}
+#T_50f8b_row41_col1 {
+  background-color: #fbe6da;
+  color: #000000;
+}
+#T_50f8b_row41_col2 {
+  background-color: #e1edf3;
+  color: #000000;
+}
+#T_50f8b_row42_col0 {
+  background-color: #f09c7b;
+  color: #000000;
+}
+#T_50f8b_row42_col2 {
+  background-color: #b1d5e7;
+  color: #000000;
+}
+#T_50f8b_row43_col0 {
+  background-color: #d7634f;
+  color: #f1f1f1;
+}
+#T_50f8b_row43_col1, #T_50f8b_row44_col0 {
+  background-color: #4695c4;
+  color: #f1f1f1;
+}
+#T_50f8b_row44_col1 {
+  background-color: #fcd7c2;
+  color: #000000;
+}
+#T_50f8b_row44_col2 {
+  background-color: #f9c6ac;
+  color: #000000;
+}
+#T_50f8b_row45_col0, #T_50f8b_row45_col2 {
+  background-color: #5ca3cb;
+  color: #f1f1f1;
+}
+#T_50f8b_row46_col0, #T_50f8b_row47_col1 {
+  background-color: #fcdfcf;
+  color: #000000;
+}
+#T_50f8b_row46_col2 {
+  background-color: #aed3e6;
+  color: #000000;
+}
+#T_50f8b_row48_col1 {
+  background-color: #f9ede5;
+  color: #000000;
+}
+#T_50f8b_row48_col2 {
+  background-color: #df765e;
+  color: #f1f1f1;
+}
+</style>
+<table id="T_50f8b">
+  <thead>
+    <tr>
+      <th class="blank level0" >&nbsp;</th>
+      <th id="T_50f8b_level0_col0" class="col_heading level0 col0" >dim_1</th>
+      <th id="T_50f8b_level0_col1" class="col_heading level0 col1" >dim_2</th>
+      <th id="T_50f8b_level0_col2" class="col_heading level0 col2" >dim_3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th id="T_50f8b_level0_row0" class="row_heading level0 row0" >anugrah</th>
+      <td id="T_50f8b_row0_col0" class="data row0 col0" >-2.237</td>
+      <td id="T_50f8b_row0_col1" class="data row0 col1" >-5.120</td>
+      <td id="T_50f8b_row0_col2" class="data row0 col2" >1.533</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row1" class="row_heading level0 row1" >asian</th>
+      <td id="T_50f8b_row1_col0" class="data row1 col0" >0.911</td>
+      <td id="T_50f8b_row1_col1" class="data row1 col1" >3.721</td>
+      <td id="T_50f8b_row1_col2" class="data row1 col2" >2.895</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row2" class="row_heading level0 row2" >atau</th>
+      <td id="T_50f8b_row2_col0" class="data row2 col0" >1.652</td>
+      <td id="T_50f8b_row2_col1" class="data row2 col1" >3.096</td>
+      <td id="T_50f8b_row2_col2" class="data row2 col2" >-0.551</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row3" class="row_heading level0 row3" >awal</th>
+      <td id="T_50f8b_row3_col0" class="data row3 col0" >4.630</td>
+      <td id="T_50f8b_row3_col1" class="data row3 col1" >1.005</td>
+      <td id="T_50f8b_row3_col2" class="data row3 col2" >0.603</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row4" class="row_heading level0 row4" >banyak</th>
+      <td id="T_50f8b_row4_col0" class="data row4 col0" >1.771</td>
+      <td id="T_50f8b_row4_col1" class="data row4 col1" >-3.315</td>
+      <td id="T_50f8b_row4_col2" class="data row4 col2" >-3.122</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row5" class="row_heading level0 row5" >bernama</th>
+      <td id="T_50f8b_row5_col0" class="data row5 col0" >-2.564</td>
+      <td id="T_50f8b_row5_col1" class="data row5 col1" >-2.948</td>
+      <td id="T_50f8b_row5_col2" class="data row5 col2" >-1.728</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row6" class="row_heading level0 row6" >bisnis</th>
+      <td id="T_50f8b_row6_col0" class="data row6 col0" >0.505</td>
+      <td id="T_50f8b_row6_col1" class="data row6 col1" >-2.832</td>
+      <td id="T_50f8b_row6_col2" class="data row6 col2" >4.129</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row7" class="row_heading level0 row7" >cdm</th>
+      <td id="T_50f8b_row7_col0" class="data row7 col0" >-3.460</td>
+      <td id="T_50f8b_row7_col1" class="data row7 col1" >1.792</td>
+      <td id="T_50f8b_row7_col2" class="data row7 col2" >-1.744</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row8" class="row_heading level0 row8" >chef</th>
+      <td id="T_50f8b_row8_col0" class="data row8 col0" >-2.330</td>
+      <td id="T_50f8b_row8_col1" class="data row8 col1" >2.672</td>
+      <td id="T_50f8b_row8_col2" class="data row8 col2" >-2.925</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row9" class="row_heading level0 row9" >coba</th>
+      <td id="T_50f8b_row9_col0" class="data row9 col0" >1.098</td>
+      <td id="T_50f8b_row9_col1" class="data row9 col1" >-1.756</td>
+      <td id="T_50f8b_row9_col2" class="data row9 col2" >-4.079</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row10" class="row_heading level0 row10" >de</th>
+      <td id="T_50f8b_row10_col0" class="data row10 col0" >-1.543</td>
+      <td id="T_50f8b_row10_col1" class="data row10 col1" >4.414</td>
+      <td id="T_50f8b_row10_col2" class="data row10 col2" >-1.024</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row11" class="row_heading level0 row11" >di</th>
+      <td id="T_50f8b_row11_col0" class="data row11 col0" >-1.025</td>
+      <td id="T_50f8b_row11_col1" class="data row11 col1" >0.996</td>
+      <td id="T_50f8b_row11_col2" class="data row11 col2" >1.828</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row12" class="row_heading level0 row12" >digital</th>
+      <td id="T_50f8b_row12_col0" class="data row12 col0" >-1.458</td>
+      <td id="T_50f8b_row12_col1" class="data row12 col1" >-3.840</td>
+      <td id="T_50f8b_row12_col2" class="data row12 col2" >-1.316</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row13" class="row_heading level0 row13" >dulu</th>
+      <td id="T_50f8b_row13_col0" class="data row13 col0" >3.739</td>
+      <td id="T_50f8b_row13_col1" class="data row13 col1" >2.489</td>
+      <td id="T_50f8b_row13_col2" class="data row13 col2" >-2.582</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row14" class="row_heading level0 row14" >fokus</th>
+      <td id="T_50f8b_row14_col0" class="data row14 col0" >0.265</td>
+      <td id="T_50f8b_row14_col1" class="data row14 col1" >-1.782</td>
+      <td id="T_50f8b_row14_col2" class="data row14 col2" >1.779</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row15" class="row_heading level0 row15" >games</th>
+      <td id="T_50f8b_row15_col0" class="data row15 col0" >1.686</td>
+      <td id="T_50f8b_row15_col1" class="data row15 col1" >1.212</td>
+      <td id="T_50f8b_row15_col2" class="data row15 col2" >4.472</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row16" class="row_heading level0 row16" >gerakan</th>
+      <td id="T_50f8b_row16_col0" class="data row16 col0" >2.330</td>
+      <td id="T_50f8b_row16_col1" class="data row16 col1" >0.655</td>
+      <td id="T_50f8b_row16_col2" class="data row16 col2" >0.686</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row17" class="row_heading level0 row17" >harus</th>
+      <td id="T_50f8b_row17_col0" class="data row17 col0" >0.545</td>
+      <td id="T_50f8b_row17_col1" class="data row17 col1" >2.583</td>
+      <td id="T_50f8b_row17_col2" class="data row17 col2" >-4.031</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row18" class="row_heading level0 row18" >indonesia</th>
+      <td id="T_50f8b_row18_col0" class="data row18 col0" >-2.945</td>
+      <td id="T_50f8b_row18_col1" class="data row18 col1" >3.189</td>
+      <td id="T_50f8b_row18_col2" class="data row18 col2" >0.241</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row19" class="row_heading level0 row19" >infrastruktur</th>
+      <td id="T_50f8b_row19_col0" class="data row19 col0" >-0.973</td>
+      <td id="T_50f8b_row19_col1" class="data row19 col1" >-2.627</td>
+      <td id="T_50f8b_row19_col2" class="data row19 col2" >-1.066</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row20" class="row_heading level0 row20" >jelang</th>
+      <td id="T_50f8b_row20_col0" class="data row20 col0" >0.354</td>
+      <td id="T_50f8b_row20_col1" class="data row20 col1" >0.614</td>
+      <td id="T_50f8b_row20_col2" class="data row20 col2" >2.023</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row21" class="row_heading level0 row21" >jepang</th>
+      <td id="T_50f8b_row21_col0" class="data row21 col0" >0.005</td>
+      <td id="T_50f8b_row21_col1" class="data row21 col1" >0.861</td>
+      <td id="T_50f8b_row21_col2" class="data row21 col2" >4.784</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row22" class="row_heading level0 row22" >karena</th>
+      <td id="T_50f8b_row22_col0" class="data row22 col0" >3.503</td>
+      <td id="T_50f8b_row22_col1" class="data row22 col1" >0.366</td>
+      <td id="T_50f8b_row22_col2" class="data row22 col2" >-4.073</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row23" class="row_heading level0 row23" >kondisi</th>
+      <td id="T_50f8b_row23_col0" class="data row23 col0" >-2.854</td>
+      <td id="T_50f8b_row23_col1" class="data row23 col1" >0.557</td>
+      <td id="T_50f8b_row23_col2" class="data row23 col2" >3.776</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row24" class="row_heading level0 row24" >lentur</th>
+      <td id="T_50f8b_row24_col0" class="data row24 col0" >1.877</td>
+      <td id="T_50f8b_row24_col1" class="data row24 col1" >1.512</td>
+      <td id="T_50f8b_row24_col2" class="data row24 col2" >-2.071</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row25" class="row_heading level0 row25" >memonitoring</th>
+      <td id="T_50f8b_row25_col0" class="data row25 col0" >-2.791</td>
+      <td id="T_50f8b_row25_col1" class="data row25 col1" >2.882</td>
+      <td id="T_50f8b_row25_col2" class="data row25 col2" >2.814</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row26" class="row_heading level0 row26" >mengubah</th>
+      <td id="T_50f8b_row26_col0" class="data row26 col0" >1.483</td>
+      <td id="T_50f8b_row26_col1" class="data row26 col1" >-3.595</td>
+      <td id="T_50f8b_row26_col2" class="data row26 col2" >1.540</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row27" class="row_heading level0 row27" >mglv</th>
+      <td id="T_50f8b_row27_col0" class="data row27 col0" >-1.171</td>
+      <td id="T_50f8b_row27_col1" class="data row27 col1" >-3.558</td>
+      <td id="T_50f8b_row27_col2" class="data row27 col2" >-2.776</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row28" class="row_heading level0 row28" >mikir</th>
+      <td id="T_50f8b_row28_col0" class="data row28 col0" >0.969</td>
+      <td id="T_50f8b_row28_col1" class="data row28 col1" >0.511</td>
+      <td id="T_50f8b_row28_col2" class="data row28 col2" >-1.939</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row29" class="row_heading level0 row29" >mission</th>
+      <td id="T_50f8b_row29_col0" class="data row29 col0" >-1.005</td>
+      <td id="T_50f8b_row29_col1" class="data row29 col1" >1.320</td>
+      <td id="T_50f8b_row29_col2" class="data row29 col2" >-0.584</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row30" class="row_heading level0 row30" >nagoya</th>
+      <td id="T_50f8b_row30_col0" class="data row30 col0" >-1.031</td>
+      <td id="T_50f8b_row30_col1" class="data row30 col1" >3.127</td>
+      <td id="T_50f8b_row30_col2" class="data row30 col2" >3.771</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row31" class="row_heading level0 row31" >nexal</th>
+      <td id="T_50f8b_row31_col0" class="data row31 col0" >-2.128</td>
+      <td id="T_50f8b_row31_col1" class="data row31 col1" >-3.996</td>
+      <td id="T_50f8b_row31_col2" class="data row31 col2" >-1.236</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row32" class="row_heading level0 row32" >orang</th>
+      <td id="T_50f8b_row32_col0" class="data row32 col0" >3.470</td>
+      <td id="T_50f8b_row32_col1" class="data row32 col1" >-1.992</td>
+      <td id="T_50f8b_row32_col2" class="data row32 col2" >-1.893</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row33" class="row_heading level0 row33" >paham</th>
+      <td id="T_50f8b_row33_col0" class="data row33 col0" >2.380</td>
+      <td id="T_50f8b_row33_col1" class="data row33 col1" >3.937</td>
+      <td id="T_50f8b_row33_col2" class="data row33 col2" >-0.473</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row34" class="row_heading level0 row34" >panca</th>
+      <td id="T_50f8b_row34_col0" class="data row34 col0" >-5.332</td>
+      <td id="T_50f8b_row34_col1" class="data row34 col1" >-1.807</td>
+      <td id="T_50f8b_row34_col2" class="data row34 col2" >0.650</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row35" class="row_heading level0 row35" >pasaribu</th>
+      <td id="T_50f8b_row35_col0" class="data row35 col0" >-4.474</td>
+      <td id="T_50f8b_row35_col1" class="data row35 col1" >0.767</td>
+      <td id="T_50f8b_row35_col2" class="data row35 col2" >1.156</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row36" class="row_heading level0 row36" >pt</th>
+      <td id="T_50f8b_row36_col0" class="data row36 col0" >-0.836</td>
+      <td id="T_50f8b_row36_col1" class="data row36 col1" >-0.808</td>
+      <td id="T_50f8b_row36_col2" class="data row36 col2" >-0.421</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row37" class="row_heading level0 row37" >resmi</th>
+      <td id="T_50f8b_row37_col0" class="data row37 col0" >-0.481</td>
+      <td id="T_50f8b_row37_col1" class="data row37 col1" >-3.310</td>
+      <td id="T_50f8b_row37_col2" class="data row37 col2" >2.254</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row38" class="row_heading level0 row38" >sebelumnya</th>
+      <td id="T_50f8b_row38_col0" class="data row38 col0" >-3.675</td>
+      <td id="T_50f8b_row38_col1" class="data row38 col1" >-2.655</td>
+      <td id="T_50f8b_row38_col2" class="data row38 col2" >-1.421</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row39" class="row_heading level0 row39" >sejak</th>
+      <td id="T_50f8b_row39_col0" class="data row39 col0" >3.673</td>
+      <td id="T_50f8b_row39_col1" class="data row39 col1" >1.984</td>
+      <td id="T_50f8b_row39_col2" class="data row39 col2" >1.998</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row40" class="row_heading level0 row40" >semua</th>
+      <td id="T_50f8b_row40_col0" class="data row40 col0" >4.301</td>
+      <td id="T_50f8b_row40_col1" class="data row40 col1" >1.386</td>
+      <td id="T_50f8b_row40_col2" class="data row40 col2" >-0.704</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row41" class="row_heading level0 row41" >tbk</th>
+      <td id="T_50f8b_row41_col0" class="data row41 col0" >-0.537</td>
+      <td id="T_50f8b_row41_col1" class="data row41 col1" >-0.895</td>
+      <td id="T_50f8b_row41_col2" class="data row41 col2" >0.281</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row42" class="row_heading level0 row42" >terus</th>
+      <td id="T_50f8b_row42_col0" class="data row42 col0" >-2.429</td>
+      <td id="T_50f8b_row42_col1" class="data row42 col1" >1.892</td>
+      <td id="T_50f8b_row42_col2" class="data row42 col2" >1.255</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row43" class="row_heading level0 row43" >todotua</th>
+      <td id="T_50f8b_row43_col0" class="data row43 col0" >-3.250</td>
+      <td id="T_50f8b_row43_col1" class="data row43 col1" >2.723</td>
+      <td id="T_50f8b_row43_col2" class="data row43 col2" >1.107</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row44" class="row_heading level0 row44" >urung</th>
+      <td id="T_50f8b_row44_col0" class="data row44 col0" >2.694</td>
+      <td id="T_50f8b_row44_col1" class="data row44 col1" >-1.374</td>
+      <td id="T_50f8b_row44_col2" class="data row44 col2" >-1.695</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row45" class="row_heading level0 row45" >usaha</th>
+      <td id="T_50f8b_row45_col0" class="data row45 col0" >2.442</td>
+      <td id="T_50f8b_row45_col1" class="data row45 col1" >-2.556</td>
+      <td id="T_50f8b_row45_col2" class="data row45 col2" >2.422</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row46" class="row_heading level0 row46" >wisesa</th>
+      <td id="T_50f8b_row46_col0" class="data row46 col0" >-1.111</td>
+      <td id="T_50f8b_row46_col1" class="data row46 col1" >-3.564</td>
+      <td id="T_50f8b_row46_col2" class="data row46 col2" >1.278</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row47" class="row_heading level0 row47" >yang</th>
+      <td id="T_50f8b_row47_col0" class="data row47 col0" >-0.827</td>
+      <td id="T_50f8b_row47_col1" class="data row47 col1" >-1.107</td>
+      <td id="T_50f8b_row47_col2" class="data row47 col2" >-1.037</td>
+    </tr>
+    <tr>
+      <th id="T_50f8b_level0_row48" class="row_heading level0 row48" >yoga</th>
+      <td id="T_50f8b_row48_col0" class="data row48 col0" >1.191</td>
+      <td id="T_50f8b_row48_col1" class="data row48 col1" >-0.641</td>
+      <td id="T_50f8b_row48_col2" class="data row48 col2" >-3.000</td>
+    </tr>
+  </tbody>
+</table>
+</div></div>
+</div>
+<section id="kata-paling-mirip-cosine-similarity">
+<h3>Kata Paling Mirip (Cosine Similarity)<a class="headerlink" href="#kata-paling-mirip-cosine-similarity" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">cosine_similarity</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">norm</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">+</span> <span class="mf">1e-9</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">kata_paling_mirip</span><span class="p">(</span><span class="n">kata</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
+    <span class="n">vektor_kata</span> <span class="o">=</span> <span class="n">W1</span><span class="p">[</span><span class="n">word2idx</span><span class="p">[</span><span class="n">kata</span><span class="p">]]</span>
+    <span class="n">similarity</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="p">:</span> <span class="n">cosine_similarity</span><span class="p">(</span><span class="n">vektor_kata</span><span class="p">,</span> <span class="n">W1</span><span class="p">[</span><span class="n">word2idx</span><span class="p">[</span><span class="n">w</span><span class="p">]])</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">vocab</span> <span class="k">if</span> <span class="n">w</span> <span class="o">!=</span> <span class="n">kata</span><span class="p">}</span>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">similarity</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="o">-</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">])[:</span><span class="n">top_n</span><span class="p">]</span>
+
+<span class="n">kata_uji</span> <span class="o">=</span> <span class="n">vocab</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"Kata paling mirip dengan '</span><span class="si">{</span><span class="n">kata_uji</span><span class="si">}</span><span class="s2">':"</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">skor</span> <span class="ow">in</span> <span class="n">kata_paling_mirip</span><span class="p">(</span><span class="n">kata_uji</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"  </span><span class="si">{</span><span class="n">w</span><span class="si">:</span><span class="s2">12</span><span class="si">}</span><span class="s2"> (cosine similarity: </span><span class="si">{</span><span class="n">skor</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)"</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Kata paling mirip dengan 'anugrah':
+  wisesa       (cosine similarity: 0.993)
+  tbk          (cosine similarity: 0.992)
+  resmi        (cosine similarity: 0.919)
+  nexal        (cosine similarity: 0.858)
+  digital      (cosine similarity: 0.837)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="visualisasi-embedding-3-dimensi-diproyeksikan-ke-2d-dengan-pca">
+<h3>Visualisasi Embedding (3 Dimensi -&gt; Diproyeksikan ke 2D dengan PCA)<a class="headerlink" href="#visualisasi-embedding-3-dimensi-diproyeksikan-ke-2d-dengan-pca" title="Permalink to this heading">#</a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
+
+<span class="n">pca_kata</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+<span class="n">embedding_2d</span> <span class="o">=</span> <span class="n">pca_kata</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">W1</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">7</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">embedding_2d</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">embedding_2d</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s2">"#4C72B0"</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">40</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">kata</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">vocab</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">annotate</span><span class="p">(</span><span class="n">kata</span><span class="p">,</span> <span class="p">(</span><span class="n">embedding_2d</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">embedding_2d</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]),</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span>
+                 <span class="n">xytext</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">),</span> <span class="n">textcoords</span><span class="o">=</span><span class="s2">"offset points"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">"PC1"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">"PC2"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">"Proyeksi 2D dari Vektor Kata 3-Dimensi Hasil Skip-gram"</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">fontweight</span><span class="o">=</span><span class="s2">"bold"</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/7a39d900c0834a2fdd086db666b705a0558890616884b33a34718e7f1c905673.png" src="../_images/7a39d900c0834a2fdd086db666b705a0558890616884b33a34718e7f1c905673.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="ringkasan">
+<h2>Ringkasan<a class="headerlink" href="#ringkasan" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p>Arsitektur Skip-gram manual: Input (V) -&gt; Hidden/Embedding (3) -&gt; Output (V), dilatih dengan backpropagation dan cross-entropy loss dari nol menggunakan <code class="docutils literal notranslate"><span class="pre">numpy</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">X[i]</span></code> (one-hot target) dan <code class="docutils literal notranslate"><span class="pre">y[i]</span></code> (one-hot context) dibentuk eksplisit dari pasangan Skip-gram sebelum diberikan ke jaringan.</p></li>
+<li><p>Bobot <strong>W1</strong> (ukuran <code class="docutils literal notranslate"><span class="pre">V</span> <span class="pre">x</span> <span class="pre">3</span></code>) menjadi vektor embedding akhir tiap kata.</p></li>
+<li><p>Korpus yang dipakai sangat kecil (3 kalimat), sehingga hasil kemiripan antar kata bersifat ilustratif untuk memahami mekanisme Skip-gram, bukan embedding siap pakai secara praktis.</p></li>
+</ul>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "enwebmining"
+        },
+        kernelOptions: {
+            name: "enwebmining",
+            path: "./CRISP-DM"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'enwebmining'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="Vectorization.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Text Vectorization: TF-IDF, One-Hot Encoding, &amp; Reduksi Dimensi (PCA vs SVD)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Modeling.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Modeling</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ambil-3-kalimat-dari-dataset">1. Ambil 3 Kalimat dari Dataset</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pembersihan-ringan-tokenisasi">Pembersihan Ringan &amp; Tokenisasi</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bangun-vocabulary">2. Bangun Vocabulary</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#bangun-pasangan-target-context-skip-gram">3. Bangun Pasangan (Target, Context) - Skip-gram</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#one-hot-encoding-x-target-dan-y-context">4. One-Hot Encoding: X (Target) dan y (Context)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#arsitektur-jaringan-saraf-tiruan">5. Arsitektur Jaringan Saraf Tiruan</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#uji-forward-pass-sebelum-training-bobot-masih-acak">Uji Forward Pass Sebelum Training (Bobot Masih Acak)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-forward-pass-hitung-loss-backpropagation">6. Training: Forward Pass, Hitung Loss, Backpropagation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bandingkan-prediksi-sebelum-vs-sesudah-training">Bandingkan Prediksi Sebelum vs Sesudah Training</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hasil-akhir-vektor-kata-w1-ukuran-v-x-3">7. Hasil Akhir: Vektor Kata (W1, ukuran V x 3)</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#kata-paling-mirip-cosine-similarity">Kata Paling Mirip (Cosine Similarity)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#visualisasi-embedding-3-dimensi-diproyeksikan-ke-2d-dengan-pca">Visualisasi Embedding (3 Dimensi -&gt; Diproyeksikan ke 2D dengan PCA)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ringkasan">Ringkasan</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Hanin Hammoud
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2022.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
