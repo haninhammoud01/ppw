@@ -9,8 +9,12 @@ chapters:
     title: Data Preparation (Crawling)
   - file: CRISP-DM/Preprocessing
     title: Text Preprocessing
+  - file: CRISP-DM/Preprocessing_Ablation
+    title: Perbandingan Preprocessing
   - file: CRISP-DM/Vectorization
     title: Text Vectorization
+  - file: CRISP-DM/Skipgram
+    title: Word Embedding (Skip-gram)
   - file: CRISP-DM/Modeling
     title: Modeling
   - file: CRISP-DM/Output
