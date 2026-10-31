@@ -66,7 +66,7 @@ const thebe_selector_output = ".output, .cell_output"
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Deployment" href="Production.html" />
-    <link rel="prev" title="Modeling" href="Modeling.html" />
+    <link rel="prev" title="Klasifikasi dengan Skip-gram vs TF-IDF" href="Skipgram_Classification.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -181,7 +181,8 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="Preprocessing_Ablation.html">Perbandingan Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Vectorization.html">Text Vectorization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Skipgram.html">Word Embedding (Skip-gram)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling (Naive Bayes)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Skipgram_Classification.html">Klasifikasi Skip-gram vs TF-IDF</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Evaluation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Production.html">Deployment</a></li>
 </ul>
@@ -324,7 +325,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
 </div></div>
       
     </div>
@@ -340,6 +343,17 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ringkasan-akurasi">Ringkasan Akurasi</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setelah-grid-search">Setelah Grid Search</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cara-membaca-hasil">Cara Membaca Hasil</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kesimpulan">Kesimpulan</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -351,8 +365,87 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="evaluation">
 <h1>Evaluation<a class="headerlink" href="#evaluation" title="Permalink to this heading">#</a></h1>
-<p>Tahap ini akan mengevaluasi performa model klasifikasi yang dibangun pada tahap Modeling, menggunakan metrik seperti akurasi, precision, recall, dan confusion matrix.</p>
-<p><em>Akan dikerjakan pada tugas berikutnya.</em></p>
+<p>Tahap ini membandingkan semua representasi teks yang sudah dicoba pada tahap Modeling. Semua model diuji pada <strong>40 dokumen uji</strong> (20% dari 200 dokumen, dibagi dengan <code class="docutils literal notranslate"><span class="pre">stratify=label</span></code> dan <code class="docutils literal notranslate"><span class="pre">random_state=42</span></code>), sehingga setiap representasi dinilai dengan soal yang sama.</p>
+<section id="ringkasan-akurasi">
+<h2>Ringkasan Akurasi<a class="headerlink" href="#ringkasan-akurasi" title="Permalink to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Representasi</p></th>
+<th class="head"><p>Algoritma</p></th>
+<th class="head text-center"><p>Jumlah fitur</p></th>
+<th class="head text-center"><p>Akurasi data uji</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>TF-IDF</p></td>
+<td><p>MultinomialNB</p></td>
+<td class="text-center"><p>2.556</p></td>
+<td class="text-center"><p>0,975</p></td>
+</tr>
+<tr class="row-odd"><td><p>PCA</p></td>
+<td><p>GaussianNB</p></td>
+<td class="text-center"><p>104</p></td>
+<td class="text-center"><p>0,925</p></td>
+</tr>
+<tr class="row-even"><td><p>Truncated SVD</p></td>
+<td><p>GaussianNB</p></td>
+<td class="text-center"><p>105</p></td>
+<td class="text-center"><p>0,925</p></td>
+</tr>
+<tr class="row-odd"><td><p>Skip-gram manual (baseline, window 2, 50 dimensi)</p></td>
+<td><p>GaussianNB</p></td>
+<td class="text-center"><p>50</p></td>
+<td class="text-center"><p>0,950</p></td>
+</tr>
+<tr class="row-even"><td><p>Skip-gram manual (window 5, 50 dimensi)</p></td>
+<td><p>GaussianNB</p></td>
+<td class="text-center"><p>50</p></td>
+<td class="text-center"><p>0,975</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Sumber angka: notebook <strong>Modeling</strong> (TF-IDF, PCA, SVD) dan <strong>Klasifikasi Skip-gram vs TF-IDF</strong> (skip-gram dan perbandingannya dengan TF-IDF).</p>
+</section>
+<section id="setelah-grid-search">
+<h2>Setelah Grid Search<a class="headerlink" href="#setelah-grid-search" title="Permalink to this heading">#</a></h2>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Model</p></th>
+<th class="head"><p>Parameter terbaik</p></th>
+<th class="head text-center"><p>Akurasi CV (5-fold)</p></th>
+<th class="head text-center"><p>Akurasi data uji</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>TF-IDF + MultinomialNB</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">alpha</span> <span class="pre">=</span> <span class="pre">0.01</span></code></p></td>
+<td class="text-center"><p>1,000</p></td>
+<td class="text-center"><p>0,950</p></td>
+</tr>
+<tr class="row-odd"><td><p>Skip-gram + GaussianNB</p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">var_smoothing</span> <span class="pre">=</span> <span class="pre">1e-12</span></code></p></td>
+<td class="text-center"><p>1,000</p></td>
+<td class="text-center"><p>0,975</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Model dengan akurasi uji tertinggi, yaitu <strong>Skip-gram manual + GaussianNB</strong>, disimpan dengan <code class="docutils literal notranslate"><span class="pre">joblib</span></code> dan dipakai pada aplikasi Streamlit.</p>
+</section>
+<section id="cara-membaca-hasil">
+<h2>Cara Membaca Hasil<a class="headerlink" href="#cara-membaca-hasil" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Selisih kecil bukan selisih nyata.</strong> Dengan 40 dokumen uji, satu dokumen yang salah menggeser akurasi sebesar 2,5 poin. Selisih antara 0,950 dan 0,975 hanya satu dokumen.</p></li>
+<li><p><strong>Akurasi CV 1,000 pada data latih</strong> menunjukkan bahwa dua kategori ini mudah dipisahkan (kosakata finance dan sport sangat berbeda). Angka ini tidak dipakai untuk memilih model; pemilihan memakai data uji yang tidak ikut dilatih.</p></li>
+<li><p><strong>Skip-gram memakai 50 fitur</strong>, jauh lebih sedikit dari TF-IDF (2.556 fitur), tetapi akurasinya setara. Artinya vektor kata hasil neural network sudah cukup menangkap perbedaan topik.</p></li>
+<li><p><strong>Keterbatasan:</strong> model hanya mengenal kategori finance dan sport, dan ukuran data masih kecil (200 artikel). Berita dari kanal lain akan tetap dipaksa masuk ke salah satu dari dua kategori itu.</p></li>
+</ul>
+</section>
+<section id="kesimpulan">
+<h2>Kesimpulan<a class="headerlink" href="#kesimpulan" title="Permalink to this heading">#</a></h2>
+<p>Kriteria keberhasilan pada tahap Business Understanding (akurasi di atas 90%) terpenuhi: model dapat membedakan artikel finance dan sport dengan akurasi 0,95 sampai 0,975 pada data uji. Model terpilih diimplementasikan pada tahap <a class="reference internal" href="Production.html"><span class="doc std std-doc">Deployment</span></a>.</p>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -386,12 +479,12 @@ document.write(`
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="Modeling.html"
+       href="Skipgram_Classification.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Modeling</p>
+        <p class="prev-next-title">Klasifikasi dengan Skip-gram vs TF-IDF</p>
       </div>
     </a>
     <a class="right-next"
@@ -409,6 +502,24 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ringkasan-akurasi">Ringkasan Akurasi</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#setelah-grid-search">Setelah Grid Search</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cara-membaca-hasil">Cara Membaca Hasil</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#kesimpulan">Kesimpulan</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

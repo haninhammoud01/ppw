@@ -180,7 +180,8 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="Preprocessing_Ablation.html">Perbandingan Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Vectorization.html">Text Vectorization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Skipgram.html">Word Embedding (Skip-gram)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling (Naive Bayes)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Skipgram_Classification.html">Klasifikasi Skip-gram vs TF-IDF</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Output.html">Evaluation</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Deployment</a></li>
 </ul>
@@ -323,7 +324,9 @@ document.write(`
   </button>
 `);
 </script>
-
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</label>
 </div></div>
       
     </div>
@@ -339,6 +342,17 @@ document.write(`
     <div id="print-main-content">
         <div id="jb-print-toc">
             
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alur-aplikasi">Alur Aplikasi</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#file-yang-dipakai">File yang Dipakai</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#menjalankan-di-komputer-sendiri">Menjalankan di Komputer Sendiri</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deploy-ke-streamlit-community-cloud">Deploy ke Streamlit Community Cloud</a></li>
+</ul>
+            </nav>
         </div>
     </div>
 </div>
@@ -350,8 +364,62 @@ document.write(`
                   
   <section class="tex2jax_ignore mathjax_ignore" id="deployment">
 <h1>Deployment<a class="headerlink" href="#deployment" title="Permalink to this heading">#</a></h1>
-<p>Tahap ini akan membahas bagaimana model klasifikasi dapat digunakan/di-deploy, misalnya sebagai aplikasi sederhana untuk mengklasifikasikan artikel berita baru secara otomatis.</p>
-<p><em>Akan dikerjakan pada tugas berikutnya.</em></p>
+<p>Model terbaik dari tahap Evaluation dipasang pada aplikasi web sederhana dengan <strong>Streamlit</strong>. Pengguna menempelkan link artikel dari <code class="docutils literal notranslate"><span class="pre">finance.detik.com</span></code> atau <code class="docutils literal notranslate"><span class="pre">sport.detik.com</span></code>, lalu aplikasi menampilkan kategorinya: <strong>Finance</strong> atau <strong>Sport</strong>.</p>
+<section id="alur-aplikasi">
+<h2>Alur Aplikasi<a class="headerlink" href="#alur-aplikasi" title="Permalink to this heading">#</a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Link</span> <span class="n">artikel</span>  <span class="o">-&gt;</span>  <span class="n">ambil</span> <span class="n">halaman</span> <span class="p">(</span><span class="n">requests</span> <span class="o">+</span> <span class="n">BeautifulSoup</span><span class="p">)</span>  <span class="o">-&gt;</span>  <span class="n">preprocessing</span>
+              <span class="o">-&gt;</span>  <span class="n">kata</span> <span class="n">menjadi</span> <span class="n">indeks</span> <span class="p">(</span><span class="n">word2idx</span><span class="p">)</span>  <span class="o">-&gt;</span>  <span class="n">vektor</span> <span class="n">kata</span> <span class="p">(</span><span class="n">W1</span><span class="p">)</span>
+              <span class="o">-&gt;</span>  <span class="n">rata</span><span class="o">-</span><span class="n">rata</span> <span class="n">vektor</span> <span class="o">=</span> <span class="n">vektor</span> <span class="n">dokumen</span>  <span class="o">-&gt;</span>  <span class="n">GaussianNB</span>  <span class="o">-&gt;</span>  <span class="n">Finance</span> <span class="o">/</span> <span class="n">Sport</span>
+</pre></div>
+</div>
+<p>Aplikasi juga punya tab <strong>Tempel Teks</strong> untuk menempelkan isi berita langsung, dan menolak link dari kanal selain finance dan sport.</p>
+</section>
+<section id="file-yang-dipakai">
+<h2>File yang Dipakai<a class="headerlink" href="#file-yang-dipakai" title="Permalink to this heading">#</a></h2>
+<p>Semuanya ada di folder <code class="docutils literal notranslate"><span class="pre">deployment/</span></code>.</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Fungsi</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">app.py</span></code></p></td>
+<td><p>Kode aplikasi Streamlit</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">model/model_final.joblib</span></code></p></td>
+<td><p>Model GaussianNB hasil Grid Search</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">model/embedding_W1.npy</span></code></p></td>
+<td><p>Matriks embedding skip-gram (4.697 kata x 50 dimensi)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">model/word2idx.joblib</span></code></p></td>
+<td><p>Kamus kata ke nomor baris pada <code class="docutils literal notranslate"><span class="pre">W1</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">.streamlit/config.toml</span></code></p></td>
+<td><p>Pengaturan tampilan</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Ketiga file di <code class="docutils literal notranslate"><span class="pre">model/</span></code> harus berasal dari satu kali run notebook <strong>Klasifikasi Skip-gram vs TF-IDF</strong>. Aplikasi memeriksa ukurannya dan menampilkan pesan jika tidak cocok.</p>
+</section>
+<section id="menjalankan-di-komputer-sendiri">
+<h2>Menjalankan di Komputer Sendiri<a class="headerlink" href="#menjalankan-di-komputer-sendiri" title="Permalink to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+streamlit<span class="w"> </span>run<span class="w"> </span>deployment/app.py
+</pre></div>
+</div>
+</section>
+<section id="deploy-ke-streamlit-community-cloud">
+<h2>Deploy ke Streamlit Community Cloud<a class="headerlink" href="#deploy-ke-streamlit-community-cloud" title="Permalink to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p>Push repo ke GitHub (cabang <code class="docutils literal notranslate"><span class="pre">main</span></code>).</p></li>
+<li><p>Buka <a class="reference external" href="https://share.streamlit.io">share.streamlit.io</a> dan login dengan akun GitHub.</p></li>
+<li><p>Klik <strong>Create app</strong>, pilih repo <code class="docutils literal notranslate"><span class="pre">haninhammoud01/ppw</span></code>, cabang <code class="docutils literal notranslate"><span class="pre">main</span></code>, dan <strong>Main file path</strong> <code class="docutils literal notranslate"><span class="pre">deployment/app.py</span></code>.</p></li>
+<li><p>Klik <strong>Deploy</strong>. Link aplikasi berbentuk <code class="docutils literal notranslate"><span class="pre">https://&lt;nama-app&gt;.streamlit.app</span></code>.</p></li>
+</ol>
+</section>
 </section>
 
     <script type="text/x-thebe-config">
@@ -399,6 +467,24 @@ document.write(`
             </div>
             
             
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#alur-aplikasi">Alur Aplikasi</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#file-yang-dipakai">File yang Dipakai</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#menjalankan-di-komputer-sendiri">Menjalankan di Komputer Sendiri</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#deploy-ke-streamlit-community-cloud">Deploy ke Streamlit Community Cloud</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
               
             
           </div>

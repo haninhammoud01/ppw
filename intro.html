@@ -182,7 +182,8 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="CRISP-DM/Preprocessing_Ablation.html">Perbandingan Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CRISP-DM/Vectorization.html">Text Vectorization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CRISP-DM/Skipgram.html">Word Embedding (Skip-gram)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CRISP-DM/Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CRISP-DM/Modeling.html">Modeling (Naive Bayes)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CRISP-DM/Skipgram_Classification.html">Klasifikasi Skip-gram vs TF-IDF</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CRISP-DM/Output.html">Evaluation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CRISP-DM/Production.html">Deployment</a></li>
 </ul>
@@ -391,7 +392,7 @@ document.write(`
 </div>
 <section class="tex2jax_ignore mathjax_ignore" id="ppw-web-search-mining">
 <h1>PPW - Web Search &amp; Mining<a class="headerlink" href="#ppw-web-search-mining" title="Permalink to this heading">#</a></h1>
-<p>Dokumentasi ini disusun untuk tugas mata kuliah <strong>Pencarian dan Penambangan Web (PPW)</strong>, membahas proses pengumpulan dan penyiapan data berita berbahasa Indonesia dari <a class="reference external" href="https://detik.com">detik.com</a> mengikuti kerangka kerja <strong>CRISP-DM</strong>.</p>
+<p>Dokumentasi ini disusun untuk tugas mata kuliah <strong>Pencarian dan Penambangan Web (PPW)</strong>, membahas proses pengumpulan, pengolahan, pemodelan, dan penerapan klasifikasi berita berbahasa Indonesia dari <a class="reference external" href="https://detik.com">detik.com</a> mengikuti kerangka kerja <strong>CRISP-DM</strong>.</p>
 <p><strong>Topik:</strong> Klasifikasi Berita Indonesia - membedakan artikel kategori <strong>Sport</strong> dan <strong>Finance</strong> berdasarkan isi teksnya.</p>
 <section id="pengantar-web-mining">
 <h2>Pengantar Web Mining<a class="headerlink" href="#pengantar-web-mining" title="Permalink to this heading">#</a></h2>
@@ -402,17 +403,17 @@ document.write(`
 <li><p><strong>Web Structure Mining</strong> - menganalisis struktur tautan (hyperlink) antar halaman web.</p></li>
 <li><p><strong>Web Usage Mining</strong> - mempelajari pola perilaku pengguna dari log aktivitas di suatu situs web.</p></li>
 </ul>
-<p>Dalam proyek ini, teknik <strong>web content mining</strong> diterapkan melalui proses <em>crawling</em> untuk mengumpulkan artikel berita dari <a class="reference external" href="http://Detik.com">Detik.com</a>, dilanjutkan dengan ekstraksi teks menggunakan Trafilatura, sebagai tahap awal sebelum data digunakan untuk klasifikasi teks pada tahap berikutnya.</p>
+<p>Dalam proyek ini, teknik <strong>web content mining</strong> diterapkan melalui proses <em>crawling</em> untuk mengumpulkan artikel berita dari <a class="reference external" href="http://Detik.com">Detik.com</a>, dilanjutkan dengan ekstraksi teks menggunakan Trafilatura, kemudian teks diolah, diubah menjadi vektor (TF-IDF, PCA, SVD, dan skip-gram), diklasifikasikan dengan Naive Bayes, dan dipasang pada aplikasi Streamlit.</p>
 </section>
 <section id="struktur-dokumen">
 <h2>Struktur Dokumen<a class="headerlink" href="#struktur-dokumen" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p><strong>Business Understanding</strong> - latar belakang masalah dan kriteria keberhasilan proyek</p></li>
 <li><p><strong>Data Understanding</strong> - eksplorasi awal terhadap 200 artikel yang telah dikumpulkan</p></li>
-<li><p><strong>Data Preparation</strong> - proses crawling, ekstraksi isi artikel, dan pelabelan data</p></li>
-<li><p><strong>Modeling</strong> - pembangunan model klasifikasi (segera hadir)</p></li>
-<li><p><strong>Evaluation</strong> - evaluasi performa model (segera hadir)</p></li>
-<li><p><strong>Deployment</strong> - implementasi model ke penggunaan nyata (segera hadir)</p></li>
+<li><p><strong>Data Preparation</strong> - crawling, ekstraksi isi artikel, pelabelan, <em>text preprocessing</em>, perbandingan tahap preprocessing, vektorisasi (TF-IDF, PCA, SVD), dan <em>word embedding</em> skip-gram</p></li>
+<li><p><strong>Modeling</strong> - klasifikasi Naive Bayes pada TF-IDF, PCA, dan SVD, serta klasifikasi dengan skip-gram yang dibandingkan dengan TF-IDF, lengkap dengan Grid Search</p></li>
+<li><p><strong>Evaluation</strong> - perbandingan akurasi semua representasi dan pemilihan model terbaik</p></li>
+<li><p><strong>Deployment</strong> - aplikasi Streamlit untuk mengklasifikasikan berita dari link <a class="reference external" href="http://detik.com">detik.com</a></p></li>
 </ul>
 <p><em>Hanin Hammoud</em></p>
 </section>

@@ -181,7 +181,8 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="CRISP-DM/Preprocessing_Ablation.html">Perbandingan Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CRISP-DM/Vectorization.html">Text Vectorization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CRISP-DM/Skipgram.html">Word Embedding (Skip-gram)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="CRISP-DM/Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CRISP-DM/Modeling.html">Modeling (Naive Bayes)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="CRISP-DM/Skipgram_Classification.html">Klasifikasi Skip-gram vs TF-IDF</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CRISP-DM/Output.html">Evaluation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="CRISP-DM/Production.html">Deployment</a></li>
 </ul>
@@ -349,6 +350,7 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tentang-proyek">📖 Tentang Proyek</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#struktur-proyek">🗂️ Struktur Proyek</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#aplikasi">🚀 Aplikasi</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ringkasan-dataset">📊 Ringkasan Dataset</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tools">🛠️ Tools</a></li>
 </ul>
@@ -374,24 +376,36 @@ document.write(`
 <hr class="docutils" />
 <section id="tentang-proyek">
 <h2>📖 Tentang Proyek<a class="headerlink" href="#tentang-proyek" title="Permalink to this heading">#</a></h2>
-<p>Proyek ini mengumpulkan dan menyiapkan dataset <strong>200 artikel berita</strong> berbahasa Indonesia dari <a class="reference external" href="https://detik.com">detik.com</a>, untuk keperluan klasifikasi teks berita ke dalam dua kategori: <strong>Sport</strong> dan <strong>Finance</strong>.</p>
+<p>Proyek ini mengumpulkan dan menyiapkan dataset <strong>200 artikel berita</strong> berbahasa Indonesia dari <a class="reference external" href="https://detik.com">detik.com</a>, untuk klasifikasi teks berita ke dalam dua kategori: <strong>Sport</strong> dan <strong>Finance</strong>, dengan representasi TF-IDF, PCA, SVD, dan skip-gram yang dibangun manual, serta aplikasi Streamlit.</p>
 <p><strong>📚 Baca dokumentasi lengkap →</strong> <a class="reference external" href="https://haninhammoud01.github.io/ppw/">haninhammoud01.github.io/ppw</a></p>
 </section>
 <section id="struktur-proyek">
 <h2>🗂️ Struktur Proyek<a class="headerlink" href="#struktur-proyek" title="Permalink to this heading">#</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>ppw/
 ├── CRISP-DM/
-│   ├── Business.ipynb      → Business Understanding
-│   ├── EDA.ipynb           → Data Understanding
-│   ├── Input.ipynb         → Data Preparation
-│   ├── Modeling.md         → Modeling (segera hadir)
-│   ├── Output.md           → Evaluation (segera hadir)
-│   └── Production.md       → Deployment (segera hadir)
-├── data/
-│   └── dataset_berita_200.xlsx
+│   ├── Business.ipynb                → Business Understanding
+│   ├── EDA.ipynb                     → Data Understanding
+│   ├── Input.ipynb                   → Data Preparation (crawling)
+│   ├── Preprocessing.ipynb           → Text Preprocessing
+│   ├── Preprocessing_Ablation.ipynb  → Perbandingan tahap preprocessing
+│   ├── Vectorization.ipynb           → TF-IDF, PCA, SVD
+│   ├── Skipgram.ipynb                → Skip-gram manual (demo 3 kalimat)
+│   ├── Modeling.ipynb                → Naive Bayes pada TF-IDF/PCA/SVD
+│   ├── Skipgram_Classification.ipynb → Skip-gram vs TF-IDF + Grid Search
+│   ├── Output.md                     → Evaluation
+│   └── Production.md                 → Deployment
+├── data/                             → dataset dan model hasil training
+├── deployment/                       → aplikasi Streamlit (app.py + model/)
 ├── _config.yml
 ├── _toc.yml
 └── intro.md
+</pre></div>
+</div>
+</section>
+<section id="aplikasi">
+<h2>🚀 Aplikasi<a class="headerlink" href="#aplikasi" title="Permalink to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+streamlit<span class="w"> </span>run<span class="w"> </span>deployment/app.py
 </pre></div>
 </div>
 </section>
@@ -420,7 +434,7 @@ document.write(`
 </section>
 <section id="tools">
 <h2>🛠️ Tools<a class="headerlink" href="#tools" title="Permalink to this heading">#</a></h2>
-<p><code class="docutils literal notranslate"><span class="pre">Python</span></code> · <code class="docutils literal notranslate"><span class="pre">Trafilatura</span></code> · <code class="docutils literal notranslate"><span class="pre">Pandas</span></code> · <code class="docutils literal notranslate"><span class="pre">Seaborn</span></code> · <code class="docutils literal notranslate"><span class="pre">Jupyter</span> <span class="pre">Book</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">Python</span></code> · <code class="docutils literal notranslate"><span class="pre">Trafilatura</span></code> · <code class="docutils literal notranslate"><span class="pre">Pandas</span></code> · <code class="docutils literal notranslate"><span class="pre">scikit-learn</span></code> · <code class="docutils literal notranslate"><span class="pre">NumPy</span></code> · <code class="docutils literal notranslate"><span class="pre">Streamlit</span></code> · <code class="docutils literal notranslate"><span class="pre">Jupyter</span> <span class="pre">Book</span></code></p>
 <hr class="docutils" />
 <div align="center">
 <p><em>Hanin Hammoud</em></p>
@@ -476,6 +490,7 @@ document.write(`
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tentang-proyek">📖 Tentang Proyek</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#struktur-proyek">🗂️ Struktur Proyek</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#aplikasi">🚀 Aplikasi</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ringkasan-dataset">📊 Ringkasan Dataset</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#tools">🛠️ Tools</a></li>
 </ul>

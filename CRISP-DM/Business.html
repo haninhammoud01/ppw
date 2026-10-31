@@ -181,7 +181,8 @@ const thebe_selector_output = ".output, .cell_output"
 <li class="toctree-l1"><a class="reference internal" href="Preprocessing_Ablation.html">Perbandingan Preprocessing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Vectorization.html">Text Vectorization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Skipgram.html">Word Embedding (Skip-gram)</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Modeling.html">Modeling (Naive Bayes)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Skipgram_Classification.html">Klasifikasi Skip-gram vs TF-IDF</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Output.html">Evaluation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Production.html">Deployment</a></li>
 </ul>
@@ -369,7 +370,7 @@ document.write(`
 <h2>1. Define the Problem<a class="headerlink" href="#define-the-problem" title="Permalink to this heading">#</a></h2>
 <div class="note admonition">
 <p class="admonition-title">Ringkasan Masalah</p>
-<p>Mengumpulkan <strong>200 artikel berita Indonesia</strong> dari <a class="reference external" href="https://detik.com">detik.com</a> sebagai dataset untuk tugas mata kuliah Pencarian dan Penambangan Web (PPW), disusun mengikuti metodologi CRISP-DM. Fokus masalahnya adalah kategorisasi berita Indonesia (sport vs finance), yang akan dikerjakan pada tahap-tahap CRISP-DM selanjutnya.</p>
+<p>Mengumpulkan <strong>200 artikel berita Indonesia</strong> dari <a class="reference external" href="https://detik.com">detik.com</a> sebagai dataset untuk tugas mata kuliah Pencarian dan Penambangan Web (PPW), disusun mengikuti metodologi CRISP-DM. Dataset ini dipakai untuk membangun model klasifikasi yang dapat membedakan berita <strong>sport</strong> dan <strong>finance</strong>, mulai dari preprocessing, representasi teks (TF-IDF, PCA, SVD, skip-gram), klasifikasi Naive Bayes, hingga aplikasi Streamlit.</p>
 </div>
 </section>
 <section id="set-objectives">
@@ -378,7 +379,8 @@ document.write(`
 <p class="admonition-title">Tujuan</p>
 <ul class="simple">
 <li><p>Membangun dataset berlabel yang bersih berisi 200 artikel (100 <strong>sport</strong>, 100 <strong>finance</strong>) dengan skema kolom <code class="docutils literal notranslate"><span class="pre">id</span></code>, <code class="docutils literal notranslate"><span class="pre">isi_berita</span></code>, <code class="docutils literal notranslate"><span class="pre">label</span></code>, <code class="docutils literal notranslate"><span class="pre">url</span></code>.</p></li>
-<li><p>Menyiapkan data agar tahap CRISP-DM berikutnya (Data Preparation, Modeling, Evaluation, Deployment) bisa dikerjakan pada tugas-tugas selanjutnya.</p></li>
+<li><p>Membangun dan membandingkan model klasifikasi Naive Bayes dengan representasi TF-IDF, PCA, SVD, dan skip-gram yang dibangun manual.</p></li>
+<li><p>Menyimpan model terbaik dan memasangnya pada aplikasi Streamlit yang menerima link berita <a class="reference external" href="http://detik.com">detik.com</a>.</p></li>
 </ul>
 </div>
 </section>
@@ -424,6 +426,8 @@ document.write(`
 <li><p>Tepat <strong>200 baris</strong>: 100 <code class="docutils literal notranslate"><span class="pre">sport</span></code> (id 1-100) dan 100 <code class="docutils literal notranslate"><span class="pre">finance</span></code> (id 101-200)</p></li>
 <li><p><strong>0 nilai kosong</strong> pada <code class="docutils literal notranslate"><span class="pre">isi_berita</span></code>; <code class="docutils literal notranslate"><span class="pre">id</span></code> berurutan 1-200</p></li>
 <li><p>Dataset dapat dimuat tanpa error dan sesuai skema kolom yang ditentukan (<code class="docutils literal notranslate"><span class="pre">id</span></code>, <code class="docutils literal notranslate"><span class="pre">isi_berita</span></code>, <code class="docutils literal notranslate"><span class="pre">label</span></code>, <code class="docutils literal notranslate"><span class="pre">url</span></code>)</p></li>
+<li><p>Model klasifikasi mencapai akurasi <strong>di atas 90%</strong> pada data uji (20% data)</p></li>
+<li><p>Aplikasi Streamlit dapat menerima link <a class="reference external" href="http://detik.com">detik.com</a> dan menampilkan kategori finance atau sport</p></li>
 </ul>
 </div>
 </section>
