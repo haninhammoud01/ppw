@@ -16,9 +16,10 @@ chapters:
   - file: CRISP-DM/Skipgram
     title: Word Embedding (Skip-gram)
   - file: CRISP-DM/Modeling
-    title: Modeling
+    title: Modeling (Naive Bayes)
+  - file: CRISP-DM/Skipgram_Classification
+    title: Klasifikasi Skip-gram vs TF-IDF
   - file: CRISP-DM/Output
     title: Evaluation
   - file: CRISP-DM/Production
     title: Deployment
-    
